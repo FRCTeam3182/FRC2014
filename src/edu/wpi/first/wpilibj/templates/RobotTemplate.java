@@ -8,61 +8,43 @@
 package edu.wpi.first.wpilibj.templates;
 
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SimpleRobot;
-public class RobotTemplate extends SimpleRobot 
-{
-      
-    
-    
-    public void autonomous() {
-        
+import edu.wpi.first.wpilibj.IterativeRobot;
+
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the IterativeRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
+ */
+public class RobotTemplate extends IterativeRobot {
+    /**
+     * This function is run when the robot is first started up and should be
+     * used for any initialization code.
+     */
+    public void robotInit() {
+
     }
 
     /**
-     * This function is called once each time the robot enters operator control.
+     * This function is called periodically during autonomous
      */
-    public void operatorControl() {
+    public void autonomousPeriodic() {
 
+    }
+
+    /**
+     * This function is called periodically during operator control
+     */
+    public void teleopPeriodic() {
+        
     }
     
     /**
-     * This function is called once each time the robot enters test mode.
+     * This function is called periodically during test mode
      */
-    public void test() {
-      //public static void main(String[] args) {
-      Joystick rightjoystick = new Joystick(1);
-        
-        boolean  val1, val2, val3, val4,over;
-       
-        over=false;
-        
-        val1 = rightjoystick.getRawButton(1);
-        val2 = rightjoystick.getRawButton(2);
-        val3 = rightjoystick.getRawButton(3);
-        val4 = rightjoystick.getRawButton(4);
-        while (over==false) {
-        if (val1 == true){
-            System.out.println("1 is pressed");
-        }
-        else if(val2 == true){
-            System.out.print("2 is pressed");
-        }
-        else if(val3 == true){
-            System.out.println("3 is pressed");
-        }
-        else if (val4 == true){
-            System.out.println("4 is pressed");
-            over=true;
-            
-        }
-        }
-                
-               
-    }
-   
+    public void testPeriodic() {
     
-  
     }
-//}
+    
+}
