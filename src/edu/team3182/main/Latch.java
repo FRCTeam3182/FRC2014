@@ -15,7 +15,7 @@ public class Latch {
     public Latch(){
        _lastState = false; 
     }
-    public void Toggle(){
+    public void toggle(){
         _lastState = !_lastState;
     }
 }

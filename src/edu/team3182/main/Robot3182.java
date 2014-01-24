@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -19,15 +18,18 @@ import edu.wpi.first.wpilibj.RobotDrive;
  * directory.
  */
 public class Robot3182 extends IterativeRobot {
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+
+    private RobotDrive drive;
+    private Joystick rightjoystick;
+    private Joystick leftjoystick;
+
     public void robotInit() {
-   RobotDrive drive = new RobotDrive(1,2);
-   Joystick rightroystick = new Joystick(1);
-   Joystick leftjoystick = new Joystick(2);
-   
+
     }
 
     /**
@@ -37,28 +39,32 @@ public class Robot3182 extends IterativeRobot {
 
     }
 
+    public void teleopInit() {
+
+        drive = new RobotDrive(1, 2);
+        rightjoystick = new Joystick(1);
+        leftjoystick = new Joystick(2);
+
+    }
+
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
-    while (isOperatorControl() && isEnabled() ){
-        
-        
+
+        while (isOperatorControl() && isEnabled()) {
+            drive.tankDrive(rightjoystick, leftjoystick);
+        }
+
     }
-        
-   
-        
-    }
-    
+
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
         Latch latch = new Latch();
         latch.Toggle();
-       
-        
+
     }
-    
+
 }
