@@ -63,7 +63,7 @@ public class Robot3182 extends IterativeRobot {
      */
     public void testPeriodic() {
         Latch latch = new Latch();
-        latch.Toggle();
+        latch.toggle();
 
     }
 
