@@ -9,6 +9,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -27,7 +28,13 @@ public class Robot3182 extends IterativeRobot {
     private RobotDrive drive;
     private Joystick rightjoystick;
     private Joystick leftjoystick;
-
+    private Talon shootermotor1;
+    private Talon shootermotor2;
+    private Talon collectormotor;
+    private Solenoid leftshifter;
+    private Solenoid rightshifter;
+    private Solenoid leftcollector;
+    private Solenoid rightcollector;
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -37,6 +44,15 @@ public class Robot3182 extends IterativeRobot {
         drive = new RobotDrive(1, 2);
         rightjoystick = new Joystick(1);
         leftjoystick = new Joystick(2);
+        shootermotor1 = new Talon(4);
+        shootermotor2 = new Talon(5);
+        collectormotor = new Talon(3);
+        leftshifter = new Solenoid(5,6);
+        rightshifter = new Solenoid(7,8);
+        leftcollector = new Solenoid(1,2);
+        rightcollector = new Solenoid(3,4);
+        
+        
         
     }
 
@@ -84,9 +100,20 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        while (isOperatorControl() && isEnabled()) {
-            drive.tankDrive(rightjoystick, leftjoystick);
+        double xAxisRight;
+        double xAxisLeft;
+
+        xAxisRight = rightjoystick.getAxis(Joystick.AxisType.kX);
+        xAxisLeft = leftjoystick.getAxis(Joystick.AxisType.kX);
+
+        if ((xAxisRight < .25 && xAxisRight > (-.25))) {
+            xAxisRight = 0;
         }
+        if (xAxisLeft < .25 && xAxisLeft > (-.25)) {
+            xAxisLeft = 0;
+        }
+        drive.tankDrive(xAxisRight, xAxisLeft);
+
     }
 
     /**
