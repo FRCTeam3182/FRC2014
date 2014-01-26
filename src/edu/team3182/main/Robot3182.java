@@ -39,7 +39,7 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid leftCollector;
     private Solenoid rightCollector;
     private Encoder driveEncoder;
-
+    
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -56,7 +56,10 @@ public class Robot3182 extends IterativeRobot {
         rightShifter = new Solenoid(7, 8);
         leftCollector = new Solenoid(1, 2);
         rightCollector = new Solenoid(3, 4);
-        driveEncoder = new Encoder();
+        
+        drive.setSafetyEnabled(false);
+       
+        
 
     }
 
@@ -112,7 +115,7 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        System.out.println("test test test, the new code is running");
         double yAxisRight;
         double yAxisLeft;
         boolean shoot;
@@ -158,6 +161,7 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
+        System.out.println("test 123");
         Latch latch = new Latch();
         latch.toggle();
 
