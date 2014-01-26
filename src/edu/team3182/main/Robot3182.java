@@ -9,6 +9,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,7 +34,10 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-
+        drive = new RobotDrive(1, 2);
+        rightjoystick = new Joystick(1);
+        leftjoystick = new Joystick(2);
+        
     }
 
     /**
@@ -41,13 +45,21 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
-
+        
+        //Drive forward
+        drive.drive(0.3, 0.0);
+        
+        //Shoot
+        
+       
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
+
+ 
 
     }
 
@@ -56,10 +68,6 @@ public class Robot3182 extends IterativeRobot {
      * is called on a transition from any other state.
      */
     public void teleopInit() {
-
-        drive = new RobotDrive(1, 2);
-        rightjoystick = new Joystick(1);
-        leftjoystick = new Joystick(2);
 
     }
 
