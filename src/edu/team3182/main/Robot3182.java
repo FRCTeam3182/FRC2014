@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,6 +38,7 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid rightShifter;
     private Solenoid leftCollector;
     private Solenoid rightCollector;
+    private Encoder driveEncoder;
 
     /**
      * Called when the robot is first turned on. This is a substitute for using
@@ -54,6 +56,7 @@ public class Robot3182 extends IterativeRobot {
         rightShifter = new Solenoid(7, 8);
         leftCollector = new Solenoid(1, 2);
         rightCollector = new Solenoid(3, 4);
+        driveEncoder = new Encoder();
 
     }
 
@@ -109,6 +112,7 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+        
         double yAxisRight;
         double yAxisLeft;
         boolean shoot;
@@ -147,6 +151,7 @@ public class Robot3182 extends IterativeRobot {
         } else if (reverseshooter == false) {
             shooterMotors.set(0);
         }
+        SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
     }
 
     /**
