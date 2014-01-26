@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -61,12 +62,20 @@ public class Robot3182 extends IterativeRobot {
      */
     public void autonomousInit() {
         
-        //Drive forward
+        //Drive forward for 2 seconds
         drive.drive(0.3, 0.0);
-        
-        //Shoot
+        Timer.delay(2.0);
+        drive.drive(0.0, 0.0)
+                
+        //Shoot:
+        //Move motors forward and wait for the ball to be shot
         shootermotors.set(1.0);
         Timer.delay(2);
+        //Reload
+        shootermotors.set(-1.0);
+        Timer.delay(2.0);
+        //Stop 
+        shootermotors.set(0.0);
         
        
     }
