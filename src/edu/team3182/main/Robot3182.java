@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,8 +29,7 @@ public class Robot3182 extends IterativeRobot {
     private RobotDrive drive;
     private Joystick rightjoystick;
     private Joystick leftjoystick;
-    private Talon shootermotor1;
-    private Talon shootermotor2;
+    private Talon shootermotors;
     private Talon collectormotor;
     private Solenoid leftshifter;
     private Solenoid rightshifter;
@@ -44,8 +44,7 @@ public class Robot3182 extends IterativeRobot {
         drive = new RobotDrive(1, 2);
         rightjoystick = new Joystick(1);
         leftjoystick = new Joystick(2);
-        shootermotor1 = new Talon(4);
-        shootermotor2 = new Talon(5);
+        shootermotors = new Talon(4);
         collectormotor = new Talon(3);
         leftshifter = new Solenoid(5,6);
         rightshifter = new Solenoid(7,8);
@@ -66,6 +65,8 @@ public class Robot3182 extends IterativeRobot {
         drive.drive(0.3, 0.0);
         
         //Shoot
+        shootermotors.set(1.0);
+        Timer.delay(2);
         
        
     }
