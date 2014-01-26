@@ -23,12 +23,24 @@ public class Robot3182 extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-
     private RobotDrive drive;
     private Joystick rightjoystick;
     private Joystick leftjoystick;
 
+    /**
+     * Called when the robot is first turned on. This is a substitute for using
+     * the constructor in the class for consistency. This method is only called
+     * once
+     */
     public void robotInit() {
+
+    }
+
+    /**
+     * Called when the robot enters the autonomous period for the first time.
+     * This is called on a transition from any other state.
+     */
+    public void autonomousInit() {
 
     }
 
@@ -39,6 +51,10 @@ public class Robot3182 extends IterativeRobot {
 
     }
 
+    /**
+     * Called when the robot enters the teleop period for the first time. This
+     * is called on a transition from any other state.
+     */
     public void teleopInit() {
 
         drive = new RobotDrive(1, 2);
@@ -48,14 +64,21 @@ public class Robot3182 extends IterativeRobot {
     }
 
     /**
+     * Called continuously while the in the autonomous part of the match. Each
+     * time the program returns from this function, it is immediately called
+     * again provided that the state hasn’t changed.
+     */
+    public void teleopContinuous() {
+
+    }
+
+    /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-
         while (isOperatorControl() && isEnabled()) {
             drive.tankDrive(rightjoystick, leftjoystick);
         }
-
     }
 
     /**
