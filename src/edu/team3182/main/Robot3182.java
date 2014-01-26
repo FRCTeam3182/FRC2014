@@ -109,24 +109,24 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        double xAxisRight;
-        double xAxisLeft;
+        double yAxisRight;
+        double yAxisLeft;
         boolean shoot;
         boolean reverseshooter;
         
-        // sets xAxisRight and xAxisLeft to the x axis of corresponding joysticks
-        xAxisRight = rightJoystick.getAxis(Joystick.AxisType.kX);
-        xAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kX);
+        // sets yAxisRight and yAxisLeft to the x axis of corresponding joysticks
+        yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
+        yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
         
         // makes sure joystick will not work at +-25%
-        if ((xAxisRight < .25 && xAxisRight > (-.25))) {
-            xAxisRight = 0;
+        if ((yAxisRight < .25 && yAxisRight > (-.25))) {
+            yAxisRight = 0;
         }
-        if (xAxisLeft < .25 && xAxisLeft > (-.25)) {
-            xAxisLeft = 0;
+        if (yAxisLeft < .25 && yAxisLeft > (-.25)) {
+            yAxisLeft = 0;
         }
         // drive using the joysticks
-        drive.tankDrive(xAxisRight, xAxisLeft);
+        drive.tankDrive(yAxisRight, yAxisLeft);
         
         // shoot is button 1, revershooter is button 2 
         shoot = buttonsJoystick.getRawButton(1);
