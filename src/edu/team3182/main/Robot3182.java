@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.DigitalModule;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -39,6 +40,8 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid leftCollector;
     private Solenoid rightCollector;
     private Encoder driveEncoder;
+    private I2C ledStrip;
+    private DigitalModule ledStripDigitalModule;
     
     /**
      * Called when the robot is first turned on. This is a substitute for using
@@ -47,6 +50,7 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         drive = new RobotDrive(1, 2);
+        drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
@@ -56,10 +60,8 @@ public class Robot3182 extends IterativeRobot {
         rightShifter = new Solenoid(7, 8);
         leftCollector = new Solenoid(1, 2);
         rightCollector = new Solenoid(3, 4);
-        
-        drive.setSafetyEnabled(false);
+        ledStrip = new I2C(ledStripDigitalModule,4);
        
-        
 
     }
 
@@ -68,6 +70,8 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
+        //Send command to Arduino for the light strip
+        ledStrip.write(4, 188);
         
         //Drive forward for 2 seconds
         drive.drive(0.3, 0.0);
@@ -135,7 +139,7 @@ public class Robot3182 extends IterativeRobot {
         // drive using the joysticks
         drive.tankDrive(yAxisRight, yAxisLeft);
         
-        // shoot is button 1, revershooter is button 2 
+        // shoot is button 1, reverseshooter is button 2 
         shoot = buttonsJoystick.getRawButton(1);
         reverseshooter = buttonsJoystick.getRawButton(2);
         
