@@ -102,14 +102,6 @@ public class Robot3182 extends IterativeRobot {
 
     }
 
-    /**
-     * Called continuously while the in the autonomous part of the match. Each
-     * time the program returns from this function, it is immediately called
-     * again provided that the state hasn�t changed.
-     */
-    public void teleopContinuous() {
-
-    }
 
     /**
      * This function is called periodically during operator control
