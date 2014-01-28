@@ -154,7 +154,7 @@ public class Robot3182 extends IterativeRobot {
         } else if (reverseshooter == false) {
             shooterMotors.set(0);
         }
-        SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
+        // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
     }
 
     /**
