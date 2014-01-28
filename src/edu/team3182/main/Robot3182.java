@@ -28,18 +28,20 @@ public class Robot3182 extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-   private RobotDrive drive;
-   private Joystick rightJoystick;
-   private Joystick leftJoystick;
-   private Joystick buttonsJoystick;
-   private Talon shooterMotors;
-   private Talon collectorMotor;
-   private Solenoid leftShifter;
-   private Solenoid rightShifter;
-   private Solenoid leftCollector;
-   private Solenoid rightCollector;
-   private Encoder driveEncoder;
-//    
+    private RobotDrive drive;
+    private Joystick rightJoystick;
+    private Joystick leftJoystick;
+    private Joystick buttonsJoystick;
+    private Talon shooterMotors;
+    private Talon collectorMotor;
+    private Solenoid leftShifter;
+    private Solenoid rightShifter;
+    private Solenoid leftCollector;
+    private Solenoid rightCollector;
+    private Encoder driveEncoder;
+    private I2C ledStrip;
+    private DigitalModule ledStripDigitalModule;
+    
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -47,7 +49,8 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         drive = new RobotDrive(1, 2);
-       rightJoystick = new Joystick(1);
+        drive.setSafetyEnabled(false);
+        rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         shooterMotors = new Talon(4);
@@ -59,7 +62,6 @@ public class Robot3182 extends IterativeRobot {
         
       
        
-        
 
     }
 
@@ -68,6 +70,8 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
+        //Send command to Arduino for the light strip
+        ledStrip.write(4, 188);
         
         //Drive forward for 2 seconds
           drive.drive(0.3, 0.0);
