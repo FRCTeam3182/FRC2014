@@ -52,12 +52,10 @@ public class Robot3182 extends IterativeRobot {
         buttonsJoystick = new Joystick(3);
         shooterMotors = new Talon(4);
         collectorMotor = new Talon(3);
-//        leftShifter = new Solenoid(5, 6);
-//        rightShifter = new Solenoid(7, 8);
-//        leftCollector = new Solenoid(1, 2);
-//        rightCollector = new Solenoid(3, 4);
-//        
-      drive.setSafetyEnabled(false);
+        //leftShifter = new Solenoid(5, 6);
+        //rightShifter = new Solenoid(7, 8);
+        //leftCollector = new Solenoid(1, 2);
+        //rightCollector = new Solenoid(3, 4);
         
       
        
@@ -96,13 +94,8 @@ public class Robot3182 extends IterativeRobot {
     public void teleopInit() {
        
     }
-    public void disabledPeriodic() {
-        
-    }
-    
-    public void disabledInit() {
-        
-    }
+
+
     /**
      * This function is called periodically during operator control
      */
@@ -147,8 +140,7 @@ public class Robot3182 extends IterativeRobot {
             shooterMotors.set(0);
         
         }
-//       // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
-        
+        // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
     }
 
     /**
