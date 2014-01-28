@@ -52,10 +52,10 @@ public class Robot3182 extends IterativeRobot {
         buttonsJoystick = new Joystick(3);
         shooterMotors = new Talon(4);
         collectorMotor = new Talon(3);
-        leftShifter = new Solenoid(5, 6);
-        rightShifter = new Solenoid(7, 8);
-        leftCollector = new Solenoid(1, 2);
-        rightCollector = new Solenoid(3, 4);
+        //leftShifter = new Solenoid(5, 6);
+        //rightShifter = new Solenoid(7, 8);
+        //leftCollector = new Solenoid(1, 2);
+        //rightCollector = new Solenoid(3, 4);
         
         drive.setSafetyEnabled(false);
        
@@ -105,7 +105,7 @@ public class Robot3182 extends IterativeRobot {
     /**
      * Called continuously while the in the autonomous part of the match. Each
      * time the program returns from this function, it is immediately called
-     * again provided that the state hasn’t changed.
+     * again provided that the state hasnï¿½t changed.
      */
     public void teleopContinuous() {
 
