@@ -1,4 +1,4 @@
-MIDlet-Name: RobotTemplate
+MIDlet-Name: FRC2014
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: FIRST
 MIDlet-1: Robot3182, , edu.team3182.main.Robot3182
