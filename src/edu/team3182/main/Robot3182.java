@@ -57,10 +57,10 @@ public class Robot3182 extends IterativeRobot {
         buttonsJoystick = new Joystick(3);
         shooterMotors = new Talon(4);
         collectorMotor = new Talon(3);
-        leftShifter = new Solenoid(2, 6);
-        rightShifter = new Solenoid(2, 8);
-        leftCollector = new Solenoid(2, 2);
-        rightCollector = new Solenoid(2, 4);
+//        leftShifter = new Solenoid(2, 6);
+//        rightShifter = new Solenoid(2, 8);
+//        leftCollector = new Solenoid(2, 2);
+//        rightCollector = new Solenoid(2, 4);
 
     }
 
@@ -88,6 +88,10 @@ public class Robot3182 extends IterativeRobot {
         shooterMotors.set(0.0);
 
     }
+    public void autonomousPeriodic(){
+        ledStrip.write(4, 188);
+        Timer.delay(.01);
+    }
 
     /**
      * Called when the robot enters the teleop period for the first time. This
@@ -107,6 +111,9 @@ public class Robot3182 extends IterativeRobot {
         boolean reverseShooter;
         boolean collect;
         boolean collectReverse;
+        boolean collectorFoward;
+        double p = 0.26;
+        double smoothVar;
 
         //sets yAxisRight and yAxisLeft to the x axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -119,6 +126,10 @@ public class Robot3182 extends IterativeRobot {
         if (yAxisLeft < .25 && yAxisLeft > (-.25)) {
             yAxisLeft = 0;
         }
+        if (yAxisLeft > .26){
+           
+        }
+         
          //drive using the joysticks
 
         drive.tankDrive(yAxisRight, yAxisLeft);
@@ -128,6 +139,7 @@ public class Robot3182 extends IterativeRobot {
         reverseShooter = buttonsJoystick.getRawButton(2);
         collect = buttonsJoystick.getRawButton(3);
         collectReverse = buttonsJoystick.getRawButton(4);
+        
 
         // When button 1 is pressed, set the motors to 70%
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
@@ -156,10 +168,25 @@ public class Robot3182 extends IterativeRobot {
         } else if (collectReverse == false) {
             collectorMotor.set(0);
         }
-
+        if (yAxisLeft > p){
+            smoothVar = ((1/(1-p))*yAxisLeft+(1-(1/(1-p))));
+            //add smoothVar to drive
+        }
+            
+        //x = joystick y = motoroutput
+        
+        
     }
     // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
-
+    
+    public void disabledInit(){
+    
+    }
+    
+    public void disabledPeriodic(){
+        
+    }
+    
     /**
      * This function is called periodically during test mode
      */
