@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
-import edu.wpi.first.wpilibj.DigitalModule;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.I2C;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -41,8 +39,6 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid leftCollector;
     private Solenoid rightCollector;
     private Encoder driveEncoder;
-    private I2C ledStrip;
-    private DigitalModule ledStripDigitalModule;
 
     /**
      * Called when the robot is first turned on. This is a substitute for using
@@ -70,7 +66,6 @@ public class Robot3182 extends IterativeRobot {
      */
     public void autonomousInit() {
         //Send command to Arduino for the light strip
-        ledStrip.write(4, 188);
 
         //Drive forward for 2 seconds
         drive.drive(0.3, 0.0);
@@ -89,7 +84,6 @@ public class Robot3182 extends IterativeRobot {
 
     }
     public void autonomousPeriodic(){
-        ledStrip.write(4, 188);
         Timer.delay(.01);
     }
 
@@ -130,7 +124,7 @@ public class Robot3182 extends IterativeRobot {
            
         }
          
-         //drive using the joysticks
+        //drive using the joysticks
 
         drive.tankDrive(yAxisRight, yAxisLeft);
 
@@ -154,7 +148,6 @@ public class Robot3182 extends IterativeRobot {
             shooterMotors.set(0);
         } else if (reverseShooter == false) {
             shooterMotors.set(0);
-
         }
         // if button 3 is pressed, run the collector motor at 90%
         // if button 4 is pressed, run the collector motor in reverse at 90%
