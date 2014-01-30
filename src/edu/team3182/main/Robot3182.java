@@ -73,15 +73,18 @@ public class Robot3182 extends IterativeRobot {
         drive.drive(0.0, 0.0);
 
         //Shoot:
-        //Move motors forward and wait for the ball to be shot
-        shooterMotors.set(1.0);
+        //quickly speed up motors, then wait for the ball to be shot
+        for (int i=1; i<=10; i++){ //takes half a second to reach full speed
+            shooterMotors.set(i/10);
+            Timer.delay(.05);
+        }
+        shooterMotors.set(1);
+        Timer.delay(1);
+        shooterMotors.set(0);
+        Timer.delay(1);
+        shooterMotors.set(-.3);
         Timer.delay(2);
-        //Reload
-        shooterMotors.set(-1.0);
-        Timer.delay(2.0);
-        //Stop 
-        shooterMotors.set(0.0);
-
+        shooterMotors.set(0);
     }
     public void autonomousPeriodic(){
         Timer.delay(.01);
@@ -140,10 +143,8 @@ public class Robot3182 extends IterativeRobot {
         if (yAxisRight >= p){
             smoothVarRight = ((1/(1-p))*yAxisRight-(1+(1/(1-p))));
         }
-        //x = joystick y = motoroutput
         
         //drive using the joysticks
-        
         drive.tankDrive(smoothVarRight, smoothVarLeft);
 
         //shoot is button 1, air pass is button 2, collect is 3, ground pass/dump is 4
@@ -151,38 +152,42 @@ public class Robot3182 extends IterativeRobot {
         airPass = buttonsJoystick.getRawButton(2);
         collect = buttonsJoystick.getRawButton(3);
         collectReverse = buttonsJoystick.getRawButton(4);
-        
 
         // When button 1 is pressed, set the motors to 70% for 1 second
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
         if (shoot == true) {
-            for (int i=0; i<=100; i++){
-                shooterMotors.set(i/100);
-                Timer.delay(.02);
+            for (int i=1; i<=10; i++){ //takes half a second to reach full speed
+                shooterMotors.set(i/10);
+                Timer.delay(.05);
             }
             shooterMotors.set(1);
             Timer.delay(1);
             shooterMotors.set(0);
             Timer.delay(1);
-            shooterMotors.set(-.5);
-            Timer.delay(1);
+            shooterMotors.set(-.3);
+            Timer.delay(2);
             shooterMotors.set(0);
         }
         else if (shoot == false) {
             shooterMotors.set(0);
         }
         if (airPass == true){
+            for (int i=1; i<=5; i++){//takes half a second to reach half speed
+                shooterMotors.set(i/10);
+                Timer.delay(.1);
+            }
             shooterMotors.set(.5);
             Timer.delay(1);
             shooterMotors.set(0);
             Timer.delay(1);
-            shooterMotors.set(-.2);
-            Timer.delay(1);
+            shooterMotors.set(-.3);
+            Timer.delay(2);
             shooterMotors.set(0);
         }
         else if (airPass == true){
             shooterMotors.set(0);
         }
+        
         // if button 3 is pressed, run the collector motor at 90%
         // if button 4 is pressed, run the collector motor in reverse at 90%
         if (collect == true) {
@@ -195,15 +200,15 @@ public class Robot3182 extends IterativeRobot {
         } else if (collectReverse == false) {
             collectorMotor.set(0);
         }
-        //Maneuvers (button 5 is half turn, 6 is full turn)
-        boolean halfTurn = buttonsJoystick.getRawButton(5);
-        boolean quarterTurn = buttonsJoystick.getRawButton(6);
+        //Maneuvers: (trigger on left is half turn, trigger on right is quarter turn)
+        boolean halfTurn = leftJoystick.getRawButton(1);
+        boolean quarterTurn = rightJoystick.getRawButton(1);
         
         //turns around quickly 
         if (halfTurn = true){
-            for (int i=0; i<=100; i++){
-                drive.drive(0,(i/100));
-                Timer.delay(.02);
+            for (int i=1; i<=10; i++){ //takes half a second to reach full speed
+                drive.drive(0,(i/10));
+                Timer.delay(.05);
             }
             drive.drive(0, 1);
             Timer.delay(1);
