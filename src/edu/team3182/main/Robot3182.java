@@ -143,11 +143,13 @@ public class Robot3182 extends IterativeRobot {
         }
         //smooth right joystick
         //positive
+        // Getting some weird values here (-3.6)
         if (yAxisRight >= p) {
             smoothVarRight = ((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
             System.out.println("SMOOTHVARRIGHT!: IF > P: " + smoothVarRight);
         }
         //negative
+        //Also getting some weird values here
         if (yAxisRight <= -p) {
             smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 + (1 / (1 - p))));
              System.out.println("SMOOTHVARRIGHT!: IF < P: " + smoothVarRight);
@@ -156,7 +158,7 @@ public class Robot3182 extends IterativeRobot {
 
         System.out.println("SmoothVarRight: " + smoothVarRight + "SmoothVarLeft: " + smoothVarLeft);
         //drive using the joysticks
-        drive.tankDrive(smoothVarLeft, smoothVarRight);
+        drive.tankDrive(smoothVarRight, smoothVarLeft);
 
         //shoot is button 1, air pass is button 2, collect is 3, ground pass/dump is 4
         shoot = buttonsJoystick.getRawButton(1);
