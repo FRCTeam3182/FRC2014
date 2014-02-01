@@ -119,17 +119,19 @@ public class Robot3182 extends IterativeRobot {
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
 
-        System.out.println("Right: " + yAxisRight + " Left: " + yAxisLeft);
+        
 
         //makes sure joystick will not work at +-25%
         if (yAxisRight < p && yAxisRight > (-p)) {
-            System.out.println("1234");
+            
             smoothVarRight = 0;
         }
         if (yAxisLeft < p && yAxisLeft > (-p)) {
-            System.out.println("left1234");
+            
             smoothVarLeft = 0;
         }
+        System.out.println("Right: " + yAxisRight + " Left: " + yAxisLeft);
+        
         //smooth left joystick
         //positive
         if (yAxisLeft >= p) {
@@ -169,7 +171,7 @@ public class Robot3182 extends IterativeRobot {
         // When button 1 is pressed, set the motors to 70% for 1 second
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
 //        if (shoot == true) {
-//////            for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
+//            for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
 //                shooterMotors.set(i / 10);
 //                Timer.delay(.05);
 //            }
