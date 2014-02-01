@@ -50,6 +50,8 @@ public class Robot3182 extends IterativeRobot {
     double p = 0.25;
     double smoothVarRight = 0;
     double smoothVarLeft = 0;
+    final int endLoopDrive = 10;
+    final int endLoopShoot = 10;
 
     /**
      * Called when the robot is first turned on. This is a substitute for using
@@ -85,9 +87,9 @@ public class Robot3182 extends IterativeRobot {
 
         //Shoot:
         //quickly speed up motors, then wait for the ball to be shot
-        for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
-            shooterMotors.set(i / 10);
-            Timer.delay(.05);
+        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
+            shooterMotors.set(i / endLoopShoot);
+            Timer.delay(.1/i);
         }
         shooterMotors.set(1);
         Timer.delay(1);
@@ -135,45 +137,39 @@ public class Robot3182 extends IterativeRobot {
         //smooth left joystick
         //positive
         if (yAxisLeft >= p) {
-            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));
-            
+            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));     
         }
+        
         //negative
         if (yAxisLeft <= (-p)) {
-            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));
-            
+            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));  
         }
         
         //smooth right joystick
         //positive
-        // Getting some weird values here (-3.6)
         if (yAxisRight >= p) {
             smoothVarRight = -1*((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
-           
         }
         
         //negative
-        //Also getting some weird values here
         if (yAxisRight <= (-p)) {
-            smoothVarRight = -1*((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p))));
-             
+            smoothVarRight = -1*((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p)))); 
         }
         
         //drive using the joysticks
         drive.tankDrive(smoothVarLeft, smoothVarRight);
 
-        //shoot is button 1, air pass is button 2, collect is 3, ground pass/dump is 4
+        //shoot is button 1, collect is 2, ground pass/dump is 3
         shoot = buttonsJoystick.getRawButton(1);
-        airPass = buttonsJoystick.getRawButton(2);
-        collect = buttonsJoystick.getRawButton(3);
-        collectReverse = buttonsJoystick.getRawButton(4);
+        collect = buttonsJoystick.getRawButton(2);
+        collectReverse = buttonsJoystick.getRawButton(3);
 
         // When button 1 is pressed, set the motors to 70% for 1 second
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
         if (shoot == true) {
-            for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
-                shooterMotors.set(i / 10);
-                Timer.delay(.05);
+            for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
+                shooterMotors.set(i / endLoopShoot);
+                Timer.delay(.1/i); //.1sec at .1, .5sec at .2, .033sec at .3, .025sec at .4, .02sec at .5, .0166sec at .6, .014sec at .7, .0125sec at .8, .011sec at .9, .01sec at 1
             }
             shooterMotors.set(1);
             Timer.delay(1);
@@ -185,21 +181,7 @@ public class Robot3182 extends IterativeRobot {
         } else if (shoot == false) {
             shooterMotors.set(0);
         }
-        if (airPass == true) {
-            for (int i = 1; i <= 5; i++) {//takes half a second to reach half speed
-                shooterMotors.set(i / 10);
-                Timer.delay(.1);
-            }
-            shooterMotors.set(.5);
-            Timer.delay(1);
-            shooterMotors.set(0);
-            Timer.delay(1);
-            shooterMotors.set(-.3);
-            Timer.delay(2);
-            shooterMotors.set(0);
-        } else if (airPass == true) {
-            shooterMotors.set(0);
-        }
+
 
         // if button 3 is pressed, run the collector motor at 90%
         // if button 4 is pressed, run the collector motor in reverse at 90%
@@ -220,8 +202,8 @@ public class Robot3182 extends IterativeRobot {
 
         //does a clockwise quarter turn quickly 
         if (quarterTurnRight == true) {
-            for (int i = 1; i <= 10; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / 10));
+            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / endLoopDrive));
                 Timer.delay(.01);
             }
             drive.drive(0, 1);
@@ -230,8 +212,8 @@ public class Robot3182 extends IterativeRobot {
         }
         //does a counter-clockwise quarter turn quickly
         if (quarterTurnLeft == true) {
-            for (int i = 1; i <= 10; i++) { //takes 1/10th of a second reach full speed
-                drive.drive(0, -(i / 10));
+            for (int i = 1; i <= endLoopDrive; i++) { //takes 1/10th of a second reach full speed
+                drive.drive(0, -(i / endLoopDrive));
                 Timer.delay(.01);
             }
             drive.drive(0, -1);
@@ -239,8 +221,8 @@ public class Robot3182 extends IterativeRobot {
             drive.drive(0, 0);
         }
         if (quarterTurnLeft == true && quarterTurnRight == true){
-            for (int i = 1; i <= 10; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / 10));
+            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / endLoopDrive));
                 Timer.delay(.01);
             }
             drive.drive(0, 1);
