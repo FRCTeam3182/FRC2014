@@ -213,30 +213,40 @@ public class Robot3182 extends IterativeRobot {
 //        } else if (collectReverse == false) {
 //            collectorMotor.set(0);
 //        }
-//        //Maneuvers: (trigger on left is half turn, trigger on right is quarter turn)
-//        boolean halfTurn = leftJoystick.getRawButton(1);
-//        boolean quarterTurn = rightJoystick.getRawButton(1);
-//
-//        //turns around quickly 
-//        if (halfTurn = true) {
-//            for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
-//                drive.drive(0, (i / 10));
-//                Timer.delay(.05);
-//            }
-//            drive.drive(0, 1);
-//            Timer.delay(1);
-//            drive.drive(0, 0);
-//        }
-//        //does a quarter turn quickly
-//        if (quarterTurn = true) {
-//            for (int i = 0; i <= 100; i++) {
-//                drive.drive(0, (i / 100));
-//                Timer.delay(.02);
-//            }
-//            drive.drive(0, 1);
-//            Timer.delay(.5);
-//            drive.drive(0, 0);
-//        }
+        
+        //Maneuvers: (trigger on left is half turn, trigger on right is quarter turn)
+        boolean quarterTurnLeft = leftJoystick.getRawButton(1);
+        boolean quarterTurnRight = rightJoystick.getRawButton(1);
+
+        //does a clockwise quarter turn quickly 
+        if (quarterTurnRight == true) {
+            for (int i = 1; i <= 10; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / 10));
+                Timer.delay(.01);
+            }
+            drive.drive(0, 1);
+            Timer.delay(.4);
+            drive.drive(0, 0);
+        }
+        //does a counter-clockwise quarter turn quickly
+        if (quarterTurnLeft == true) {
+            for (int i = 1; i <= 10; i++) { //takes 1/10th of a second reach full speed
+                drive.drive(0, -(i / 10));
+                Timer.delay(.01);
+            }
+            drive.drive(0, -1);
+            Timer.delay(.4);
+            drive.drive(0, 0);
+        }
+        if (quarterTurnLeft == true && quarterTurnRight == true){
+            for (int i = 1; i <= 10; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / 10));
+                Timer.delay(.01);
+            }
+            drive.drive(0, 1);
+            Timer.delay(.8);
+            drive.drive(0, 0);
+        }
 
     }
     // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
