@@ -59,6 +59,7 @@ public class Robot3182 extends IterativeRobot {
     final double a = .005;
     final double b = .9;
 
+    
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
