@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,11 +40,12 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid rightShifter;
     private Solenoid leftCollector;
     private Solenoid rightCollector;
-    private Encoder driveEncoder;
+    private Encoder rightDriveEncoder;
+    private Encoder leftDriveEncoder;
     private AnalogPotentiometer shooterPot;
     double yAxisRight;
     double yAxisLeft;
-    double distanceRight;
+    double distance;
     boolean shoot;
     boolean reverseShooter;
     boolean collect;
@@ -74,6 +75,11 @@ public class Robot3182 extends IterativeRobot {
         shooterMotors = new Talon(1);
         collectorMotor = new Talon(2);
         shooterPot = new AnalogPotentiometer(1);
+        rightDriveEncoder = new Encoder(1,2);
+        leftDriveEncoder = new Encoder(3,4);
+        rightDriveEncoder.reset();
+        rightDriveEncoder.setDistancePerPulse(.08168);
+        
 //        leftShifter = new Solenoid(2, 6);
 //        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
@@ -86,13 +92,13 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
-        rightDriveEncoder.start();
+       rightDriveEncoder.start();
         
         
         //Send command to Arduino for the light strip
 
-       // set the variable distanceRight to the distance of encoder since reset
-        distanceRight = rightDriveEncoder.getDistance();
+       // set the variable distance to the distance of encoder since reset
+       distance = rightDriveEncoder.getDistance();
          //Drive forward for 2 seconds
         drive.drive(0.3, 0.0);
         Timer.delay(2.0);
@@ -259,7 +265,7 @@ public class Robot3182 extends IterativeRobot {
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
     }
-    // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
+     
 
     public void disabledInit() {
 
