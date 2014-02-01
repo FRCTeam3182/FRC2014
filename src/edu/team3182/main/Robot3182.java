@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
+import java.lang.Math;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -52,6 +53,8 @@ public class Robot3182 extends IterativeRobot {
     double smoothVarLeft = 0;
     final int endLoopDrive = 10;
     final int endLoopShoot = 10;
+    final double a = .005;
+    final double b = .9;
 
     /**
      * Called when the robot is first turned on. This is a substitute for using
@@ -88,8 +91,8 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         //quickly speed up motors, then wait for the ball to be shot
         for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-            shooterMotors.set(i / endLoopShoot);
-            Timer.delay(.1/i);
+                shooterMotors.set(a* Math.pow(Math.E,(b*i)));
+                Timer.delay(.01);
         }
         shooterMotors.set(1);
         Timer.delay(1);
@@ -168,11 +171,9 @@ public class Robot3182 extends IterativeRobot {
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
         if (shoot == true) {
             for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(i / endLoopShoot);
-                Timer.delay(.1/i); //.1sec at .1, .5sec at .2, .033sec at .3, .025sec at .4, .02sec at .5, .0166sec at .6, .014sec at .7, .0125sec at .8, .011sec at .9, .01sec at 1
+                shooterMotors.set(a*exp(b*i));
+                Timer.delay(.01);
             }
-            shooterMotors.set(1);
-            Timer.delay(1);
             shooterMotors.set(0);
             Timer.delay(1);
             shooterMotors.set(-.3);
