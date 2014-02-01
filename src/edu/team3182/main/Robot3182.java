@@ -76,8 +76,8 @@ public class Robot3182 extends IterativeRobot {
         shooterMotors = new Talon(1);
         collectorMotor = new Talon(2);
         shooterPot = new AnalogPotentiometer(1);
-        rightDriveEncoder = new Encoder(1,2);
-        leftDriveEncoder = new Encoder(3,4);
+        rightDriveEncoder = new Encoder(3,4);
+        leftDriveEncoder = new Encoder(1,2);
         rightDriveEncoder.reset();
         rightDriveEncoder.setDistancePerPulse(.08168);
         
