@@ -170,49 +170,49 @@ public class Robot3182 extends IterativeRobot {
 
         // When button 1 is pressed, set the motors to 70% for 1 second
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
-//        if (shoot == true) {
-//            for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
-//                shooterMotors.set(i / 10);
-//                Timer.delay(.05);
-//            }
-//            shooterMotors.set(1);
-//            Timer.delay(1);
-//            shooterMotors.set(0);
-//            Timer.delay(1);
-//            shooterMotors.set(-.3);
-//            Timer.delay(2);
-//            shooterMotors.set(0);
-//        } else if (shoot == false) {
-//            shooterMotors.set(0);
-//        }
-//        if (airPass == true) {
-//            for (int i = 1; i <= 5; i++) {//takes half a second to reach half speed
-//                shooterMotors.set(i / 10);
-//                Timer.delay(.1);
-//            }
-//            shooterMotors.set(.5);
-//            Timer.delay(1);
-//            shooterMotors.set(0);
-//            Timer.delay(1);
-//            shooterMotors.set(-.3);
-//            Timer.delay(2);
-//            shooterMotors.set(0);
-//        } else if (airPass == true) {
-//            shooterMotors.set(0);
-//        }
-//
-//        // if button 3 is pressed, run the collector motor at 90%
-//        // if button 4 is pressed, run the collector motor in reverse at 90%
-//        if (collect == true) {
-//            collectorMotor.set(.9);
-//        } else if (collect == false) {
-//            collectorMotor.set(0);
-//        }
-//        if (collectReverse == true) {
-//            collectorMotor.set(-.9);
-//        } else if (collectReverse == false) {
-//            collectorMotor.set(0);
-//        }
+        if (shoot == true) {
+            for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
+                shooterMotors.set(i / 10);
+                Timer.delay(.05);
+            }
+            shooterMotors.set(1);
+            Timer.delay(1);
+            shooterMotors.set(0);
+            Timer.delay(1);
+            shooterMotors.set(-.3);
+            Timer.delay(2);
+            shooterMotors.set(0);
+        } else if (shoot == false) {
+            shooterMotors.set(0);
+        }
+        if (airPass == true) {
+            for (int i = 1; i <= 5; i++) {//takes half a second to reach half speed
+                shooterMotors.set(i / 10);
+                Timer.delay(.1);
+            }
+            shooterMotors.set(.5);
+            Timer.delay(1);
+            shooterMotors.set(0);
+            Timer.delay(1);
+            shooterMotors.set(-.3);
+            Timer.delay(2);
+            shooterMotors.set(0);
+        } else if (airPass == true) {
+            shooterMotors.set(0);
+        }
+
+        // if button 3 is pressed, run the collector motor at 90%
+        // if button 4 is pressed, run the collector motor in reverse at 90%
+        if (collect == true) {
+            collectorMotor.set(.9);
+        } else if (collect == false) {
+            collectorMotor.set(0);
+        }
+        if (collectReverse == true) {
+            collectorMotor.set(-.9);
+        } else if (collectReverse == false) {
+            collectorMotor.set(0);
+        }
         
         //Maneuvers: (trigger on left is half turn, trigger on right is quarter turn)
         boolean quarterTurnLeft = leftJoystick.getRawButton(1);
