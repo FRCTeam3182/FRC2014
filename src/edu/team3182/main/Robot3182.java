@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,9 +40,11 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid rightShifter;
     private Solenoid leftCollector;
     private Solenoid rightCollector;
-    private Encoder driveEncoder;
+    private Encoder rightDriveEncoder;
+    private Encoder leftDriveEncoder;
     double yAxisRight;
     double yAxisLeft;
+    double distanceRight;
     boolean shoot;
     boolean airPass;
     boolean reverseShooter;
@@ -57,13 +61,22 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-        //drive = new RobotDrive(1, 2);
+        drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        shooterMotors = new Talon(1);
-        collectorMotor = new Talon(2);
+        shooterMotors = new Talon(3);
+        collectorMotor = new Talon(4);
+        rightDriveEncoder = new Encoder(1,2);
+        leftDriveEncoder = new Encoder (3,4);
+        rightDriveEncoder.reset();
+        // 26/24 ratio, 6in diameter wheels
+        rightDriveEncoder.setDistancePerPulse(.08168);
+        
+        
+        
+
 //        leftShifter = new Solenoid(2, 6);
 //        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
@@ -76,9 +89,14 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
+        rightDriveEncoder.start();
+        
+        
         //Send command to Arduino for the light strip
 
-        //Drive forward for 2 seconds
+       // set the variable distanceRight to the distance of encoder since reset
+        distanceRight = rightDriveEncoder.getDistance();
+         //Drive forward for 2 seconds
         drive.drive(0.3, 0.0);
         Timer.delay(2.0);
         drive.drive(0.0, 0.0);
@@ -247,7 +265,8 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.8);
             drive.drive(0, 0);
         }
-
+        //Display rate of encoder to the dashboard
+        SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
     }
     // SmartDashboard.putNumber("Speed", shooterMotors.getSpeed());
 
