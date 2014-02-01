@@ -46,7 +46,6 @@ public class Robot3182 extends IterativeRobot {
     double yAxisLeft;
     double distanceRight;
     boolean shoot;
-    boolean airPass;
     boolean reverseShooter;
     boolean collect;
     boolean collectReverse;
@@ -190,7 +189,7 @@ public class Robot3182 extends IterativeRobot {
             shooterMotors.set(0);
             Timer.delay(1);
             shooterPotVal = (int) shooterPot.get();
-            while (shooterPotVal <= 300){
+            while (shooterPotVal >= 300){
                 shooterMotors.set(-.2);
             }
             shooterMotors.set(0);    
@@ -216,6 +215,8 @@ public class Robot3182 extends IterativeRobot {
         //Maneuvers: (trigger on left is half turn, trigger on right is quarter turn)
         boolean quarterTurnLeft = leftJoystick.getRawButton(1);
         boolean quarterTurnRight = rightJoystick.getRawButton(1);
+        boolean halfTurnLeft = leftJoystick.getRawButton(2);
+        boolean halfTurnRight = rightJoystick.getRawButton(2);
 
         //does a clockwise quarter turn quickly 
         if (quarterTurnRight == true) {
@@ -237,12 +238,21 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.4);
             drive.drive(0, 0);
         }
-        if (quarterTurnLeft == true && quarterTurnRight == true){
+        if (halfTurnRight == true){
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
                 drive.drive(0, (i / endLoopDrive));
                 Timer.delay(.01);
             }
             drive.drive(0, 1);
+            Timer.delay(.8);
+            drive.drive(0, 0);
+        }
+       if (halfTurnLeft == true){
+            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / endLoopDrive));
+                Timer.delay(.01);
+            }
+            drive.drive(0, -1);
             Timer.delay(.8);
             drive.drive(0, 0);
         }
