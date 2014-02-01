@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -55,6 +56,8 @@ public class Robot3182 extends IterativeRobot {
     final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
     int shooterPotVal; //position of catapult
+    final double a = .005;
+    final double b = .9;
 
     /**
      * Called when the robot is first turned on. This is a substitute for using
