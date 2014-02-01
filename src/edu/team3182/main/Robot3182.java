@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
-import java.lang.Math;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
+import com.sun.squawk.util.MathUtils;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -91,7 +92,7 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         //quickly speed up motors, then wait for the ball to be shot
         for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(a* Math.pow(Math.E,(b*i)));
+                shooterMotors.set(a* (MathUtils.exp(b*i)));
                 Timer.delay(.01);
         }
         shooterMotors.set(1);
@@ -171,7 +172,7 @@ public class Robot3182 extends IterativeRobot {
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
         if (shoot == true) {
             for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(a*exp(b*i));
+                shooterMotors.set(a*MathUtils.exp(b*i));
                 Timer.delay(.01);
             }
             shooterMotors.set(0);
