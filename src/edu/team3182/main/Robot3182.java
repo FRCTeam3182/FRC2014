@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
-
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -14,8 +14,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
-import com.sun.squawk.util.MathUtils;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -41,8 +40,8 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid rightShifter;
     private Solenoid leftCollector;
     private Solenoid rightCollector;
-    private Encoder rightDriveEncoder;
-    private Encoder leftDriveEncoder;
+    private Encoder driveEncoder;
+    private AnalogPotentiometer shooterPot;
     double yAxisRight;
     double yAxisLeft;
     double distanceRight;
@@ -52,14 +51,16 @@ public class Robot3182 extends IterativeRobot {
     boolean collect;
     boolean collectReverse;
     boolean collectorFoward;
-    double p = 0.25;
-    double smoothVarRight = 0;
+    double p = 0.25; //dead zone is between -p and p
+    double smoothVarRight = 0; //for making joysticks exponential
     double smoothVarLeft = 0;
-    final int endLoopDrive = 10;
+    final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
+    int shooterPotVal; //position of catapult
     final double a = .005;
     final double b = .9;
 
+    
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -71,17 +72,9 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        shooterMotors = new Talon(3);
-        collectorMotor = new Talon(4);
-        rightDriveEncoder = new Encoder(1,2);
-        leftDriveEncoder = new Encoder (3,4);
-        rightDriveEncoder.reset();
-        // 26/24 ratio, 6in diameter wheels
-        rightDriveEncoder.setDistancePerPulse(.08168);
-        
-        
-        
-
+        shooterMotors = new Talon(1);
+        collectorMotor = new Talon(2);
+        shooterPot = new AnalogPotentiometer(1);
 //        leftShifter = new Solenoid(2, 6);
 //        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
@@ -113,11 +106,11 @@ public class Robot3182 extends IterativeRobot {
                 Timer.delay(.01);
         }
         shooterMotors.set(1);
-        Timer.delay(1);
+        Timer.delay(.1);
         shooterMotors.set(0);
         Timer.delay(1);
         shooterMotors.set(-.3);
-        Timer.delay(2);
+        Timer.delay(.25);
         shooterMotors.set(0);
     }
 
@@ -192,12 +185,17 @@ public class Robot3182 extends IterativeRobot {
                 shooterMotors.set(a*MathUtils.exp(b*i));
                 Timer.delay(.01);
             }
+            shooterMotors.set(1);
+            Timer.delay(.1);
             shooterMotors.set(0);
             Timer.delay(1);
-            shooterMotors.set(-.3);
-            Timer.delay(2);
-            shooterMotors.set(0);
-        } else if (shoot == false) {
+            shooterPotVal = (int) shooterPot.get();
+            while (shooterPotVal <= 300){
+                shooterMotors.set(-.2);
+            }
+            shooterMotors.set(0);    
+        } 
+        else if (shoot == false) {
             shooterMotors.set(0);
         }
 
