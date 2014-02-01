@@ -92,7 +92,7 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         //quickly speed up motors, then wait for the ball to be shot
         for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(i/endLoopShoot);
+                shooterMotors.set(a* (MathUtils.exp(b*i)));
                 Timer.delay(.01);
         }
         shooterMotors.set(1);
@@ -172,8 +172,8 @@ public class Robot3182 extends IterativeRobot {
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
         if (shoot == true) {
             for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                    shooterMotors.set(i/endLoopShoot);
-                    Timer.delay(.01);
+                shooterMotors.set(a*MathUtils.exp(b*i));
+                Timer.delay(.01);
             }
             shooterMotors.set(1);
             Timer.delay(.1);
