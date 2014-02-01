@@ -130,37 +130,37 @@ public class Robot3182 extends IterativeRobot {
             
             smoothVarLeft = 0;
         }
-        System.out.println("Right: " + yAxisRight + " Left: " + yAxisLeft);
+       
         
         //smooth left joystick
         //positive
         if (yAxisLeft >= p) {
-            smoothVarLeft = ((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));
-            System.out.println("SMOOTHVARLEFT!! IF >P: " + smoothVarLeft);
+            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));
+            
         }
         //negative
-        if (yAxisLeft <= -p) {
-            smoothVarLeft = ((1 / (1 - p)) * yAxisLeft - (1 + (1 / (1 - p))));
-            System.out.println("SMOOTHVARLEFT!! IF < P: " + smoothVarLeft);
+        if (yAxisLeft <= (-p)) {
+            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));
+            
         }
+        
         //smooth right joystick
         //positive
         // Getting some weird values here (-3.6)
         if (yAxisRight >= p) {
-            smoothVarRight = ((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
-            System.out.println("SMOOTHVARRIGHT!: IF > P: " + smoothVarRight);
+            smoothVarRight = -1*((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
+           
         }
+        
         //negative
         //Also getting some weird values here
-        if (yAxisRight <= -p) {
-            smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 + (1 / (1 - p))));
-             System.out.println("SMOOTHVARRIGHT!: IF < P: " + smoothVarRight);
+        if (yAxisRight <= (-p)) {
+            smoothVarRight = -1*((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p))));
+             
         }
-        System.out.println(p);
-
-        System.out.println("SmoothVarRight: " + smoothVarRight + "SmoothVarLeft: " + smoothVarLeft);
+        
         //drive using the joysticks
-        drive.tankDrive(smoothVarRight, smoothVarLeft);
+        drive.tankDrive(smoothVarLeft, smoothVarRight);
 
         //shoot is button 1, air pass is button 2, collect is 3, ground pass/dump is 4
         shoot = buttonsJoystick.getRawButton(1);
