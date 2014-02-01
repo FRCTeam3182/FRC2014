@@ -57,13 +57,13 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-        drive = new RobotDrive(1, 2);
+        //drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        shooterMotors = new Talon(4);
-        collectorMotor = new Talon(3);
+        shooterMotors = new Talon(1);
+        collectorMotor = new Talon(2);
 //        leftShifter = new Solenoid(2, 6);
 //        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
