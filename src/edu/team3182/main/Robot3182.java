@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
-import java.lang.Math;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -14,6 +13,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -40,6 +40,7 @@ public class Robot3182 extends IterativeRobot {
     private Solenoid leftCollector;
     private Solenoid rightCollector;
     private Encoder driveEncoder;
+    private AnalogPotentiometer shooterPot;
     double yAxisRight;
     double yAxisLeft;
     boolean shoot;
@@ -48,13 +49,12 @@ public class Robot3182 extends IterativeRobot {
     boolean collect;
     boolean collectReverse;
     boolean collectorFoward;
-    double p = 0.25;
-    double smoothVarRight = 0;
+    double p = 0.25; //dead zone is between -p and p
+    double smoothVarRight = 0; //for making joysticks exponential
     double smoothVarLeft = 0;
-    final int endLoopDrive = 10;
+    final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
-    final double a = .005;
-    final double b = .9;
+    int shooterPotVal; //position of catapult
 
     /**
      * Called when the robot is first turned on. This is a substitute for using
@@ -69,6 +69,7 @@ public class Robot3182 extends IterativeRobot {
         buttonsJoystick = new Joystick(3);
         shooterMotors = new Talon(1);
         collectorMotor = new Talon(2);
+        shooterPot = new AnalogPotentiometer(1);
 //        leftShifter = new Solenoid(2, 6);
 //        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
@@ -91,15 +92,15 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         //quickly speed up motors, then wait for the ball to be shot
         for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(a* Math.pow(Math.E,(b*i)));
+                shooterMotors.set(i/endLoopShoot);
                 Timer.delay(.01);
         }
         shooterMotors.set(1);
-        Timer.delay(1);
+        Timer.delay(.1);
         shooterMotors.set(0);
         Timer.delay(1);
         shooterMotors.set(-.3);
-        Timer.delay(2);
+        Timer.delay(.25);
         shooterMotors.set(0);
     }
 
@@ -171,15 +172,20 @@ public class Robot3182 extends IterativeRobot {
         // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
         if (shoot == true) {
             for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(a*exp(b*i));
-                Timer.delay(.01);
+                    shooterMotors.set(i/endLoopShoot);
+                    Timer.delay(.01);
             }
+            shooterMotors.set(1);
+            Timer.delay(.1);
             shooterMotors.set(0);
             Timer.delay(1);
-            shooterMotors.set(-.3);
-            Timer.delay(2);
-            shooterMotors.set(0);
-        } else if (shoot == false) {
+            shooterPotVal = (int) shooterPot.get();
+            while (shooterPotVal <= 300){
+                shooterMotors.set(-.2);
+            }
+            shooterMotors.set(0);    
+        } 
+        else if (shoot == false) {
             shooterMotors.set(0);
         }
 
