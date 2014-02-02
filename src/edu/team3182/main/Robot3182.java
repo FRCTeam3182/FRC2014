@@ -59,6 +59,7 @@ public class Robot3182 extends IterativeRobot {
     //int shooterPotVal; //position of catapult
     final double a = .005;
     final double b = .9;
+    boolean isReloading = false; //prevents shooting when reloading
 
     
     /**
@@ -147,11 +148,9 @@ public class Robot3182 extends IterativeRobot {
 
         //makes sure joystick will not work at +-25%
         if (yAxisRight < p && yAxisRight > (-p)) {
-            
             smoothVarRight = 0;
         }
         if (yAxisLeft < p && yAxisLeft > (-p)) {
-            
             smoothVarLeft = 0;
         }
        
@@ -161,23 +160,19 @@ public class Robot3182 extends IterativeRobot {
         if (yAxisLeft >= p) {
             smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));     
         }
-        
         //negative
         if (yAxisLeft <= (-p)) {
             smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));  
         }
-        
         //smooth right joystick
         //positive
         if (yAxisRight >= p) {
             smoothVarRight = -1*((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
         }
-        
         //negative
         if (yAxisRight <= (-p)) {
             smoothVarRight = -1*((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p)))); 
         }
-        
         //drive using the joysticks
         drive.tankDrive(smoothVarLeft, smoothVarRight);
 
@@ -185,10 +180,11 @@ public class Robot3182 extends IterativeRobot {
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
-
-        // When button 1 is pressed, set the motors to 70% for 1 second
-        // When button 2 is pressed, set motors to reverse at 50% for 1 seconds
-        if (shoot == true) {
+        
+        //Shooting
+        //NOTE: You CANNOT shoot when the catapult is reloading or when the collector spinning in reverse
+        if (shoot == true && isReloading == false && collectReverse == false) {
+            
             for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
                 shooterMotors.set(a*MathUtils.exp(b*i));
                 Timer.delay(.01);
@@ -196,20 +192,31 @@ public class Robot3182 extends IterativeRobot {
             shooterMotors.set(1);
             Timer.delay(.1);
             shooterMotors.set(0);
-            Timer.delay(1);
-//            shooterPotVal = (int) shooterPot.get();
-//            while (shooterPotVal <= 300){
-//                shooterMotors.set(-.2);
-//            }
-//            shooterMotors.set(0);    
+            Timer.delay(.5);
+            //start reload
+//            shooterMotors.set(-.2);
+//            isReloading = true; //prevents shooting when being reloaded
+            
 //        } 
-//        else if (shoot == false) {
+//        else if (shoot == false && isReloading == false) {
 //            shooterMotors.set(0);
 //        }
-
+          //continues reloading if it was stopped
+//        if (shooterPotVal > 500){
+//            shooterMotors.set(-.2);
+//        }
+          //finish reload
+//        shooterPotVal = (int) shooterPot.get();
+//        if (shooterPotVal <= 500){
+//            shooterMotors.set(-.05);
+//        }
+//        if (shooterPotVal <= 300){
+//              shooterMotors.set(0);
+//              isReloading = false;
+//        }
 
         // if button 3 is pressed, run the collector motor at 90%
-        // if button 4 is pressed, run the collector motor in reverse at 90%
+        // if button 4 is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect == true) {
             collectorMotor.set(.9);
         } else if (collect == false) {
@@ -221,14 +228,17 @@ public class Robot3182 extends IterativeRobot {
             collectorMotor.set(0);
         }
         
-        //Maneuvers: (trigger on left is half turn, trigger on right is quarter turn)
+        //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
+        //NOTE: Reloading will be stopped when a maneuver is activated
+        //NOTE: Maneuvers will not be activated if the collector motor is on
         boolean quarterTurnLeft = leftJoystick.getRawButton(1);
         boolean quarterTurnRight = rightJoystick.getRawButton(1);
         boolean halfTurnLeft = leftJoystick.getRawButton(2);
         boolean halfTurnRight = rightJoystick.getRawButton(2);
 
         //does a clockwise quarter turn quickly 
-        if (quarterTurnRight == true) {
+        if (quarterTurnRight == true && collect == false && collectReverse == false) {
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
                 drive.drive(0, (i / endLoopDrive));
                 Timer.delay(.01);
@@ -238,7 +248,8 @@ public class Robot3182 extends IterativeRobot {
             drive.drive(0, 0);
         }
         //does a counter-clockwise quarter turn quickly
-        if (quarterTurnLeft == true) {
+        if (quarterTurnLeft == true && collect == false && collectReverse == false) {
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { //takes 1/10th of a second reach full speed
                 drive.drive(0, -(i / endLoopDrive));
                 Timer.delay(.01);
@@ -247,7 +258,8 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.4);
             drive.drive(0, 0);
         }
-        if (halfTurnRight == true){
+        if (halfTurnRight == true && collect == false && collectReverse == false){
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
                 drive.drive(0, (i / endLoopDrive));
                 Timer.delay(.01);
@@ -256,9 +268,10 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.8);
             drive.drive(0, 0);
         }
-       if (halfTurnLeft == true){
+        if (halfTurnLeft == true && collect == false && collectReverse == false){
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / endLoopDrive));
+                drive.drive(0, -(i / endLoopDrive));
                 Timer.delay(.01);
             }
             drive.drive(0, -1);
