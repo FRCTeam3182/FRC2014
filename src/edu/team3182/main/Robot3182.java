@@ -115,15 +115,20 @@ public class Robot3182 extends IterativeRobot {
      */
     public void autonomousInit() {
        rightDriveEncoder.start();
+       
         
-        
-        //Send command to Arduino for the light strip
+       //Send command to Arduino for the light strip
 
        // set the variable distance to the distance of encoder since reset
        distance = rightDriveEncoder.getDistance();
-         //Drive forward for 2 seconds
+        //Drive forward for 2 seconds with linear acceleration function
+        for (int i = 1; i <= 30; i++) { //takes 1.5 seconds reach full speed
+            drive.drive(0, (i / 100));
+            Timer.delay(.05);
+        }
+                
         drive.drive(0.3, 0.0);
-        Timer.delay(2.0);
+        Timer.delay(1.0);
         drive.drive(0.0, 0.0);
 
         //Shoot:
@@ -226,7 +231,7 @@ public class Robot3182 extends IterativeRobot {
 
 
         //does a clockwise 90 degree turn quickly 
-        if (quarterTurnRight == true && collect == false && collectReverse == false && shoot == false) {
+        if (quarterTurnRight == true && collect == false && collectReverse == false ) {
             shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
                 drive.drive(0, (i / endLoopDrive));
@@ -237,7 +242,7 @@ public class Robot3182 extends IterativeRobot {
             drive.drive(0, 0);
         }
         //does a counter-clockwise 90 degree turn quickly
-        if (quarterTurnLeft == true && collect == false && collectReverse == false && shoot == false) {
+        if (quarterTurnLeft == true && collect == false && collectReverse == false ) {
             shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { //takes 1/10th of a second reach full speed
                 drive.drive(0, -(i / endLoopDrive));
@@ -247,7 +252,7 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.4);
             drive.drive(0, 0);
         }
-        if (halfTurnRight == true && collect == false && collectReverse == false && shoot == false){
+        if (halfTurnRight == true && collect == false && collectReverse == false ){
             shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
                 drive.drive(0, (i / endLoopDrive));
@@ -257,7 +262,7 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.8);
             drive.drive(0, 0);
         }
-        if (halfTurnLeft == true && collect == false && collectReverse == false && shoot == false){
+        if (halfTurnLeft == true && collect == false && collectReverse == false ){
             shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
             for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
                 drive.drive(0, -(i / endLoopDrive));
@@ -274,7 +279,6 @@ public class Robot3182 extends IterativeRobot {
         
         //Shooting   
         
-        // SHOULD WE ADD A MANEUVER OF 180 degrees after firing??
         //NOTE: You CANNOT shoot when the catapult is reloading or when the collector spinning in reverse
         if (shoot == true && isReloading == false && collectReverse == false) {
             
@@ -286,19 +290,19 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.1);
             shooterMotors.set(0);
             Timer.delay(.5);
-            //start reload
+//          //start reload
 //            shooterMotors.set(-.2);
 //            isReloading = true; //prevents shooting when being reloaded
-            
+//          
 //        } 
 //        else if (shoot == false && isReloading == false) {
 //            shooterMotors.set(0);
 //        }
-          //continues reloading if it was stopped
+//        //continues reloading if it was stopped
 //        if (shooterPotVal > 500){
 //            shooterMotors.set(-.2);
 //        }
-          //finish reload
+//        //finish reload
 //        shooterPotVal = (int) shooterPot.get();
 //        if (shooterPotVal <= 500){
 //            shooterMotors.set(-.05);
