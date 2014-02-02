@@ -36,13 +36,13 @@ public class Robot3182 extends IterativeRobot {
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
     private Talon collectorMotor;
-    private Solenoid leftShifter;
-    private Solenoid rightShifter;
-    private Solenoid leftCollector;
-    private Solenoid rightCollector;
+//    private Solenoid leftShifter;
+//    private Solenoid rightShifter;
+//    private Solenoid leftCollector;
+//    private Solenoid rightCollector;
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
-    private AnalogPotentiometer shooterPot;
+    //private AnalogPotentiometer shooterPot;
     double yAxisRight;
     double yAxisLeft;
     double distance;
@@ -56,7 +56,7 @@ public class Robot3182 extends IterativeRobot {
     double smoothVarLeft = 0;
     final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
-    int shooterPotVal; //position of catapult
+    //int shooterPotVal; //position of catapult
     final double a = .005;
     final double b = .9;
 
@@ -72,11 +72,11 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        shooterMotors = new Talon(1);
-        collectorMotor = new Talon(2);
-        shooterPot = new AnalogPotentiometer(1);
-        rightDriveEncoder = new Encoder(1,2);
-        leftDriveEncoder = new Encoder(3,4);
+//        shooterMotors = new Talon(1);
+//        collectorMotor = new Talon(2);
+        //shooterPot = new AnalogPotentiometer(1);
+        rightDriveEncoder = new Encoder(4,3);
+        leftDriveEncoder = new Encoder(2,1);
         rightDriveEncoder.reset();
         rightDriveEncoder.setDistancePerPulse(.08168);
         
@@ -128,13 +128,16 @@ public class Robot3182 extends IterativeRobot {
      * is called on a transition from any other state.
      */
     public void teleopInit() {
-
+        rightDriveEncoder.start();
+        leftDriveEncoder.start();
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+        
+        
 
         //sets yAxisRight and yAxisLeft to the x axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -194,15 +197,15 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.1);
             shooterMotors.set(0);
             Timer.delay(1);
-            shooterPotVal = (int) shooterPot.get();
-            while (shooterPotVal >= 300){
-                shooterMotors.set(-.2);
-            }
-            shooterMotors.set(0);    
-        } 
-        else if (shoot == false) {
-            shooterMotors.set(0);
-        }
+//            shooterPotVal = (int) shooterPot.get();
+//            while (shooterPotVal <= 300){
+//                shooterMotors.set(-.2);
+//            }
+//            shooterMotors.set(0);    
+//        } 
+//        else if (shoot == false) {
+//            shooterMotors.set(0);
+//        }
 
 
         // if button 3 is pressed, run the collector motor at 90%
@@ -263,10 +266,14 @@ public class Robot3182 extends IterativeRobot {
             drive.drive(0, 0);
         }
         //Display rate of encoder to the dashboard
-        SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
+        //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
+        System.out.println(distance);
+        System.out.println(rightDriveEncoder.get());
+        System.out.println("Encoder rate: "+ rightDriveEncoder.getRate());
+        System.out.println("Encoder rate left: "+ leftDriveEncoder.getRate());
     }
      
-
+    }
     public void disabledInit() {
 
     }
