@@ -8,11 +8,11 @@ package edu.team3182.main;
 
 /**
  *
- * @author Nodcah
+ * @author Lego
  */
-public class Latch {
+public class LatchShifters {
     private boolean _lastState;
-    public Latch(){
+    public LatchShifters(){
        _lastState = false; 
     }
     public void toggle(){

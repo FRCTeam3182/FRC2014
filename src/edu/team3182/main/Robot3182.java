@@ -30,9 +30,13 @@ public class Robot3182 extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+    
+    //Initialization of code for robot drive functions
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
+    
+    //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
     private Talon collectorMotor;
@@ -40,23 +44,35 @@ public class Robot3182 extends IterativeRobot {
 //    private Solenoid rightShifter;
 //    private Solenoid leftCollector;
 //    private Solenoid rightCollector;
+    
+    // Initialization of code for robot sensors
+    // ADD LIMIT SWITCH TO INDICATE BALL IS IN PLACE FOR SHOOTING
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
     //private AnalogPotentiometer shooterPot;
+    
+    // Initialize variables to support functions above
+    // yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double yAxisRight;
     double yAxisLeft;
     double distance;
-    boolean shoot;
-    boolean reverseShooter;
-    boolean collect;
-    boolean collectReverse;
-    boolean collectorFoward;
-    double p = 0.25; //dead zone is between -p and p
-    double smoothVarRight = 0; //for making joysticks exponential
+    boolean shoot = false;
+    boolean reverseShooter = false;
+    boolean collect = false;
+    boolean collectReverse = false;
+    boolean collectorFoward = false;
+    boolean quarterTurnLeft = false;
+    boolean quarterTurnRight = false;
+    boolean halfTurnLeft = false;
+    boolean halfTurnRight = false;
+    double p = 0.25; //dead zone of joysticks for drive is between -p and p
+    double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
     final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
     //int shooterPotVal; //position of catapult
+    
+    //Coefficients of exponential function to ramp up speed of catapult (so ball doesn't fall out)
     final double a = .005;
     final double b = .9;
     boolean isReloading = false; //prevents shooting when reloading
@@ -73,14 +89,19 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
+        
+        //UNCOMMENT WHEN remainder of electronics board is complete
 //        shooterMotors = new Talon(1);
 //        collectorMotor = new Talon(2);
+        
+        //UNCOMMENT WHEN potentiometer is hooked up
         //shooterPot = new AnalogPotentiometer(1);
         rightDriveEncoder = new Encoder(4,3);
         leftDriveEncoder = new Encoder(2,1);
         rightDriveEncoder.reset();
         rightDriveEncoder.setDistancePerPulse(.08168);
         
+        // UNCOMMENT WHEN solenoids are available on electronics board
 //        leftShifter = new Solenoid(2, 6);
 //        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
@@ -106,6 +127,8 @@ public class Robot3182 extends IterativeRobot {
         drive.drive(0.0, 0.0);
 
         //Shoot:
+        
+        // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
         for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
                 shooterMotors.set(a* (MathUtils.exp(b*i)));
@@ -118,9 +141,16 @@ public class Robot3182 extends IterativeRobot {
         shooterMotors.set(-.3);
         Timer.delay(.25);
         shooterMotors.set(0);
+        
+        //----------------------------------------------------------------------
+        //Possibly add additional code here to turn the robot around to prep for
+        //teleop period
+        //----------------------------------------------------------------------
     }
 
     public void autonomousPeriodic() {
+        
+        //what is this for?? - RJJ
         Timer.delay(.01);
     }
 
@@ -137,51 +167,114 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
-        
+        //----------------------------------------------------------------------
+        // T E L E O P    D R I V E    C O D E
+        //----------------------------------------------------------------------
 
-        //sets yAxisRight and yAxisLeft to the x axis of corresponding joysticks
+        // Read commands from the joysticks
+        //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
-
         
+        //shoot is button 1, collect is 2, ground pass/dump is 3
+        shoot = buttonsJoystick.getRawButton(1);
+        collect = buttonsJoystick.getRawButton(2);
+        collectReverse = buttonsJoystick.getRawButton(3);
+        
+        //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
+        //NOTE: Reloading will be stopped when a maneuver is activated
+        //NOTE: Maneuvers will not be activated if the collector motor is on
+        // Buttons changed to 2 and 3, Requested that button 1 be shifters
+        quarterTurnLeft = leftJoystick.getRawButton(2);
+        quarterTurnRight = rightJoystick.getRawButton(2);
+        halfTurnLeft = leftJoystick.getRawButton(3);
+        halfTurnRight = rightJoystick.getRawButton(3);
+        
+        //----------------------------------------------------------------------
+        //ADD READ BUTTON FOR SHIFTER STATE, START AT FALSE
+        //----------------------------------------------------------------------
 
-        //makes sure joystick will not work at +-25%
+        //makes sure joystick will not work at +/-25% throttle
+        //smoothVarRight/Left are output variables from a function
+        // to get power from 0 to 1 between P and full throttle on the joysticks
+        // same for full reverse throttle to -P
         if (yAxisRight < p && yAxisRight > (-p)) {
             smoothVarRight = 0;
         }
         if (yAxisLeft < p && yAxisLeft > (-p)) {
             smoothVarLeft = 0;
         }
-       
-        
-        //smooth left joystick
-        //positive
+        // yAxisLeft greater than P, which is pull back on the joystick
         if (yAxisLeft >= p) {
-            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));     
+            smoothVarLeft = ((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));     
         }
-        //negative
+        // yAxisLeft less than -P, which is push forward on the joystick 
         if (yAxisLeft <= (-p)) {
-            smoothVarLeft = -1*((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));  
+            smoothVarLeft = ((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));  
         }
         //smooth right joystick
-        //positive
+        // yAxisRight greater than P, which is pull back on the joystick 
         if (yAxisRight >= p) {
-            smoothVarRight = -1*((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
+            smoothVarRight = ((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
         }
-        //negative
+        // yAxisRight less than -P, which is push forward on the joystick 
         if (yAxisRight <= (-p)) {
-            smoothVarRight = -1*((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p)))); 
+            smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p)))); 
         }
         //drive using the joysticks
         drive.tankDrive(smoothVarLeft, smoothVarRight);
 
-        //shoot is button 1, collect is 2, ground pass/dump is 3
-        shoot = buttonsJoystick.getRawButton(1);
-        collect = buttonsJoystick.getRawButton(2);
-        collectReverse = buttonsJoystick.getRawButton(3);
+
+        //does a clockwise 90 degree turn quickly 
+        if (quarterTurnRight == true && collect == false && collectReverse == false && shoot == false) {
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
+            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / endLoopDrive));
+                Timer.delay(.01);
+            }
+            drive.drive(0, 1);
+            Timer.delay(.4);
+            drive.drive(0, 0);
+        }
+        //does a counter-clockwise 90 degree turn quickly
+        if (quarterTurnLeft == true && collect == false && collectReverse == false && shoot == false) {
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
+            for (int i = 1; i <= endLoopDrive; i++) { //takes 1/10th of a second reach full speed
+                drive.drive(0, -(i / endLoopDrive));
+                Timer.delay(.01);
+            }
+            drive.drive(0, -1);
+            Timer.delay(.4);
+            drive.drive(0, 0);
+        }
+        if (halfTurnRight == true && collect == false && collectReverse == false && shoot == false){
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
+            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, (i / endLoopDrive));
+                Timer.delay(.01);
+            }
+            drive.drive(0, 1);
+            Timer.delay(.8);
+            drive.drive(0, 0);
+        }
+        if (halfTurnLeft == true && collect == false && collectReverse == false && shoot == false){
+            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
+            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+                drive.drive(0, -(i / endLoopDrive));
+                Timer.delay(.01);
+            }
+            drive.drive(0, -1);
+            Timer.delay(.8);
+            drive.drive(0, 0);
+        }
+
+        //----------------------------------------------------------------------
+        // T E L E O P    S H O O T    C O D E
+        //----------------------------------------------------------------------
         
-        //Shooting
+        //Shooting   
+        
+        // SHOULD WE ADD A MANEUVER OF 180 degrees after firing??
         //NOTE: You CANNOT shoot when the catapult is reloading or when the collector spinning in reverse
         if (shoot == true && isReloading == false && collectReverse == false) {
             
@@ -215,8 +308,8 @@ public class Robot3182 extends IterativeRobot {
 //              isReloading = false;
 //        }
 
-        // if button 3 is pressed, run the collector motor at 90%
-        // if button 4 is pressed, run the collector motor in reverse at 90% (ground pass)
+        // if button 2 on support function joystick is pressed, run the collector motor at 90%
+        // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect == true) {
             collectorMotor.set(.9);
         } else if (collect == false) {
@@ -228,56 +321,6 @@ public class Robot3182 extends IterativeRobot {
             collectorMotor.set(0);
         }
         
-        //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
-        //NOTE: Reloading will be stopped when a maneuver is activated
-        //NOTE: Maneuvers will not be activated if the collector motor is on
-        boolean quarterTurnLeft = leftJoystick.getRawButton(1);
-        boolean quarterTurnRight = rightJoystick.getRawButton(1);
-        boolean halfTurnLeft = leftJoystick.getRawButton(2);
-        boolean halfTurnRight = rightJoystick.getRawButton(2);
-
-        //does a clockwise quarter turn quickly 
-        if (quarterTurnRight == true && collect == false && collectReverse == false) {
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, 1);
-            Timer.delay(.4);
-            drive.drive(0, 0);
-        }
-        //does a counter-clockwise quarter turn quickly
-        if (quarterTurnLeft == true && collect == false && collectReverse == false) {
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { //takes 1/10th of a second reach full speed
-                drive.drive(0, -(i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, -1);
-            Timer.delay(.4);
-            drive.drive(0, 0);
-        }
-        if (halfTurnRight == true && collect == false && collectReverse == false){
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, 1);
-            Timer.delay(.8);
-            drive.drive(0, 0);
-        }
-        if (halfTurnLeft == true && collect == false && collectReverse == false){
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, -(i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, -1);
-            Timer.delay(.8);
-            drive.drive(0, 0);
-        }
         //Display rate of encoder to the dashboard
         //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
         System.out.println(distance);
