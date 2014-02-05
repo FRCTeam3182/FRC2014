@@ -43,8 +43,8 @@ public class Robot3182 extends IterativeRobot {
     private Talon collectorMotor;
     private Solenoid leftShifter;
     private Solenoid rightShifter;
-//    private Solenoid leftCollector;
-//    private Solenoid rightCollector;
+    private Solenoid leftCollector;
+    private Solenoid rightCollector;
     private Compressor compressor;
     // Initialization of code for robot sensors
     private Encoder rightDriveEncoder;
@@ -56,6 +56,10 @@ public class Robot3182 extends IterativeRobot {
     double yAxisRight;
     double yAxisLeft;
     double distance;
+    boolean toggleOut;
+    boolean toggleIn;
+    boolean collectorButton10;
+    boolean collectorButton11;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -187,21 +191,47 @@ public class Robot3182 extends IterativeRobot {
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
         
         //shoot is button 1, collect is 2, ground pass/dump is 3
+        // collector is buttons 10 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
+        collectorButton10 = buttonsJoystick.getRawButton(10);
+        collectorButton11 = buttonsJoystick.getRawButton(11);
         
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
         //NOTE: Maneuvers will not be activated if the collector motor is on
         //Buttons changed to 2 and 3, trigger is shifters
+
         rightTrigger = rightJoystick.getRawButton(1);
         leftTrigger = leftJoystick.getRawButton(1);
         quarterTurnLeft = leftJoystick.getRawButton(2);
         quarterTurnRight = rightJoystick.getRawButton(2);
         halfTurnLeft = leftJoystick.getRawButton(3);
         halfTurnRight = rightJoystick.getRawButton(3);
+       
         
+        // collector code 
+        // if button 10 is pressed the collector will come out
+        // if button 11 is pressed the collector will come in
+       
+        if (collectorButton10 == true){
+            toggleOut = true;
+        }
+        else if (collectorButton11 == true){
+            toggleIn = true;
+        }
+        else if (toggleOut && !collectorButton10){
+            rightCollector.set(true);
+            leftCollector.set(true);
+            toggleOut = false;
+        }
+        else if (toggleIn && ! collectorButton11){
+            rightCollector.set(false);
+            leftCollector.set(false);
+            toggleIn = false;
+        }
+       
         //shifter code
         //while one of the triggers are clicked, the shifters activate
         if (rightTrigger && leftTrigger){
