@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -35,7 +36,7 @@ public class Robot3182 extends IterativeRobot {
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
-
+    private AxisCamera camera;
     //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
@@ -48,6 +49,7 @@ public class Robot3182 extends IterativeRobot {
     // Initialization of code for robot sensors
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
+    public SmartDashboard dash;
     //private AnalogPotentiometer shooterPot;
 
     // Initialize variables to support functions above
@@ -57,8 +59,8 @@ public class Robot3182 extends IterativeRobot {
     double distance;
     boolean toggleOut;
     boolean toggleIn;
+    boolean collectorButton9;
     boolean collectorButton10;
-    boolean collectorButton11;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -88,6 +90,7 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
+        camera = AxisCamera.getInstance();
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -120,7 +123,7 @@ public class Robot3182 extends IterativeRobot {
      */
     public void autonomousInit() {
         rightDriveEncoder.start();
-
+        
        //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
         distance = rightDriveEncoder.getDistance();
@@ -182,7 +185,9 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-
+       
+        SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
+      
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -193,8 +198,8 @@ public class Robot3182 extends IterativeRobot {
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
+        collectorButton9 = buttonsJoystick.getRawButton(9);
         collectorButton10 = buttonsJoystick.getRawButton(10);
-        collectorButton11 = buttonsJoystick.getRawButton(11);
 
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
@@ -210,15 +215,15 @@ public class Robot3182 extends IterativeRobot {
         // collector code 
         // if button 10 is pressed the collector will come out
         // if button 11 is pressed the collector will come in
-        if (collectorButton10 == true) {
+        if (collectorButton9 == true) {
             toggleOut = true;
-        } else if (collectorButton11 == true) {
+        } else if (collectorButton10 == true) {
             toggleIn = true;
-        } else if (toggleOut && !collectorButton10) {
+        } else if (toggleOut && !collectorButton9) {
             rightCollector.set(true);
             leftCollector.set(true);
             toggleOut = false;
-        } else if (toggleIn && !collectorButton11) {
+        } else if (toggleIn && !collectorButton10) {
             rightCollector.set(false);
             leftCollector.set(false);
             toggleIn = false;
