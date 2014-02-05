@@ -48,6 +48,7 @@ public class Robot3182 extends IterativeRobot {
     // Initialization of code for robot sensors
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
+    public SmartDashboard dash;
     //private AnalogPotentiometer shooterPot;
 
     // Initialize variables to support functions above
@@ -120,7 +121,7 @@ public class Robot3182 extends IterativeRobot {
      */
     public void autonomousInit() {
         rightDriveEncoder.start();
-
+        
        //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
         distance = rightDriveEncoder.getDistance();
@@ -178,7 +179,9 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-
+       
+        SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
+        
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
