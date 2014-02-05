@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -40,13 +41,12 @@ public class Robot3182 extends IterativeRobot {
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
     private Talon collectorMotor;
-//    private Solenoid leftShifter;
-//    private Solenoid rightShifter;
+    private Solenoid leftShifter;
+    private Solenoid rightShifter;
 //    private Solenoid leftCollector;
 //    private Solenoid rightCollector;
-    
+    private Compressor compressor;
     // Initialization of code for robot sensors
-    // ADD LIMIT SWITCH TO INDICATE BALL IS IN PLACE FOR SHOOTING
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
     //private AnalogPotentiometer shooterPot;
@@ -65,6 +65,8 @@ public class Robot3182 extends IterativeRobot {
     boolean quarterTurnRight = false;
     boolean halfTurnLeft = false;
     boolean halfTurnRight = false;
+    boolean rightTrigger = false;
+    boolean leftTrigger = false;
     double p = 0.25; //dead zone of joysticks for drive is between -p and p
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
@@ -102,10 +104,12 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.setDistancePerPulse(.08168);
         
         // UNCOMMENT WHEN solenoids are available on electronics board
-//        leftShifter = new Solenoid(2, 6);
-//        rightShifter = new Solenoid(2, 8);
+        leftShifter = new Solenoid(2, 6);
+        rightShifter = new Solenoid(2, 8);
 //        leftCollector = new Solenoid(2, 2);
 //        rightCollector = new Solenoid(2, 4);
+//=================Needs Change:================================
+//        compressor = new Compressor(0,0);
 
     }
 
@@ -166,6 +170,7 @@ public class Robot3182 extends IterativeRobot {
     public void teleopInit() {
         rightDriveEncoder.start();
         leftDriveEncoder.start();
+        compressor.start();
     }
 
     /**
@@ -189,16 +194,29 @@ public class Robot3182 extends IterativeRobot {
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
         //NOTE: Maneuvers will not be activated if the collector motor is on
-        // Buttons changed to 2 and 3, Requested that button 1 be shifters
+        //Buttons changed to 2 and 3, trigger is shifters
+        rightTrigger = rightJoystick.getRawButton(1);
+        leftTrigger = leftJoystick.getRawButton(1);
         quarterTurnLeft = leftJoystick.getRawButton(2);
         quarterTurnRight = rightJoystick.getRawButton(2);
         halfTurnLeft = leftJoystick.getRawButton(3);
         halfTurnRight = rightJoystick.getRawButton(3);
         
-        //----------------------------------------------------------------------
-        //ADD READ BUTTON FOR SHIFTER STATE, START AT FALSE
-        //----------------------------------------------------------------------
-
+        //shifter code
+        //while one of the triggers are clicked, the shifters activate
+        if (rightTrigger && leftTrigger){
+            if (rightShifter.get() == false){
+                leftShifter.set(true);
+                rightShifter.set(true);
+            }
+        }
+        else if (rightTrigger == false && leftTrigger == false){
+            if (leftShifter.get() == true){
+                leftShifter.set(false);
+                rightShifter.set(false);
+            }
+        }
+        
         //makes sure joystick will not work at +/-25% throttle
         //smoothVarRight/Left are output variables from a function
         // to get power from 0 to 1 between P and full throttle on the joysticks
