@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -50,6 +51,7 @@ public class Robot3182 extends IterativeRobot {
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
     public SmartDashboard dash;
+    private DigitalInput limitLED;
     //private AnalogPotentiometer shooterPot;
 
     // Initialize variables to support functions above
@@ -72,6 +74,7 @@ public class Robot3182 extends IterativeRobot {
     boolean halfTurnRight = false;
     boolean rightTrigger = false;
     boolean leftTrigger = false;
+    boolean limitStat;
     double p = 0.25; //dead zone of joysticks for drive is between -p and p
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
@@ -96,6 +99,9 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
+        //the paramater will probably change depending on where the lim switch is 
+        limitLED = new DigitalInput(1);
+        limitStat = limitLED.get();
 
         //UNCOMMENT WHEN remainder of electronics board is complete
 //        shooterMotors = new Talon(1);
@@ -327,6 +333,8 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.1);
             shooterMotors.set(0);
             Timer.delay(.5);
+            
+        
 //          //start reload
 //            shooterMotors.set(-.2);
 //            isReloading = true; //prevents shooting when being reloaded
@@ -349,6 +357,7 @@ public class Robot3182 extends IterativeRobot {
 //              isReloading = false;
 //        }
 
+
         // if button 2 on support function joystick is pressed, run the collector motor at 90%
             // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
             if (collect == true) {
@@ -361,7 +370,15 @@ public class Robot3182 extends IterativeRobot {
             } else if (collectReverse == false) {
                 collectorMotor.set(0);
             }
-
+            
+            if (limitStat){
+                //make LED some color
+            }
+            else if (limitStat == false){
+                /* make LED's do whatever they normally do when not notifying 
+                 * the drivers that the bot is in some state
+                 */
+            }
         //Display rate of encoder to the dashboard
             //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
             System.out.println(distance);
