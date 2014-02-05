@@ -58,8 +58,8 @@ public class Robot3182 extends IterativeRobot {
     double distance;
     boolean toggleOut;
     boolean toggleIn;
+    boolean collectorButton9;
     boolean collectorButton10;
-    boolean collectorButton11;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -192,8 +192,8 @@ public class Robot3182 extends IterativeRobot {
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
+        collectorButton9 = buttonsJoystick.getRawButton(9);
         collectorButton10 = buttonsJoystick.getRawButton(10);
-        collectorButton11 = buttonsJoystick.getRawButton(11);
 
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
@@ -209,15 +209,15 @@ public class Robot3182 extends IterativeRobot {
         // collector code 
         // if button 10 is pressed the collector will come out
         // if button 11 is pressed the collector will come in
-        if (collectorButton10 == true) {
+        if (collectorButton9 == true) {
             toggleOut = true;
-        } else if (collectorButton11 == true) {
+        } else if (collectorButton10 == true) {
             toggleIn = true;
-        } else if (toggleOut && !collectorButton10) {
+        } else if (toggleOut && !collectorButton9) {
             rightCollector.set(true);
             leftCollector.set(true);
             toggleOut = false;
-        } else if (toggleIn && !collectorButton11) {
+        } else if (toggleIn && !collectorButton10) {
             rightCollector.set(false);
             leftCollector.set(false);
             toggleIn = false;
