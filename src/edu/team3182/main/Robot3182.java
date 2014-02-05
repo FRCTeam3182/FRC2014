@@ -150,6 +150,10 @@ public class Robot3182 extends IterativeRobot {
         shooterMotors.set(-.3);
         Timer.delay(.25);
         shooterMotors.set(0);
+        Timer.delay(1);
+        drive.drive(0.0, 0.3);
+        Timer.delay(2);
+        drive.drive(0.0, 0.0);
         
         //----------------------------------------------------------------------
         //Possibly add additional code here to turn the robot around to prep for
