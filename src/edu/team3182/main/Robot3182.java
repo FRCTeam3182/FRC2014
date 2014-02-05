@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -35,7 +36,7 @@ public class Robot3182 extends IterativeRobot {
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
-
+    private AxisCamera camera;
     //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
@@ -89,6 +90,7 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
+        camera = AxisCamera.getInstance();
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -181,7 +183,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
        
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
-        
+      
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
