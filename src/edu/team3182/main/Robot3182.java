@@ -52,7 +52,7 @@ public class Robot3182 extends IterativeRobot {
     private Encoder leftDriveEncoder;
     public SmartDashboard dash;
     private DigitalInput limitLED;
-    //private AnalogPotentiometer shooterPot;
+    private AnalogPotentiometer shooterPot;
 
     // Initialize variables to support functions above
     // yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
@@ -61,8 +61,8 @@ public class Robot3182 extends IterativeRobot {
     double distance;
     boolean toggleOut;
     boolean toggleIn;
-    boolean collectorButton9;
     boolean collectorButton10;
+    boolean collectorButton11;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -80,7 +80,7 @@ public class Robot3182 extends IterativeRobot {
     double smoothVarLeft = 0;
     final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
-    //int shooterPotVal; //position of catapult
+    int shooterPotVal; //position of catapult
 
     //Coefficients of exponential function to ramp up speed of catapult (so ball doesn't fall out)
     final double a = .005;
@@ -99,7 +99,7 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        //the paramater will probably change depending on where the lim switch is 
+        //the paramater will probably change depending on where the limit switch is 
         limitLED = new DigitalInput(1);
         limitStat = limitLED.get();
 
@@ -107,7 +107,7 @@ public class Robot3182 extends IterativeRobot {
 //        shooterMotors = new Talon(1);
 //        collectorMotor = new Talon(2);
         //UNCOMMENT WHEN potentiometer is hooked up
-        //shooterPot = new AnalogPotentiometer(1);
+        shooterPot = new AnalogPotentiometer(1);
         rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
         rightDriveEncoder.reset();
@@ -199,8 +199,8 @@ public class Robot3182 extends IterativeRobot {
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
-        collectorButton9 = buttonsJoystick.getRawButton(9);
-        collectorButton10 = buttonsJoystick.getRawButton(10);
+        collectorButton10 = buttonsJoystick.getRawButton(9);
+        collectorButton11 = buttonsJoystick.getRawButton(10);
 
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
@@ -216,22 +216,22 @@ public class Robot3182 extends IterativeRobot {
         // collector code 
         // if button 10 is pressed the collector will come out
         // if button 11 is pressed the collector will come in
-        if (collectorButton9 == true) {
+        if (collectorButton10 == true) {
             toggleOut = true;
-        } else if (collectorButton10 == true) {
+        } else if (collectorButton11 == true) {
             toggleIn = true;
-        } else if (toggleOut && !collectorButton9) {
+        } else if (toggleOut && !collectorButton10) { //when button 10 is let go, the toggle will comence
             rightCollector.set(true);
             leftCollector.set(true);
             toggleOut = false;
-        } else if (toggleIn && !collectorButton10) {
+        } else if (toggleIn && !collectorButton11) { //when button 11 is let go, the toggle will comence
             rightCollector.set(false);
             leftCollector.set(false);
             toggleIn = false;
         }
 
         //shifter code
-        //while one of the triggers are clicked, the shifters activate
+        //while both of the triggers are clicked, the shifter are switched to ??????high gear????????
         if (rightTrigger && leftTrigger) {
             if (rightShifter.get() == false) {
                 leftShifter.set(true);
@@ -246,8 +246,8 @@ public class Robot3182 extends IterativeRobot {
 
         //makes sure joystick will not work at +/-25% throttle
         //smoothVarRight/Left are output variables from a function
-        // to get power from 0 to 1 between P and full throttle on the joysticks
-        // same for full reverse throttle to -P
+        //to get power from 0 to 1 between P and full throttle on the joysticks
+        //same for full reverse throttle to -P
         if (yAxisRight < p && yAxisRight > (-p)) {
             smoothVarRight = 0;
         }
@@ -321,8 +321,8 @@ public class Robot3182 extends IterativeRobot {
         // T E L E O P    S H O O T    C O D E
         //----------------------------------------------------------------------
         //Shooting   
-        //NOTE: You CANNOT shoot when the catapult is reloading or when the collector spinning in reverse
-        if (shoot == true && isReloading == false && collectReverse == false) {
+        //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
+        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get()) {
 
             for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
                 shooterMotors.set(a * MathUtils.exp(b * i));
@@ -334,59 +334,56 @@ public class Robot3182 extends IterativeRobot {
             Timer.delay(.5);
             
         
-//          //start reload
-//            shooterMotors.set(-.2);
-//            isReloading = true; //prevents shooting when being reloaded
-//          
-//        } 
-//        else if (shoot == false && isReloading == false) {
-//            shooterMotors.set(0);
-//        }
-//        //continues reloading if it was stopped
-//        if (shooterPotVal > 500){
-//            shooterMotors.set(-.2);
-//        }
-//        //finish reload
-//        shooterPotVal = (int) shooterPot.get();
-//        if (shooterPotVal <= 500){
-//            shooterMotors.set(-.05);
-//        }
-//        if (shooterPotVal <= 300){
-//              shooterMotors.set(0);
-//              isReloading = false;
-//        }
-
-
-        // if button 2 on support function joystick is pressed, run the collector motor at 90%
-            // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
-            if (collect == true) {
-                collectorMotor.set(.9);
-            } else if (collect == false) {
-                collectorMotor.set(0);
-            }
-            if (collectReverse == true) {
-                collectorMotor.set(-.9);
-            } else if (collectReverse == false) {
-                collectorMotor.set(0);
-            }
-            
-            if (limitStat){
-                //make LED some color
-            }
-            else if (limitStat == false){
-                /* make LED's do whatever they normally do when not notifying 
-                 * the drivers that the bot is in some state
-                 */
-            }
-        //Display rate of encoder to the dashboard
-            //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
-            System.out.println(distance);
-            System.out.println(rightDriveEncoder.get());
-            System.out.println("Encoder rate: " + rightDriveEncoder.getRate());
-            System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
+          //start reload
+            shooterMotors.set(-.2);
+            isReloading = true; //prevents shooting when being reloaded
+        }  
+         
+        else if (shoot == false && isReloading == false) {
+            shooterMotors.set(0);
+        }
+        //continues reloading if it was stopped
+        if (shooterPotVal > 500){
+            shooterMotors.set(-.2);
+        }
+        //finish reload
+        shooterPotVal = (int) shooterPot.get();
+        if (shooterPotVal <= 500){
+            shooterMotors.set(-.05);
+        }
+        if (shooterPotVal <= 300){
+              shooterMotors.set(0);
+              isReloading = false;
         }
 
-    }
+        // if button 2 on support function joystick is pressed, run the collector motor at 90%
+        // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
+        if (collect == true) {
+            collectorMotor.set(.9);
+        } else if (collect == false) {
+            collectorMotor.set(0);
+        }
+        if (collectReverse == true) {
+            collectorMotor.set(-.9);
+        } else if (collectReverse == false) {
+            collectorMotor.set(0);
+        }
+
+        if (limitStat){
+            //make LED some color
+        }
+        else if (limitStat == false){
+            /* make LED's do whatever they normally do when not notifying 
+             * the drivers that the bot is in some state
+             */
+        }
+        //Display rate of encoder to the dashboard
+        //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
+        System.out.println(distance);
+        System.out.println(rightDriveEncoder.get());
+        System.out.println("Encoder rate: " + rightDriveEncoder.getRate());
+        System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
+        }
 
     public void disabledInit() {
 
