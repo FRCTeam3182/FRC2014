@@ -155,11 +155,6 @@ public class Robot3182 extends IterativeRobot {
         drive.drive(0.0, 0.3);
         Timer.delay(2);
         drive.drive(0.0, 0.0);
-        
-        //----------------------------------------------------------------------
-        //Possibly add additional code here to turn the robot around to prep for
-        //teleop period
-        //----------------------------------------------------------------------
     }
 
     public void autonomousPeriodic() {
