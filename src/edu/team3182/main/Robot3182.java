@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -53,6 +54,8 @@ public class Robot3182 extends IterativeRobot {
     public SmartDashboard dash;
     private DigitalInput limitLED;
     private AnalogPotentiometer shooterPot;
+    private DigitalOutput arduinoSignal;
+    private DigitalOutput arduinoSignifier;
 
     // Initialize variables to support functions above
     // yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
@@ -102,7 +105,9 @@ public class Robot3182 extends IterativeRobot {
         //the paramater will probably change depending on where the limit switch is 
 //        limitLED = new DigitalInput(1);
 //        limitStat = limitLED.get();
-
+        arduinoSignal = new DigitalOutput(5); //sgnal with data
+        arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
+        
         //UNCOMMENT WHEN remainder of electronics board is complete
         shooterMotors = new Talon(4);
         collectorMotor = new Talon(3);
@@ -203,8 +208,8 @@ public class Robot3182 extends IterativeRobot {
         halfTurnRight = rightJoystick.getRawButton(3);
 
         // collector code 
-        // if button 10 is pressed the collector will come out
-        // if button 11 is pressed the collector will come in
+        // if button 9 is pressed the collector will come out
+        // if button 10 is pressed the collector will come in
         if (collectorButton9 == true) {
             toggleOut = true;
         }
@@ -351,6 +356,15 @@ public class Robot3182 extends IterativeRobot {
         }
         if (buttonsJoystick.getRawButton(10)) {
             pivot(180);
+        }
+        if (buttonsJoystick.getRawButton(11)){
+            arduinoSignifier.set(true);
+            arduinoSignal.set(false);
+            Timer.delay(.01);
+            arduinoSignal.set(true);
+            Timer.delay(.01);
+            arduinoSignal.set(true);
+            arduinoSignifier.set(false);
         }
 
     }
