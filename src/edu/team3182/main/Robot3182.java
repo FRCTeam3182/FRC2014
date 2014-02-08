@@ -10,7 +10,6 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
@@ -43,10 +42,10 @@ public class Robot3182 extends IterativeRobot {
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
     private Talon collectorMotor;
-    private Solenoid leftShifter;
-    private Solenoid rightShifter;
-    private Solenoid leftCollector;
-    private Solenoid rightCollector;
+    private DoubleSolenoid leftShifter;
+    private DoubleSolenoid rightShifter;
+    private DoubleSolenoid leftCollector;
+    private DoubleSolenoid rightCollector;
     private Compressor compressor;
     // Initialization of code for robot sensors
     private Encoder rightDriveEncoder;
@@ -119,10 +118,10 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.setDistancePerPulse(.08168);
 
         // UNCOMMENT WHEN solenoids are available on electronics board
-        leftShifter = new Solenoid(1, 6);
-        rightShifter = new Solenoid(1, 8);
-        leftCollector = new Solenoid(1, 2);
-        rightCollector = new Solenoid(1, 4);
+        leftShifter = new DoubleSolenoid(5, 6);
+        rightShifter = new DoubleSolenoid(7, 8);
+        leftCollector = new DoubleSolenoid(1, 2);
+        rightCollector = new DoubleSolenoid(3, 4);
 //=================Needs Change:================================
        //compressor = new Compressor(0,0);
 
@@ -228,12 +227,12 @@ public class Robot3182 extends IterativeRobot {
         //shifter code
         //while both of the triggers are clicked, the shifter are switched to ??????high gear????????
         if (rightTrigger && leftTrigger) {
-            if (rightShifter.get() == false) {
-                shiftIn();
+            if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
+                shiftHigh();
             }
         } else if (rightTrigger == false && leftTrigger == false) {
-            if (leftShifter.get() == true) {
-                shiftOut();
+            if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
+                shiftLow();
             }
         }
 
@@ -284,7 +283,8 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
-        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get()) {
+        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get()
+        == DoubleSolenoid.Value.kForward) {
 
             shoot();
         }
@@ -346,10 +346,10 @@ public class Robot3182 extends IterativeRobot {
             collectIn();
         }
         if (buttonsJoystick.getRawButton(7)) {
-            shiftIn();
+            shiftHigh();
         }
         if (buttonsJoystick.getRawButton(8)) {
-            shiftOut();
+            shiftLow();
         }
         if (buttonsJoystick.getRawButton(9)) {
             pivot(-90);
@@ -441,24 +441,24 @@ public class Robot3182 extends IterativeRobot {
     }
 
     private void collectOut() {
-        rightCollector.set(true);
-        leftCollector.set(true);
+        rightCollector.set(DoubleSolenoid.Value.kForward);
+        leftCollector.set(DoubleSolenoid.Value.kForward);
 
     }
 
     private void collectIn() {
-        rightCollector.set(false);
-        leftCollector.set(false);
+        rightCollector.set(DoubleSolenoid.Value.kReverse);
+        leftCollector.set(DoubleSolenoid.Value.kReverse);
     }
 
-    private void shiftIn() {
-        leftShifter.set(true);
-        rightShifter.set(true);
+    private void shiftHigh() {
+        leftShifter.set(DoubleSolenoid.Value.kForward);
+        rightShifter.set(DoubleSolenoid.Value.kForward);
     }
 
-    private void shiftOut() {
-        leftShifter.set(false);
-        rightShifter.set(false);
+    private void shiftLow() {
+        leftShifter.set(DoubleSolenoid.Value.kReverse);
+        rightShifter.set(DoubleSolenoid.Value.kReverse);
     }
 
 }
