@@ -61,8 +61,8 @@ public class Robot3182 extends IterativeRobot {
     double distance;
     boolean toggleOut;
     boolean toggleIn;
+    boolean collectorButton9;
     boolean collectorButton10;
-    boolean collectorButton11;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -104,8 +104,8 @@ public class Robot3182 extends IterativeRobot {
         limitStat = limitLED.get();
 
         //UNCOMMENT WHEN remainder of electronics board is complete
-//        shooterMotors = new Talon(1);
-//        collectorMotor = new Talon(2);
+        shooterMotors = new Talon(1);
+        collectorMotor = new Talon(2);
         //UNCOMMENT WHEN potentiometer is hooked up
         shooterPot = new AnalogPotentiometer(1);
         rightDriveEncoder = new Encoder(4, 3);
@@ -129,8 +129,8 @@ public class Robot3182 extends IterativeRobot {
      */
     public void autonomousInit() {
         rightDriveEncoder.start();
-        
-       //Send command to Arduino for the light strip
+
+        //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
         distance = rightDriveEncoder.getDistance();
         //Drive forward for 2 seconds with linear acceleration function
@@ -146,21 +146,10 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
-        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-            shooterMotors.set(a * (MathUtils.exp(b * i)));
-            Timer.delay(.01);
-        }
-        shooterMotors.set(1);
-        Timer.delay(.1);
-        shooterMotors.set(0);
+        shoot();
         Timer.delay(1);
-        shooterMotors.set(-.3);
-        Timer.delay(.25);
-        shooterMotors.set(0);
-        Timer.delay(1);
-        drive.drive(0.0, 0.3);
-        Timer.delay(2);
-        drive.drive(0.0, 0.0);
+        pivot(180);
+        
     }
 
     public void autonomousPeriodic() {
@@ -186,9 +175,9 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-       
+
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
-      
+
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -199,8 +188,8 @@ public class Robot3182 extends IterativeRobot {
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
-        collectorButton10 = buttonsJoystick.getRawButton(9);
-        collectorButton11 = buttonsJoystick.getRawButton(10);
+        collectorButton9 = buttonsJoystick.getRawButton(9);
+        collectorButton10 = buttonsJoystick.getRawButton(10);
 
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
@@ -216,17 +205,18 @@ public class Robot3182 extends IterativeRobot {
         // collector code 
         // if button 10 is pressed the collector will come out
         // if button 11 is pressed the collector will come in
-        if (collectorButton10 == true) {
+        if (collectorButton9 == true) {
             toggleOut = true;
-        } else if (collectorButton11 == true) {
+        }
+        if (collectorButton10 == true) {
             toggleIn = true;
-        } else if (toggleOut && !collectorButton10) { //when button 10 is let go, the toggle will comence
-            rightCollector.set(true);
-            leftCollector.set(true);
+        }
+        if (toggleOut && !collectorButton9) { //when button 10 is let go, the toggle will comence
+            collectOut();
             toggleOut = false;
-        } else if (toggleIn && !collectorButton11) { //when button 11 is let go, the toggle will comence
-            rightCollector.set(false);
-            leftCollector.set(false);
+        }
+        if (toggleIn && !collectorButton10) { //when button 11 is let go, the toggle will comence
+            collectIn();
             toggleIn = false;
         }
 
@@ -234,13 +224,11 @@ public class Robot3182 extends IterativeRobot {
         //while both of the triggers are clicked, the shifter are switched to ??????high gear????????
         if (rightTrigger && leftTrigger) {
             if (rightShifter.get() == false) {
-                leftShifter.set(true);
-                rightShifter.set(true);
+                shiftIn();
             }
         } else if (rightTrigger == false && leftTrigger == false) {
             if (leftShifter.get() == true) {
-                leftShifter.set(false);
-                rightShifter.set(false);
+                shiftOut();
             }
         }
 
@@ -276,45 +264,14 @@ public class Robot3182 extends IterativeRobot {
 
         //does a clockwise 90 degree turn quickly 
         if (quarterTurnRight == true && collect == false && collectReverse == false) {
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, 1);
-            Timer.delay(.4);
-            drive.drive(0, 0);
+            pivot(90);
         }
         //does a counter-clockwise 90 degree turn quickly
         if (quarterTurnLeft == true && collect == false && collectReverse == false) {
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { //takes 1/10th of a second reach full speed
-                drive.drive(0, -(i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, -1);
-            Timer.delay(.4);
-            drive.drive(0, 0);
+            pivot(-90);
         }
         if (halfTurnRight == true && collect == false && collectReverse == false) {
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, (i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, 1);
-            Timer.delay(.8);
-            drive.drive(0, 0);
-        }
-        if (halfTurnLeft == true && collect == false && collectReverse == false) {
-            shooterMotors.set(0); //prevents the shooter from running longer than it should when reloading
-            for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-                drive.drive(0, -(i / endLoopDrive));
-                Timer.delay(.01);
-            }
-            drive.drive(0, -1);
-            Timer.delay(.8);
-            drive.drive(0, 0);
+            pivot(180);
         }
 
         //----------------------------------------------------------------------
@@ -324,55 +281,20 @@ public class Robot3182 extends IterativeRobot {
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
         if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get()) {
 
-            for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-                shooterMotors.set(a * MathUtils.exp(b * i));
-                Timer.delay(.01);
-            }
-            shooterMotors.set(1);
-            Timer.delay(.1);
-            shooterMotors.set(0);
-            Timer.delay(.5);
-            
-        
-          //start reload
-            shooterMotors.set(-.2);
-            isReloading = true; //prevents shooting when being reloaded
-        }  
-         
-        else if (shoot == false && isReloading == false) {
-            shooterMotors.set(0);
-        }
-        //continues reloading if it was stopped
-        if (shooterPotVal > 500){
-            shooterMotors.set(-.2);
-        }
-        //finish reload
-        shooterPotVal = (int) shooterPot.get();
-        if (shooterPotVal <= 500){
-            shooterMotors.set(-.05);
-        }
-        if (shooterPotVal <= 300){
-              shooterMotors.set(0);
-              isReloading = false;
+            shoot();
         }
 
         // if button 2 on support function joystick is pressed, run the collector motor at 90%
         // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect == true) {
-            collectorMotor.set(.9);
-        } else if (collect == false) {
-            collectorMotor.set(0);
+            collect();
         }
         if (collectReverse == true) {
-            collectorMotor.set(-.9);
-        } else if (collectReverse == false) {
-            collectorMotor.set(0);
+            pass();
         }
-
-        if (limitStat){
+        if (limitStat) {
             //make LED some color
-        }
-        else if (limitStat == false){
+        } else if (limitStat == false) {
             /* make LED's do whatever they normally do when not notifying 
              * the drivers that the bot is in some state
              */
@@ -383,7 +305,7 @@ public class Robot3182 extends IterativeRobot {
         System.out.println(rightDriveEncoder.get());
         System.out.println("Encoder rate: " + rightDriveEncoder.getRate());
         System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
-        }
+    }
 
     public void disabledInit() {
 
@@ -398,6 +320,98 @@ public class Robot3182 extends IterativeRobot {
      */
     public void testPeriodic() {
 
+    }
+
+    // bring shooter up then down
+    private void shoot() {
+        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
+            shooterMotors.set(a * MathUtils.exp(b * i));
+            Timer.delay(.01);
+        }
+        shooterMotors.set(1);
+        Timer.delay(.1);
+        shooterMotors.set(0);
+        Timer.delay(.5);
+
+        //start reload
+        shooterMotors.set(-.2);
+        Timer.delay(.4);
+        shooterMotors.set(0);
+//        isReloading = true; //prevents shooting when being reloaded
+//        if (shoot == false && isReloading == false) {
+//            shooterMotors.set(0);
+//        }
+//        //continues reloading if it was stopped
+//        if (shooterPotVal > 500) {
+//            shooterMotors.set(-.2);
+//        }
+//        //finish reload
+//        shooterPotVal = (int) shooterPot.get();
+//        if (shooterPotVal <= 500) {
+//            shooterMotors.set(-.05);
+//        }
+//        if (shooterPotVal <= 300) {
+//            shooterMotors.set(0);
+//            isReloading = false;
+//        }
+
+    }
+
+    // runs collect forward relies on safety config disabling
+    private void collect() {
+        collectorMotor.set(.9);
+
+    }
+
+    // runs collect backward relies on safety config disabling
+    private void pass() {
+
+        collectorMotor.set(-.9);
+
+    }
+
+    // pivots robot by some angle, positive is right, negative is left
+    private void pivot(float angle_deg) {
+
+        //for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
+        //drive.drive(0, (i / endLoopDrive));
+        //Timer.delay(.01);
+        // }
+        drive.drive(0, signum(angle_deg));
+        Timer.delay(Math.abs(angle_deg / 300));
+        drive.drive(0, 0);
+    }
+
+    private int signum(float num) {
+        if (num > 0) {
+            return 1;
+        } else if (num < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+
+    }
+
+    private void collectOut() {
+        rightCollector.set(true);
+        leftCollector.set(true);
+
+    }
+
+    private void collectIn() {
+        rightCollector.set(false);
+        leftCollector.set(false);
+    }
+
+    private void shiftIn() {
+        leftShifter.set(true);
+        rightShifter.set(true);
+    }
+
+    private void shiftOut() {
+        leftShifter.set(false);
+        rightShifter.set(false);
     }
 
 }
