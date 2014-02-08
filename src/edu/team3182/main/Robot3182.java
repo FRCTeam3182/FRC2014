@@ -93,19 +93,19 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-        camera = AxisCamera.getInstance();
+        //camera = AxisCamera.getInstance();
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         //the paramater will probably change depending on where the limit switch is 
-        limitLED = new DigitalInput(1);
-        limitStat = limitLED.get();
+//        limitLED = new DigitalInput(1);
+//        limitStat = limitLED.get();
 
         //UNCOMMENT WHEN remainder of electronics board is complete
-        shooterMotors = new Talon(1);
-        collectorMotor = new Talon(2);
+        shooterMotors = new Talon(4);
+        collectorMotor = new Talon(3);
         //UNCOMMENT WHEN potentiometer is hooked up
         shooterPot = new AnalogPotentiometer(1);
         rightDriveEncoder = new Encoder(4, 3);
@@ -114,12 +114,12 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.setDistancePerPulse(.08168);
 
         // UNCOMMENT WHEN solenoids are available on electronics board
-        leftShifter = new Solenoid(2, 6);
-        rightShifter = new Solenoid(2, 8);
-//        leftCollector = new Solenoid(2, 2);
-//        rightCollector = new Solenoid(2, 4);
+        leftShifter = new Solenoid(1, 6);
+        rightShifter = new Solenoid(1, 8);
+        leftCollector = new Solenoid(1, 2);
+        rightCollector = new Solenoid(1, 4);
 //=================Needs Change:================================
-//        compressor = new Compressor(0,0);
+       //compressor = new Compressor(0,0);
 
     }
 
@@ -149,7 +149,7 @@ public class Robot3182 extends IterativeRobot {
         shoot();
         Timer.delay(1);
         pivot(180);
-        
+
     }
 
     public void autonomousPeriodic() {
@@ -319,41 +319,40 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-        if (buttonsJoystick.getRawButton(1)){
+        if (buttonsJoystick.getRawButton(1)) {
             shoot();
         }
-        
-        if (buttonsJoystick.getRawButton(2)){
+
+        if (buttonsJoystick.getRawButton(2)) {
             collect();
         }
-        
-        if (buttonsJoystick.getRawButton(3)){
+
+        if (buttonsJoystick.getRawButton(3)) {
             pass();
         }
-        if (buttonsJoystick.getRawButton(4)){
+        if (buttonsJoystick.getRawButton(4)) {
             pivot(90);
         }
-        
-        if (buttonsJoystick.getRawButton(5)){
+
+        if (buttonsJoystick.getRawButton(5)) {
             collectOut();
         }
-        if (buttonsJoystick.getRawButton(6)){
+        if (buttonsJoystick.getRawButton(6)) {
             collectIn();
         }
-        if (buttonsJoystick.getRawButton(7)){
+        if (buttonsJoystick.getRawButton(7)) {
             shiftIn();
         }
-        if (buttonsJoystick.getRawButton(8)){
-           shiftOut();
+        if (buttonsJoystick.getRawButton(8)) {
+            shiftOut();
         }
-        if (buttonsJoystick.getRawButton(9)){
+        if (buttonsJoystick.getRawButton(9)) {
             pivot(-90);
-        } 
-        if (buttonsJoystick.getRawButton(10)){
+        }
+        if (buttonsJoystick.getRawButton(10)) {
             pivot(180);
         }
-        
-        
+
     }
 
     // bring shooter up then down
