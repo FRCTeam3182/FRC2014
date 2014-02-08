@@ -319,7 +319,41 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-
+        if (buttonsJoystick.getRawButton(1)){
+            shoot();
+        }
+        
+        if (buttonsJoystick.getRawButton(2)){
+            collect();
+        }
+        
+        if (buttonsJoystick.getRawButton(3)){
+            pass();
+        }
+        if (buttonsJoystick.getRawButton(4)){
+            pivot(90);
+        }
+        
+        if (buttonsJoystick.getRawButton(5)){
+            collectOut();
+        }
+        if (buttonsJoystick.getRawButton(6)){
+            collectIn();
+        }
+        if (buttonsJoystick.getRawButton(7)){
+            shiftIn();
+        }
+        if (buttonsJoystick.getRawButton(8)){
+           shiftOut();
+        }
+        if (buttonsJoystick.getRawButton(9)){
+            pivot(-90);
+        } 
+        if (buttonsJoystick.getRawButton(10)){
+            pivot(180);
+        }
+        
+        
     }
 
     // bring shooter up then down
