@@ -10,13 +10,13 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -42,10 +42,10 @@ public class Robot3182 extends IterativeRobot {
     private Joystick buttonsJoystick;
     private Talon shooterMotors;
     private Talon collectorMotor;
-    private Solenoid leftShifter;
-    private Solenoid rightShifter;
-    private Solenoid leftCollector;
-    private Solenoid rightCollector;
+    private DoubleSolenoid leftShifter;
+    private DoubleSolenoid rightShifter;
+    private DoubleSolenoid leftCollector;
+    private DoubleSolenoid rightCollector;
     private Compressor compressor;
     // Initialization of code for robot sensors
     private Encoder rightDriveEncoder;
@@ -114,10 +114,10 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.setDistancePerPulse(.08168);
 
         // UNCOMMENT WHEN solenoids are available on electronics board
-        leftShifter = new Solenoid(1, 6);
-        rightShifter = new Solenoid(1, 8);
-        leftCollector = new Solenoid(1, 2);
-        rightCollector = new Solenoid(1, 4);
+        leftShifter = new DoubleSolenoid(5, 6);
+        rightShifter = new DoubleSolenoid(7, 8);
+        leftCollector = new DoubleSolenoid(1, 2);
+        rightCollector = new DoubleSolenoid(3, 4);
 //=================Needs Change:================================
        //compressor = new Compressor(0,0);
 
