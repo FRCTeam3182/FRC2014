@@ -193,6 +193,8 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         distanceRange = rangeFinder.getRangeInches();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
+        SmartDashboard.putNumber("TESTING", 46.7);
+        SmartDashboard.putBoolean("test boolean", true);
         distance = rightDriveEncoder.getDistance();
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
@@ -316,7 +318,7 @@ public class Robot3182 extends IterativeRobot {
              */
         }
         //Display rate of encoder to the dashboard
-        //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
+        SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
         //encoder testing
 //        System.out.println("Encoder GETDISTANCE: " + distance);
 //        System.out.println("Encoder GET: " + rightDriveEncoder.get());
