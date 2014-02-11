@@ -93,6 +93,8 @@ public class Robot3182 extends IterativeRobot {
     final double b = .9;
     boolean isReloading = false; //prevents shooting when reloading
 
+    //###########For testing:##################
+    double x;
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -293,8 +295,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
-        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get()
-                == DoubleSolenoid.Value.kForward) {
+        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kForward) {
 
             shoot();
         }
@@ -376,7 +377,19 @@ public class Robot3182 extends IterativeRobot {
             arduinoSignal.set(true);
             arduinoSignifier.set(false);
         }
-
+        x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
+        if (x > .25){
+            leftCollector.set(DoubleSolenoid.Value.kForward);
+            rightCollector.set(DoubleSolenoid.Value.kForward);
+        }
+        else if (x < .25){
+            leftCollector.set(DoubleSolenoid.Value.kReverse);
+            rightCollector.set(DoubleSolenoid.Value.kReverse);  
+        }
+        else {
+            leftCollector.set(DoubleSolenoid.Value.kOff);
+            rightCollector.set(DoubleSolenoid.Value.kOff);
+        }
     }
 
     // bring shooter up then down
@@ -470,5 +483,4 @@ public class Robot3182 extends IterativeRobot {
         leftShifter.set(DoubleSolenoid.Value.kReverse);
         rightShifter.set(DoubleSolenoid.Value.kReverse);
     }
-
 }
