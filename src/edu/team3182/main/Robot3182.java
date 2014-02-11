@@ -318,11 +318,6 @@ public class Robot3182 extends IterativeRobot {
         }
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
-        //encoder testing
-//        System.out.println("Encoder GETDISTANCE: " + distance);
-//        System.out.println("Encoder GET: " + rightDriveEncoder.get());
-//        System.out.println("Encoder GETRATE: " + rightDriveEncoder.getRate());
-//        System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
     }
 
     public void disabledInit() {
