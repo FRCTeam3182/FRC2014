@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -56,6 +57,7 @@ public class Robot3182 extends IterativeRobot {
     private AnalogPotentiometer shooterPot;
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
+    private Ultrasonic rangeFinder;
 
     // Initialize variables to support functions above
     // yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
@@ -84,6 +86,7 @@ public class Robot3182 extends IterativeRobot {
     final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
     final int endLoopShoot = 10;
     int shooterPotVal; //position of catapult
+    double distanceRange;
 
     //Coefficients of exponential function to ramp up speed of catapult (so ball doesn't fall out)
     final double a = .005;
@@ -97,6 +100,7 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         //camera = AxisCamera.getInstance();
+        
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -107,10 +111,12 @@ public class Robot3182 extends IterativeRobot {
 //        limitStat = limitLED.get();
         arduinoSignal = new DigitalOutput(5); //sgnal with data
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
-        
+
         //UNCOMMENT WHEN remainder of electronics board is complete
         shooterMotors = new Talon(4);
         collectorMotor = new Talon(3);
+        collectorMotor.setSafetyEnabled(true);
+        shooterMotors.setSafetyEnabled(false);
         //UNCOMMENT WHEN potentiometer is hooked up
         shooterPot = new AnalogPotentiometer(1);
         rightDriveEncoder = new Encoder(4, 3);
@@ -123,8 +129,11 @@ public class Robot3182 extends IterativeRobot {
         rightShifter = new DoubleSolenoid(7, 8);
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
+        
+        rangeFinder = new Ultrasonic(8,9);
 //=================Needs Change:================================
-       compressor = new Compressor(7,1);
+        compressor = new Compressor(7, 1);
+        compressor.start();
 
     }
 
@@ -180,7 +189,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-
+        distanceRange = rangeFinder.getRangeInches();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
 
         // Read commands from the joysticks
@@ -228,13 +237,13 @@ public class Robot3182 extends IterativeRobot {
         //shifter code
         //while both of the triggers are clicked, the shifter are switched to ??????high gear????????
         if (rightTrigger && leftTrigger) {
-            if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
+           // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
                 shiftHigh();
             }
-        } else if (rightTrigger == false && leftTrigger == false) {
-            if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
+        if (rightTrigger == false && leftTrigger == false) {
+           // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
                 shiftLow();
-            }
+            
         }
 
         //makes sure joystick will not work at +/-25% throttle
@@ -285,7 +294,7 @@ public class Robot3182 extends IterativeRobot {
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
         if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get()
-        == DoubleSolenoid.Value.kForward) {
+                == DoubleSolenoid.Value.kForward) {
 
             shoot();
         }
@@ -358,7 +367,7 @@ public class Robot3182 extends IterativeRobot {
         if (buttonsJoystick.getRawButton(10)) {
             pivot(180);
         }
-        if (buttonsJoystick.getRawButton(11)){
+        if (buttonsJoystick.getRawButton(11)) {
             arduinoSignifier.set(true);
             arduinoSignal.set(false);
             Timer.delay(.01);
@@ -373,17 +382,17 @@ public class Robot3182 extends IterativeRobot {
     // bring shooter up then down
     private void shoot() {
         for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-            shooterMotors.set(a * MathUtils.exp(b * i));
+            shooterMotors.set(1);
             Timer.delay(.01);
         }
         shooterMotors.set(1);
-        Timer.delay(.1);
+        Timer.delay(.2);
         shooterMotors.set(0);
         Timer.delay(.5);
 
         //start reload
-        shooterMotors.set(-.2);
-        Timer.delay(.4);
+        shooterMotors.set(-.25);
+        Timer.delay(2);
         shooterMotors.set(0);
 //        isReloading = true; //prevents shooting when being reloaded
 //        if (shoot == false && isReloading == false) {
