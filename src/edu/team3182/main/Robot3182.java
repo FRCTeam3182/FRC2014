@@ -148,7 +148,7 @@ public class Robot3182 extends IterativeRobot {
 
         //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
-        distance = rightDriveEncoder.getDistance();
+        
         //Drive forward for 2 seconds with linear acceleration function
         for (int i = 1; i <= 30; i++) { //takes 1.5 seconds reach full speed
             drive.drive(0, (i / 100));
@@ -193,7 +193,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         distanceRange = rangeFinder.getRangeInches();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
-
+        distance = rightDriveEncoder.getDistance();
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -317,10 +317,11 @@ public class Robot3182 extends IterativeRobot {
         }
         //Display rate of encoder to the dashboard
         //SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
-        System.out.println(distance);
-        System.out.println(rightDriveEncoder.get());
-        System.out.println("Encoder rate: " + rightDriveEncoder.getRate());
-        System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
+        //encoder testing
+//        System.out.println("Encoder GETDISTANCE: " + distance);
+//        System.out.println("Encoder GET: " + rightDriveEncoder.get());
+//        System.out.println("Encoder GETRATE: " + rightDriveEncoder.getRate());
+//        System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
     }
 
     public void disabledInit() {
@@ -350,12 +351,12 @@ public class Robot3182 extends IterativeRobot {
             pivot(90);
         }
 
-        if (buttonsJoystick.getRawButton(5)) {
-            collectOut();
-        }
-        if (buttonsJoystick.getRawButton(6)) {
-            collectIn();
-        }
+//        if (buttonsJoystick.getRawButton(5)) {
+//            collectOut();
+//        }
+//        if (buttonsJoystick.getRawButton(6)) {
+//            collectIn();
+//        }
         if (buttonsJoystick.getRawButton(7)) {
             shiftHigh();
         }
@@ -382,7 +383,7 @@ public class Robot3182 extends IterativeRobot {
             leftCollector.set(DoubleSolenoid.Value.kForward);
             rightCollector.set(DoubleSolenoid.Value.kForward);
         }
-        else if (x < .25){
+        else if (x < -.25){
             leftCollector.set(DoubleSolenoid.Value.kReverse);
             rightCollector.set(DoubleSolenoid.Value.kReverse);  
         }
@@ -390,6 +391,7 @@ public class Robot3182 extends IterativeRobot {
             leftCollector.set(DoubleSolenoid.Value.kOff);
             rightCollector.set(DoubleSolenoid.Value.kOff);
         }
+        
     }
 
     // bring shooter up then down
@@ -447,7 +449,7 @@ public class Robot3182 extends IterativeRobot {
         //drive.drive(0, (i / endLoopDrive));
         //Timer.delay(.01);
         // }
-        drive.drive(0, signum(angle_deg));
+        drive.drive(1, signum(angle_deg));
         Timer.delay(Math.abs(angle_deg / 300));
         drive.drive(0, 0);
     }
