@@ -48,7 +48,7 @@ int incomingByte;
 
 //communication data
 boolean dataRecieved[] = {
-  false, false, false};
+  false, false, false, false};
 
 //for animations
 int shooterFrontRight = 39;
@@ -95,24 +95,28 @@ void loop(){
     dataRecieved[0] = false;
     dataRecieved[1] = false;
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     //    clearLeds();
   }
   else if (incomingByte == 98){ //b
     dataRecieved[0] = true;
     dataRecieved[1] = false;
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     //    setRed();
   }
   else if (incomingByte == 99){ //c
     dataRecieved[0] = false;
     dataRecieved[1] = true;
     dataRecieved[2] = true;
+    dataRecieved[3] = false;
     //    setGreen();
   }
   else if (incomingByte == 100){ //d
     dataRecieved[0] = false;
     dataRecieved[1] = true;
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     //    shootAndCollect();
   }
   else if (incomingByte == 101){ //e
@@ -120,7 +124,7 @@ void loop(){
   }
 
   //Possible cases
-  if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false){
+  if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //clears the strip
     clearLeds();
 
@@ -128,9 +132,10 @@ void loop(){
     dataRecieved[0] = false;
     dataRecieved[1] = false;  
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     delay(10);
   }
-  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false){
+  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //sets the strip to red and the distance color to red
     setRed();
     distanceColor = 0xFF0000;
@@ -139,9 +144,10 @@ void loop(){
     dataRecieved[0] = true;
     dataRecieved[1] = false;  
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     delay(10);
   }  
-  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false){
+  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //plays animation when shooting or collecting
     shootAndCollect();
 
@@ -149,9 +155,10 @@ void loop(){
     dataRecieved[0] = false;
     dataRecieved[1] = true;  
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     delay(10);
   }
-  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true){
+  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
     //play animation when a ball is in the shooter
     set____();
 
@@ -159,9 +166,10 @@ void loop(){
     dataRecieved[0] = false;
     dataRecieved[1] = false;  
     dataRecieved[2] = true;
+    dataRecieved[3] = false;
     delay(10);
   }
-  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true){
+  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //play animation when disabled
     setGreen();
     distanceColor = 0x008000;
@@ -170,9 +178,10 @@ void loop(){
     dataRecieved[0] = false;
     dataRecieved[1] = true;  
     dataRecieved[2] = true;
+    dataRecieved[3] = false;
     delay(10);
   }
-  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false){
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //signal to other teams
     signal();
 
@@ -180,6 +189,7 @@ void loop(){
     dataRecieved[0] = true;
     dataRecieved[1] = true;  
     dataRecieved[2] = false;
+    dataRecieved[3] = false;
     delay(10);
   } 
 
@@ -194,6 +204,8 @@ void readSidecar(){
   dataRecieved[1] = digitalRead(3);
   delayMicroseconds(10000);
   dataRecieved[2] = digitalRead(3);
+  delayMicroseconds(100000);
+  dataRecieved[3] = digitalRead(3);
   delayMicroseconds(100000);
 }
 

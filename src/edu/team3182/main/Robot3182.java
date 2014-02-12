@@ -95,6 +95,7 @@ public class Robot3182 extends IterativeRobot {
 
     //###########For testing:##################
     double x;
+
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -102,7 +103,7 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         //camera = AxisCamera.getInstance();
-        
+
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -131,8 +132,8 @@ public class Robot3182 extends IterativeRobot {
         rightShifter = new DoubleSolenoid(7, 8);
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
-        
-        rangeFinder = new Ultrasonic(8,9);
+
+        rangeFinder = new Ultrasonic(8, 9);
 //=================Needs Change:================================
         compressor = new Compressor(7, 1);
         compressor.start();
@@ -148,7 +149,6 @@ public class Robot3182 extends IterativeRobot {
 
         //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
-        
         //Drive forward for 2 seconds with linear acceleration function
         for (int i = 1; i <= 30; i++) { //takes 1.5 seconds reach full speed
             drive.drive(0, (i / 100));
@@ -241,13 +241,13 @@ public class Robot3182 extends IterativeRobot {
         //shifter code
         //while both of the triggers are clicked, the shifter are switched to ??????high gear????????
         if (rightTrigger && leftTrigger) {
-           // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
-                shiftHigh();
-            }
+            // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
+            shiftHigh();
+        }
         if (rightTrigger == false && leftTrigger == false) {
-           // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
-                shiftLow();
-            
+            // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
+            shiftLow();
+
         }
 
         //makes sure joystick will not work at +/-25% throttle
@@ -381,19 +381,17 @@ public class Robot3182 extends IterativeRobot {
             arduinoSignifier.set(false);
         }
         x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
-        if (x > .25){
+        if (x > .25) {
             leftCollector.set(DoubleSolenoid.Value.kForward);
             rightCollector.set(DoubleSolenoid.Value.kForward);
-        }
-        else if (x < -.25){
+        } else if (x < -.25) {
             leftCollector.set(DoubleSolenoid.Value.kReverse);
-            rightCollector.set(DoubleSolenoid.Value.kReverse);  
-        }
-        else {
+            rightCollector.set(DoubleSolenoid.Value.kReverse);
+        } else {
             leftCollector.set(DoubleSolenoid.Value.kOff);
             rightCollector.set(DoubleSolenoid.Value.kOff);
         }
-        
+
     }
 
     // bring shooter up then down
@@ -486,5 +484,19 @@ public class Robot3182 extends IterativeRobot {
     private void shiftLow() {
         leftShifter.set(DoubleSolenoid.Value.kReverse);
         rightShifter.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    private void sendArduino(boolean one, boolean two, boolean three, boolean four) {
+        //the fuction to send certain data to the arduino
+
+        arduinoSignifier.set(true);
+        arduinoSignal.set(one);
+        Timer.delay(.01);
+        arduinoSignal.set(two);
+        Timer.delay(.01);
+        arduinoSignal.set(three);
+        Timer.delay(.01);
+        arduinoSignal.set(four);
+        arduinoSignifier.set(false);
     }
 }
