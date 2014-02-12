@@ -137,7 +137,7 @@ void loop(){
   }
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //sets the strip to red and the distance color to red
-    setRed();
+//    setRed();
     distanceColor = 0xFF0000;
     
     //ensure the variables stay the same
@@ -160,7 +160,8 @@ void loop(){
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
     //play animation when a ball is in the shooter
-    set____();
+//    setYellow();
+    distanceColor = 0xFFFF00;
 
     //ensure the variables stay the same
     dataRecieved[0] = false;
@@ -170,8 +171,8 @@ void loop(){
     delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
-    //play animation when disabled
-    setGreen();
+    //set lights to green
+//    setGreen();
     distanceColor = 0x008000;
     
     //ensure the variables stay the same
@@ -218,15 +219,15 @@ void clearLeds(){
   FastLED.show();
 }
 
-void setRed(){
-  //sets the strip to be all red
-  FastLED.setBrightness(100);
-  for (int i = 0; i <= 80; i++){
-    leds[i] = CRGB:: Red;
-    delayMicroseconds(100);
-  }
-  FastLED.show();
-}
+//void setRed(){
+//  //sets the strip to be all red
+//  FastLED.setBrightness(100);
+//  for (int i = 0; i <= 80; i++){
+//    leds[i] = CRGB:: Red;
+//    delayMicroseconds(100);
+//  }
+//  FastLED.show();
+//}
 
 void shootAndCollect(){
   //showing when robot is shooting or collecting
@@ -290,9 +291,15 @@ void shootAndCollect(){
 
 }
 
-void set____(){
-  //shows when a ball is in the shooter
-}
+//void setYellow(){
+//  //sets the strip to be all yellow
+//  FastLED.setBrightness(100);
+//  for (int i = 0; i <= 80; i++){
+//    leds[i] = CRGB::Yellow;
+//    delayMicroseconds(100);
+//  }
+//  FastLED.show();
+//}
 
 void disabled(){
   //shows when robot is diabled
@@ -302,15 +309,15 @@ void signal(){
   //shows when player clicks button on joystick
 }
 
-void setGreen(){
-  //sets the strip to be all red
-  FastLED.setBrightness(100);
-  for (int i = 0; i <= 80; i++){
-    leds[i] = CRGB::Green;
-    delayMicroseconds(100);
-  }
-  FastLED.show();
-}
+//void setGreen(){
+//  //sets the strip to be all red
+//  FastLED.setBrightness(100);
+//  for (int i = 0; i <= 80; i++){
+//    leds[i] = CRGB::Green;
+//    delayMicroseconds(100);
+//  }
+//  FastLED.show();
+//}
 
 
 

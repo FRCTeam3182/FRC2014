@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
-import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -191,7 +190,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-        distanceRange = rangeFinder.getRangeInches();
+        getUltraRange();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
         distance = rightDriveEncoder.getDistance();
         SmartDashboard.putNumber("Distance away: ", distanceRange);
@@ -492,5 +491,17 @@ public class Robot3182 extends IterativeRobot {
         Timer.delay(.01);
         arduinoSignal.set(four);
         arduinoSignifier.set(false);
+    }
+    private void getUltraRange(){
+        distanceRange = rangeFinder.getRangeInches();
+        if (distanceRange >= 60 && distanceRange <= 72){
+            sendArduino(false, true, true, false); //green
+        }
+        else if (distanceRange >= 3 && distanceRange < 60){
+            sendArduino(true, false, false, false); //red
+        }
+        else if (distanceRange >= 60 && distanceRange <= 72){
+            sendArduino(false, false, true, false); //yellow
+        }
     }
 }
