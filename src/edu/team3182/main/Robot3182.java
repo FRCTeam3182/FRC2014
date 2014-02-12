@@ -42,7 +42,7 @@ public class Robot3182 extends IterativeRobot {
     private AxisCamera camera;
     //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
-    private Talon shooterMotors;
+    private Talon shooterMotors;  
     private Talon collectorMotor;
     private DoubleSolenoid leftShifter;
     private DoubleSolenoid rightShifter;
@@ -193,9 +193,8 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         distanceRange = rangeFinder.getRangeInches();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
-        SmartDashboard.putNumber("TESTING", 46.7);
-        SmartDashboard.putBoolean("test boolean", true);
         distance = rightDriveEncoder.getDistance();
+        SmartDashboard.putNumber("Distance away: ", distanceRange);
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -318,12 +317,7 @@ public class Robot3182 extends IterativeRobot {
              */
         }
         //Display rate of encoder to the dashboard
-        SmartDashboard.putNumber("Encoder Rate", rightDriveEncoder.getRate());
-        //encoder testing
-//        System.out.println("Encoder GETDISTANCE: " + distance);
-//        System.out.println("Encoder GET: " + rightDriveEncoder.get());
-//        System.out.println("Encoder GETRATE: " + rightDriveEncoder.getRate());
-//        System.out.println("Encoder rate left: " + leftDriveEncoder.getRate());
+        SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
     }
 
     public void disabledInit() {
@@ -331,7 +325,7 @@ public class Robot3182 extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-
+        
     }
 
     /**
@@ -353,12 +347,12 @@ public class Robot3182 extends IterativeRobot {
             pivot(90);
         }
 
-//        if (buttonsJoystick.getRawButton(5)) {
-//            collectOut();
-//        }
-//        if (buttonsJoystick.getRawButton(6)) {
-//            collectIn();
-//        }
+        if (buttonsJoystick.getRawButton(5)) {
+            collectOut();
+        }
+        if (buttonsJoystick.getRawButton(6)) {
+            collectIn();
+        }
         if (buttonsJoystick.getRawButton(7)) {
             shiftHigh();
         }
