@@ -101,7 +101,8 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-        
+        //camera = AxisCamera.getInstance();
+
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
