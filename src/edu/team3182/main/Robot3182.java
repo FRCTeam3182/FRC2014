@@ -39,7 +39,6 @@ public class Robot3182 extends IterativeRobot {
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
-    private AxisCamera camera;
     //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
     private Talon shooterMotors;  
@@ -101,7 +100,6 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-        //camera = AxisCamera.getInstance();
         
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
@@ -199,7 +197,7 @@ public class Robot3182 extends IterativeRobot {
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
-
+        
         //shoot is button 1, collect is 2, ground pass/dump is 3
         // collector is buttons 10 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
