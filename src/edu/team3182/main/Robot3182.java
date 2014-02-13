@@ -295,7 +295,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
-        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kForward) {
+        if (shoot == true && isReloading == false && collectReverse == false) {
 
             shoot();
         }
@@ -389,12 +389,12 @@ public class Robot3182 extends IterativeRobot {
 
     // bring shooter up then down
     private void shoot() {
-        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-            shooterMotors.set(1);
-            Timer.delay(.01);
-        }
+//        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
+//            shooterMotors.set(1);
+//            Timer.delay(.01);
+//        }
         shooterMotors.set(1);
-        Timer.delay(.2);
+        Timer.delay(.75);
         shooterMotors.set(0);
         Timer.delay(.5);
 
@@ -424,7 +424,7 @@ public class Robot3182 extends IterativeRobot {
 
     // runs collect forward relies on safety config disabling
     private void collect() {
-        collectorMotor.set(.9);
+        collectorMotor.set(.7);
 
     }
 
