@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.lang.Thread;
+import edu.wpi.first.wpilibj.communication.Semaphore;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -62,7 +64,7 @@ public class Robot3182 extends IterativeRobot {
     // yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double yAxisRight;
     double yAxisLeft;
-    double distance;
+    double distance; //ultrasonic
     boolean toggleOut;
     boolean toggleIn;
     boolean collectorButton9;
@@ -74,7 +76,6 @@ public class Robot3182 extends IterativeRobot {
     boolean collectorFoward = false;
     boolean quarterTurnLeft = false;
     boolean quarterTurnRight = false;
-    boolean halfTurnLeft = false;
     boolean halfTurnRight = false;
     boolean rightTrigger = false;
     boolean leftTrigger = false;
@@ -82,8 +83,7 @@ public class Robot3182 extends IterativeRobot {
     double p = 0.25; //dead zone of joysticks for drive is between -p and p
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
-    final int endLoopDrive = 10; //length of for loops that control maneuver timing/ shooting timing
-    final int endLoopShoot = 10;
+
     int shooterPotVal; //position of catapult
     double distanceRange;
 
@@ -126,7 +126,6 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.reset();
         rightDriveEncoder.setDistancePerPulse(.08168);
 
-        // UNCOMMENT WHEN solenoids are available on electronics board
         leftShifter = new DoubleSolenoid(5, 6);
         rightShifter = new DoubleSolenoid(7, 8);
         leftCollector = new DoubleSolenoid(1, 2);
@@ -215,7 +214,6 @@ public class Robot3182 extends IterativeRobot {
         leftTrigger = leftJoystick.getRawButton(1);
         quarterTurnLeft = leftJoystick.getRawButton(2);
         quarterTurnRight = rightJoystick.getRawButton(2);
-        halfTurnLeft = leftJoystick.getRawButton(3);
         halfTurnRight = rightJoystick.getRawButton(3);
 
         // collector code 
@@ -317,6 +315,7 @@ public class Robot3182 extends IterativeRobot {
         }
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
+        SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
     }
 
     public void disabledInit() {
@@ -389,7 +388,7 @@ public class Robot3182 extends IterativeRobot {
 
     // bring shooter up then down
     private void shoot() {
-        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
+        for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
             shooterMotors.set(1);
             Timer.delay(.01);
         }
