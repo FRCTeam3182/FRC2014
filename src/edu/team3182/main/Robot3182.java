@@ -40,7 +40,6 @@ public class Robot3182 extends IterativeRobot {
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
-    private AxisCamera camera;
     //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
     private Talon shooterMotors;  
@@ -197,7 +196,7 @@ public class Robot3182 extends IterativeRobot {
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
-
+        
         //shoot is button 1, collect is 2, ground pass/dump is 3
         // collector is buttons 10 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
@@ -293,7 +292,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
-        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kForward) {
+        if (shoot == true && isReloading == false && collectReverse == false) {
 
             shoot();
         }
@@ -388,12 +387,12 @@ public class Robot3182 extends IterativeRobot {
 
     // bring shooter up then down
     private void shoot() {
-        for (int i = 1; i <= 10; i++) { //takes half a second to reach full speed
-            shooterMotors.set(1);
-            Timer.delay(.01);
-        }
+//        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
+//            shooterMotors.set(1);
+//            Timer.delay(.01);
+//        }
         shooterMotors.set(1);
-        Timer.delay(.2);
+        Timer.delay(.75);
         shooterMotors.set(0);
         Timer.delay(.5);
 
@@ -423,7 +422,7 @@ public class Robot3182 extends IterativeRobot {
 
     // runs collect forward relies on safety config disabling
     private void collect() {
-        collectorMotor.set(.9);
+        collectorMotor.set(.7);
 
     }
 
