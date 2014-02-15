@@ -66,8 +66,8 @@ public class Robot3182 extends IterativeRobot {
     double distance; //ultrasonic
     boolean toggleOut;
     boolean toggleIn;
+    boolean collectorButton11;
     boolean collectorButton9;
-    boolean collectorButton10;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -79,7 +79,7 @@ public class Robot3182 extends IterativeRobot {
     boolean rightTrigger = false;
     boolean leftTrigger = false;
     boolean limitStat;
-    double p = 0.25; //dead zone of joysticks for drive is between -p and p
+    double p = 0.10; //dead zone of joysticks for drive is between -p and p
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
 
@@ -202,8 +202,8 @@ public class Robot3182 extends IterativeRobot {
         shoot = buttonsJoystick.getRawButton(1);
         collect = buttonsJoystick.getRawButton(2);
         collectReverse = buttonsJoystick.getRawButton(3);
+        collectorButton11 = buttonsJoystick.getRawButton(11);
         collectorButton9 = buttonsJoystick.getRawButton(9);
-        collectorButton10 = buttonsJoystick.getRawButton(10);
 
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
@@ -218,17 +218,17 @@ public class Robot3182 extends IterativeRobot {
         // collector code 
         // if button 9 is pressed the collector will come out
         // if button 10 is pressed the collector will come in
-        if (collectorButton9 == true) {
+        if (collectorButton11 == true) {
             toggleOut = true;
         }
-        if (collectorButton10 == true) {
+        if (collectorButton9 == true) {
             toggleIn = true;
         }
-        if (toggleOut && !collectorButton9) { //when button 10 is let go, the toggle will comence
+        if (toggleOut && !collectorButton11) { //when button 10 is let go, the toggle will comence
             collectOut();
             toggleOut = false;
         }
-        if (toggleIn && !collectorButton10) { //when button 11 is let go, the toggle will comence
+        if (toggleIn && !collectorButton9) { //when button 11 is let go, the toggle will comence
             collectIn();
             toggleIn = false;
         }
@@ -273,7 +273,7 @@ public class Robot3182 extends IterativeRobot {
             smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p))));
         }
         //drive using the joysticks
-        drive.tankDrive(smoothVarLeft, smoothVarRight);
+        drive.tankDrive(-smoothVarLeft, -smoothVarRight);
 
         //does a clockwise 90 degree turn quickly 
         if (quarterTurnRight == true && collect == false && collectReverse == false) {
@@ -292,7 +292,7 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
-        if (shoot == true && isReloading == false && collectReverse == false) {
+        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
 
             shoot();
         }
@@ -315,6 +315,9 @@ public class Robot3182 extends IterativeRobot {
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
         SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
+        
+        System.out.println("Speed right: " + rightDriveEncoder.getRate());
+        System.out.println("Speed left: " + leftDriveEncoder.getRate());
     }
 
     public void disabledInit() {
@@ -422,7 +425,7 @@ public class Robot3182 extends IterativeRobot {
 
     // runs collect forward relies on safety config disabling
     private void collect() {
-        collectorMotor.set(.7);
+        collectorMotor.set(.8);
 
     }
 
