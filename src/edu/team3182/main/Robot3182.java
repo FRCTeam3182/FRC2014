@@ -141,7 +141,6 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
-        rightDriveEncoder.start();
 
         //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
@@ -174,7 +173,7 @@ public class Robot3182 extends IterativeRobot {
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
         shoot();
-
+        
     }
 
     public void autonomousPeriodic() {
@@ -307,7 +306,6 @@ public class Robot3182 extends IterativeRobot {
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
         if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
-
             shoot();
         }
 
@@ -319,6 +317,9 @@ public class Robot3182 extends IterativeRobot {
         if (collectReverse == true) {
             pass();
         }
+        
+        
+        
         if (limitStat) {
             
             //make LED some color
@@ -409,12 +410,8 @@ public class Robot3182 extends IterativeRobot {
 
     // bring shooter up then down
     private void shoot() {
-//        for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-//            shooterMotors.set(1);
-//            Timer.delay(.01);
-//        }
-        sendArduino(false, true, false, false);
         compressor.stop();
+        collectorMotor.set(.8);
         Timer.delay(.25);
         collectIn();
         Timer.delay(.3);
@@ -425,30 +422,12 @@ public class Robot3182 extends IterativeRobot {
         shooterMotors.set(0);
         Timer.delay(.5);
         //start reload
+        collectorMotor.set(0);
         // remember to set negative
         shooterMotors.set(-.15);
         Timer.delay(1.5);
         shooterMotors.set(0);
         compressor.start();
-//        compressor.start();
-//        isReloading = true; //prevents shooting when being reloaded
-//        if (shoot == false && isReloading == false) {
-//            shooterMotors.set(0);
-//        }
-//        //continues reloading if it was stopped
-//        if (shooterPotVal > 500) {
-//            shooterMotors.set(-.2);
-//        }
-//        //finish reload
-//        shooterPotVal = (int) shooterPot.get();
-//        if (shooterPotVal <= 500) {
-//            shooterMotors.set(-.05);
-//        }
-//        if (shooterPotVal <= 300) {
-//            shooterMotors.set(0);
-//            isReloading = false;
-//        }
-
     }
 
     // runs collect forward relies on safety config disabling
