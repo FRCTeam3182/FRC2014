@@ -28,6 +28,7 @@ public void run() {
             shooterMotors.set(1);
             Timer.delay(.01);
         }
+   
         shooterMotors.set(1);
         Timer.delay(.2);
         shooterMotors.set(0);
