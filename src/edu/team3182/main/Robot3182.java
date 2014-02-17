@@ -129,7 +129,7 @@ public class Robot3182 extends IterativeRobot {
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
 
-        rangeFinder = new AnalogChannel(1);
+        rangeFinder = new AnalogChannel(1,2);
 //=================Needs Change:================================
         compressor = new Compressor(7, 1);
         compressor.start();
@@ -196,10 +196,19 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
 //        getUltraRange();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
+        
+        //---------------------------------------------------------------------
+        //testing voltage for analog rangefinder
+        //---------------------------------------------------------------------
+        
         distance = rightDriveEncoder.getDistance();
         double abc = rangeFinder.getAverageVoltage();
+        double volt = rangeFinder.getVoltage();
         SmartDashboard.putNumber("Distance away: ", distanceRange);
         System.out.println(abc);
+        System.out.println(volt);
+        
+        
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -446,6 +455,7 @@ public class Robot3182 extends IterativeRobot {
         //drive.drive(0, (i / endLoopDrive));
         //Timer.delay(.01);
         // }
+        
         drive.drive(1, signum(angle_deg));
         Timer.delay(Math.abs(angle_deg / 90));
         drive.drive(0, 0);
@@ -498,16 +508,16 @@ public class Robot3182 extends IterativeRobot {
         arduinoSignal.set(four);
         arduinoSignifier.set(false);
     }
-    private void getUltraRange(){
-        distanceRange = rangeFinder.getRangeInches();
-        if (distanceRange >= 60 && distanceRange <= 72){
-            sendArduino(false, true, true, false); //green
-        }
-        else if (distanceRange >= 3 && distanceRange < 60){
-            sendArduino(true, false, false, false); //red
-        }
-        else if (distanceRange >= 60 && distanceRange <= 72){
-            sendArduino(false, false, true, false); //yellow
-        }
-    }
+//    private void getUltraRange(){
+//        distanceRange = rangeFinder.getRangeInches();
+//        if (distanceRange >= 60 && distanceRange <= 72){
+//            sendArduino(false, true, true, false); //green
+//        }
+//        else if (distanceRange >= 3 && distanceRange < 60){
+//            sendArduino(true, false, false, false); //red
+//        }
+//        else if (distanceRange >= 60 && distanceRange <= 72){
+//            sendArduino(false, false, true, false); //yellow
+//        }
+//    }
 }
