@@ -147,21 +147,36 @@ public class Robot3182 extends IterativeRobot {
         //Send command to Arduino for the light strip
         // set the variable distance to the distance of encoder since reset
         //Drive forward for 2 seconds with linear acceleration function
-        for (int i = 1; i <= 30; i++) { //takes 1.5 seconds reach full speed
-            drive.drive(0, (i / 100));
-            Timer.delay(.05);
-        }
+//        for (int i = 1; i <= 30; i++) { //takes 1.5 seconds reach full speed
+//            drive.drive(0, (i / 100));
+//            Timer.delay(.05);
+//        }
 
         drive.drive(0.3, 0.0);
-        Timer.delay(1.0);
+        Timer.delay(2.0);
+        drive.drive(0.5, 0.0);
+        Timer.delay(2);
+        drive.drive(.4, 0.0);
+        Timer.delay(.1);
+        drive.drive(0.35, 0.0);
+        Timer.delay(.3);
         drive.drive(0.0, 0.0);
-
+        
+        collectorMotor.set(.8);
+        rightCollector.set(DoubleSolenoid.Value.kReverse);
+        leftCollector.set(DoubleSolenoid.Value.kReverse);
+        collectorMotor.set(.8);
+        Timer.delay(.5);
+        collectorMotor.set(.8);
+        Timer.delay(.5);
+        collectorMotor.set(.8);
+        Timer.delay(.5);
+        collectorMotor.set(0);
         //Shoot:
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
         shoot();
-        Timer.delay(1);
-        pivot(180);
+        
 
     }
 
@@ -316,8 +331,6 @@ public class Robot3182 extends IterativeRobot {
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
         SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
         
-        System.out.println("Speed right: " + rightDriveEncoder.getRate());
-        System.out.println("Speed left: " + leftDriveEncoder.getRate());
     }
 
     public void disabledInit() {
@@ -394,15 +407,19 @@ public class Robot3182 extends IterativeRobot {
 //            shooterMotors.set(1);
 //            Timer.delay(.01);
 //        }
+        compressor.stop();
+        Timer.delay(.25);
         shooterMotors.set(1);
-        Timer.delay(.75);
+        Timer.delay(1.4);
         shooterMotors.set(0);
         Timer.delay(.5);
-
         //start reload
-        shooterMotors.set(-.25);
-        Timer.delay(2);
+        // remember to set negative
+        shooterMotors.set(-.15);
+        Timer.delay(1.5);
         shooterMotors.set(0);
+        compressor.start();
+//        compressor.start();
 //        isReloading = true; //prevents shooting when being reloaded
 //        if (shoot == false && isReloading == false) {
 //            shooterMotors.set(0);
@@ -444,7 +461,7 @@ public class Robot3182 extends IterativeRobot {
         //Timer.delay(.01);
         // }
         drive.drive(1, signum(angle_deg));
-        Timer.delay(Math.abs(angle_deg / 300));
+        Timer.delay(Math.abs(angle_deg / 90));
         drive.drive(0, 0);
     }
 
@@ -460,12 +477,14 @@ public class Robot3182 extends IterativeRobot {
     }
 
     private void collectOut() {
+        collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kForward);
         leftCollector.set(DoubleSolenoid.Value.kForward);
 
     }
 
     private void collectIn() {
+        collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
     }
