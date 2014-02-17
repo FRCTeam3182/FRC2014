@@ -143,12 +143,7 @@ public class Robot3182 extends IterativeRobot {
     public void autonomousInit() {
 
         //Send command to Arduino for the light strip
-        // set the variable distance to the distance of encoder since reset
-        //Drive forward for 2 seconds with linear acceleration function
-//        for (int i = 1; i <= 30; i++) { //takes 1.5 seconds reach full speed
-//            drive.drive(0, (i / 100));
-//            Timer.delay(.05);
-//        }
+
         drive.drive(0.3, 0.0);
         Timer.delay(2.0);
         drive.drive(0.5, 0.0);
@@ -503,17 +498,16 @@ public class Robot3182 extends IterativeRobot {
         arduinoSignal.set(four);
         arduinoSignifier.set(false);
     }
-
-//    private void getUltraRange() {
-//        distanceRange = rangeFinder.getRangeInches();
-//        if (distanceRange >= 60 && distanceRange <= 72) {
-//            sendArduino(false, true, true, false); //green
-//        } else if (distanceRange >= 3 && distanceRange < 60) {
-//            sendArduino(true, false, false, false); //red
-//        } else if (distanceRange >= 60 && distanceRange <= 72) {
-//            sendArduino(false, false, true, false); //yellow
-//        }
-//    }
-    
-   
+    private void getUltraRange(){
+        distanceRange = rangeFinder.getRangeInches();
+        if (distanceRange >= 60 && distanceRange <= 72){
+            sendArduino(false, true, true, false); //green
+        }
+        else if (distanceRange >= 3 && distanceRange < 60){
+            sendArduino(true, false, false, false); //red
+        }
+        else if (distanceRange >= 60 && distanceRange <= 72){
+            sendArduino(false, false, true, false); //yellow
+        }
+    }
 }
