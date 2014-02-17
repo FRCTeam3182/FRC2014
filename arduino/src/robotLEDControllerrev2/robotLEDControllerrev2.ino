@@ -37,7 +37,6 @@
 
 //led string stuff:
 const int ledsNumber = 80; //number of leds on the strip
-int stripBrightness = 0;
 CRGB leds[ledsNumber];
 
 //color data
@@ -64,7 +63,7 @@ uint32_t randomColor[] = {
 };
 
 //choses which animation to play (changes every time something happens)
-int idleAnim = 1; //1 is a starting animation, 2 is chase, 3 is newton's craddle, 4 is..........
+int idleAnim = 2; //1 is a starting animation, 2 is chase, 3 is newton's craddle, 4 is..........
 //direction of chase
 boolean chaseDir = false;
 boolean newtonDir = false;
@@ -114,7 +113,7 @@ void loop(){
   }
   else if (incomingByte == 98){ //b
     dataRecieved[0] = true;
-    dataRecieved[1] = false;
+    dataRecieved[1] = true;
     dataRecieved[2] = false;
     dataRecieved[3] = false;
     //    setRed();
@@ -127,7 +126,7 @@ void loop(){
     //    setGreen();
   }
   else if (incomingByte == 100){ //d
-    dataRecieved[0] = true;
+    dataRecieved[0] = false;
     dataRecieved[1] = true;
     dataRecieved[2] = false;
     dataRecieved[3] = false;
@@ -153,7 +152,17 @@ void loop(){
     dataRecieved[3] = false;
     delay(10);
   }
+  if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == true){
+    //clears the strip
+    idle();
 
+    //ensure the variables stay the same
+    dataRecieved[0] = false;
+    dataRecieved[1] = false;  
+    dataRecieved[2] = false;
+    dataRecieved[3] = true;
+    delay(10);
+  }
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //sets the strip to red and the distance color to red
     setRed();
@@ -214,7 +223,6 @@ void loop(){
   } 
 
 }
-
 
 void readSidecar(){
   //reads the data coming from the sidecar when the interrupt is detected
@@ -345,46 +353,54 @@ void clearLeds(){
 
 void celebration(){
   //plays an animation that is played at the end of every match
-//  for (int i = 0; i < 23; i++){
-//    leds[i] = CRGB::White;
-//    leds[79-i] = CRGB::White;
-//    FastLED.show();
-//    delay((pow(i, 2)) + 50);
-//    leds[i] = CRGB::Black;
-//    leds[79-i] = CRGB::Black;
-//  }
+  for (int i = 0; i < 23; i++){
+    leds[i] = CRGB::White;
+    leds[79-i] = CRGB::White;
+    FastLED.show();
+    delay((pow(i, 2)*.8) + 50);
+    leds[i] = CRGB::Black;
+    leds[79-i] = CRGB::Black;
+  }
 
 
   FastLED.show();
   for(int i = 0; i<10; i++){
 
     r = random(0,7);
-    Serial.println(r);
     leds[23] = randomColor[r];
-
-    //  r = random(0,7);
-    //  leds[56] = randomColor[r];
-    Serial.println(leds[23].r);
+    r= random(0,7);
+    leds[56] = randomColor[r];
+    
     for(int z = 0; z<=10; z++){
       leds[12+z].r = leds[13+z].r;
       leds[12+z].g = leds[13+z].g;
       leds[12+z].b = leds[13+z].b;
-      //      leds[33-i] = leds[32-i];
+      leds[34-z].r = leds[33-z].r;
+      leds[34-z].g = leds[33-z].g;
+      leds[34-z].b = leds[33-z].b;
+      leds[47+z].r = leds[48+z].r;
+      leds[47+z].g = leds[48+z].g;
+      leds[47+z].b = leds[48+z].b;
+      leds[65-z].r = leds[64-z].r;
+      leds[65-z].g = leds[64-z].g;
+      leds[65-z].b = leds[64-z].b;
+      
     }
     
-    for(int blah = 0; blah<=10; blah++){
-      Serial.print(i);
-      Serial.print(": ");
-      Serial.print(leds[23-blah].r);
-      Serial.print(", ");
-      Serial.print(leds[23-blah].g);
-      Serial.print(", ");
-      Serial.println(leds[23-blah].b);
-      delay(20);
-    }
+//    for(int blah = 0; blah<=10; blah++){
+//      Serial.print(i);
+//      Serial.print(": ");
+//      Serial.print(leds[23-blah].r);
+//      Serial.print(", ");
+//      Serial.print(leds[23-blah].g);
+//      Serial.print(", ");
+//      Serial.println(leds[23-blah].b);
+//      delay(20);
+//    }
     FastLED.show();
-    delay(5000);
+    delay(pow(i,2)*4+30);
   }
+  FastLED.clear();
 }
 
 void idle(){
