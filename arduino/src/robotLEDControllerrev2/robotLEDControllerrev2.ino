@@ -378,9 +378,9 @@ void celebration(){
       leds[34-z].r = leds[33-z].r;
       leds[34-z].g = leds[33-z].g;
       leds[34-z].b = leds[33-z].b;
-      leds[47+z].r = leds[48+z].r;
-      leds[47+z].g = leds[48+z].g;
-      leds[47+z].b = leds[48+z].b;
+      leds[46+z].r = leds[47+z].r;
+      leds[46+z].g = leds[47+z].g;
+      leds[46+z].b = leds[47+z].b;
       leds[65-z].r = leds[64-z].r;
       leds[65-z].g = leds[64-z].g;
       leds[65-z].b = leds[64-z].b;
