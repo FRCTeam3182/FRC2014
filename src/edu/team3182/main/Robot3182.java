@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -17,7 +18,6 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.lang.Thread;
@@ -42,7 +42,7 @@ public class Robot3182 extends IterativeRobot {
     private Joystick leftJoystick;
     //Initialization of code for robot appendage functions
     private Joystick buttonsJoystick;
-    private Talon shooterMotors;  
+    private Talon shooterMotors;
     private Talon collectorMotor;
     private DoubleSolenoid leftShifter;
     private DoubleSolenoid rightShifter;
@@ -54,10 +54,9 @@ public class Robot3182 extends IterativeRobot {
     private Encoder leftDriveEncoder;
     public SmartDashboard dash;
     private DigitalInput limitLED;
-    private AnalogPotentiometer shooterPot;
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
-    private Ultrasonic rangeFinder;
+    private AnalogChannel rangeFinder;
 
     // Initialize variables to support functions above
     // yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
@@ -108,8 +107,8 @@ public class Robot3182 extends IterativeRobot {
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         //the paramater will probably change depending on where the limit switch is 
-//        limitLED = new DigitalInput(1);
-//        limitStat = limitLED.get();
+        limitLED = new DigitalInput(1);
+        limitStat = limitLED.get();
         arduinoSignal = new DigitalOutput(5); //sgnal with data
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
 
@@ -119,7 +118,7 @@ public class Robot3182 extends IterativeRobot {
         collectorMotor.setSafetyEnabled(true);
         shooterMotors.setSafetyEnabled(false);
         //UNCOMMENT WHEN potentiometer is hooked up
-        shooterPot = new AnalogPotentiometer(1);
+        
         rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
         rightDriveEncoder.reset();
@@ -130,7 +129,7 @@ public class Robot3182 extends IterativeRobot {
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
 
-        rangeFinder = new Ultrasonic(8, 9);
+        rangeFinder = new AnalogChannel(1);
 //=================Needs Change:================================
         compressor = new Compressor(7, 1);
         compressor.start();
@@ -151,7 +150,6 @@ public class Robot3182 extends IterativeRobot {
 //            drive.drive(0, (i / 100));
 //            Timer.delay(.05);
 //        }
-
         drive.drive(0.3, 0.0);
         Timer.delay(2.0);
         drive.drive(0.5, 0.0);
@@ -161,7 +159,7 @@ public class Robot3182 extends IterativeRobot {
         drive.drive(0.35, 0.0);
         Timer.delay(.3);
         drive.drive(0.0, 0.0);
-        
+
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
@@ -176,7 +174,6 @@ public class Robot3182 extends IterativeRobot {
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
         shoot();
-        
 
     }
 
@@ -203,15 +200,17 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-        getUltraRange();
+//        getUltraRange();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
         distance = rightDriveEncoder.getDistance();
+        double abc = rangeFinder.getAverageVoltage();
         SmartDashboard.putNumber("Distance away: ", distanceRange);
+        System.out.println(abc);
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
-        
+
         //shoot is button 1, collect is 2, ground pass/dump is 3
         // collector is buttons 10 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
@@ -240,11 +239,11 @@ public class Robot3182 extends IterativeRobot {
             toggleIn = true;
         }
         if (toggleOut && !collectorButton11) { //when button 10 is let go, the toggle will comence
-            collectOut();
+            collectIn();
             toggleOut = false;
         }
         if (toggleIn && !collectorButton9) { //when button 11 is let go, the toggle will comence
-            collectIn();
+            collectOut();
             toggleIn = false;
         }
 
@@ -321,16 +320,23 @@ public class Robot3182 extends IterativeRobot {
             pass();
         }
         if (limitStat) {
+            
             //make LED some color
+            
         } else if (limitStat == false) {
+            
             /* make LED's do whatever they normally do when not notifying 
              * the drivers that the bot is in some state
              */
         }
+        
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
         SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
+        sendArduino(false, false, false, false);
         
+        
+
     }
 
     public void disabledInit() {
@@ -338,7 +344,7 @@ public class Robot3182 extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-        
+
     }
 
     /**
@@ -361,10 +367,10 @@ public class Robot3182 extends IterativeRobot {
         }
 
         if (buttonsJoystick.getRawButton(5)) {
-            collectOut();
+            collectIn();
         }
         if (buttonsJoystick.getRawButton(6)) {
-            collectIn();
+            collectOut();
         }
         if (buttonsJoystick.getRawButton(7)) {
             shiftHigh();
@@ -407,8 +413,13 @@ public class Robot3182 extends IterativeRobot {
 //            shooterMotors.set(1);
 //            Timer.delay(.01);
 //        }
+        sendArduino(false, true, false, false);
         compressor.stop();
         Timer.delay(.25);
+        collectIn();
+        Timer.delay(.3);
+        collectOut();
+        Timer.delay(.45);
         shooterMotors.set(1);
         Timer.delay(1.4);
         shooterMotors.set(0);
@@ -442,6 +453,7 @@ public class Robot3182 extends IterativeRobot {
 
     // runs collect forward relies on safety config disabling
     private void collect() {
+        sendArduino(false, true, false, false);
         collectorMotor.set(.8);
 
     }
@@ -476,14 +488,14 @@ public class Robot3182 extends IterativeRobot {
 
     }
 
-    private void collectOut() {
+    private void collectIn() {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kForward);
         leftCollector.set(DoubleSolenoid.Value.kForward);
 
     }
 
-    private void collectIn() {
+    private void collectOut() {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
@@ -512,16 +524,17 @@ public class Robot3182 extends IterativeRobot {
         arduinoSignal.set(four);
         arduinoSignifier.set(false);
     }
-    private void getUltraRange(){
-        distanceRange = rangeFinder.getRangeInches();
-        if (distanceRange >= 60 && distanceRange <= 72){
-            sendArduino(false, true, true, false); //green
-        }
-        else if (distanceRange >= 3 && distanceRange < 60){
-            sendArduino(true, false, false, false); //red
-        }
-        else if (distanceRange >= 60 && distanceRange <= 72){
-            sendArduino(false, false, true, false); //yellow
-        }
-    }
+
+//    private void getUltraRange() {
+//        distanceRange = rangeFinder.getRangeInches();
+//        if (distanceRange >= 60 && distanceRange <= 72) {
+//            sendArduino(false, true, true, false); //green
+//        } else if (distanceRange >= 3 && distanceRange < 60) {
+//            sendArduino(true, false, false, false); //red
+//        } else if (distanceRange >= 60 && distanceRange <= 72) {
+//            sendArduino(false, false, true, false); //yellow
+//        }
+//    }
+    
+   
 }
