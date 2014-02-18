@@ -7,36 +7,56 @@ package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Compressor;
 
 /**
  *
  * @author Peter
- * 
+ *
  */
 public class Shooter extends Object implements Runnable {
-    private Talon shooterMotors; 
-    
-    public Shooter() {
-        
-    
-    shooterMotors = new Talon(4);
-}
 
-public void run() {
-    final int endLoopShoot = 10;
-    for (int i = 1; i <= endLoopShoot; i++) { //takes half a second to reach full speed
-            shooterMotors.set(1);
-            Timer.delay(.01);
-        }
-   
+    public static boolean shootCommand;
+    private Talon shooterMotors;
+    private Compressor compressor;
+
+    public Shooter() {
+
+        shooterMotors = new Talon(4);
+        shootCommand = false;
+        compressor = new Compressor(7, 1);
+        compressor.start();
+    }
+
+    private void shoot() {
+
+        compressor.stop();
+        Collector.collectCommand = true;
+        Timer.delay(.25);
+        Collector.collectInCommand = true;
+        Timer.delay(.3);
+        Collector.collectOutCommand = true;
+        Timer.delay(.45);
         shooterMotors.set(1);
-        Timer.delay(.2);
+        Timer.delay(1.4);
         shooterMotors.set(0);
         Timer.delay(.5);
-
         //start reload
-        shooterMotors.set(-.25);
-        Timer.delay(2);
+        // collectorMotor.set(0);
+        // remember to set negative
+        shooterMotors.set(-.15);
+        Timer.delay(1.5);
         shooterMotors.set(0);
+        compressor.start();
+    }
+
+    public void run() {
+        while (true) {
+            if (shootCommand) {
+                shoot();
+                shootCommand = false;
+            }
+
+        }
     }
 }

@@ -78,6 +78,7 @@ public class Robot3182 extends IterativeRobot {
     boolean rightTrigger = false;
     boolean leftTrigger = false;
     boolean limitStat;
+    boolean cleared = false; //for lights
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
@@ -107,18 +108,18 @@ public class Robot3182 extends IterativeRobot {
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         //the paramater will probably change depending on where the limit switch is 
-        limitLED = new DigitalInput(1);
-        limitStat = limitLED.get();
+//        limitLED = new DigitalInput(1);
+//        limitStat = limitLED.get();
         arduinoSignal = new DigitalOutput(5); //sgnal with data
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
 
         //UNCOMMENT WHEN remainder of electronics board is complete
         shooterMotors = new Talon(4);
-        collectorMotor = new Talon(3);
-        collectorMotor.setSafetyEnabled(true);
+//        collectorMotor = new Talon(3);
+        //collectorMotor.setSafetyEnabled(true);
         shooterMotors.setSafetyEnabled(false);
         //UNCOMMENT WHEN potentiometer is hooked up
-        
+
         rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
         rightDriveEncoder.reset();
@@ -126,10 +127,10 @@ public class Robot3182 extends IterativeRobot {
 
         leftShifter = new DoubleSolenoid(5, 6);
         rightShifter = new DoubleSolenoid(7, 8);
-        leftCollector = new DoubleSolenoid(1, 2);
-        rightCollector = new DoubleSolenoid(3, 4);
+//        leftCollector = new DoubleSolenoid(1, 2);
+//        rightCollector = new DoubleSolenoid(3, 4);
 
-        rangeFinder = new AnalogChannel(1,2);
+        rangeFinder = new AnalogChannel(1, 2);
 //=================Needs Change:================================
         compressor = new Compressor(7, 1);
         compressor.start();
@@ -143,7 +144,6 @@ public class Robot3182 extends IterativeRobot {
     public void autonomousInit() {
 
         //Send command to Arduino for the light strip
-
         drive.drive(0.3, 0.0);
         Timer.delay(2.0);
         drive.drive(0.5, 0.0);
@@ -168,7 +168,7 @@ public class Robot3182 extends IterativeRobot {
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
         shoot();
-        
+
     }
 
     public void autonomousPeriodic() {
@@ -191,24 +191,27 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+        if (cleared == false && collect == false) {
+            sendArduino(false, false, false, false);
+            cleared = true;
+        }
+        System.out.println(cleared);
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
 //        getUltraRange();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
-        
+
         //---------------------------------------------------------------------
         //testing voltage for analog rangefinder
         //---------------------------------------------------------------------
-        
         distance = rightDriveEncoder.getDistance();
         double abc = rangeFinder.getAverageVoltage();
         double volt = rangeFinder.getVoltage();
         SmartDashboard.putNumber("Distance away: ", distanceRange);
         System.out.println(abc);
         System.out.println(volt);
-        
-        
+
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
@@ -321,62 +324,52 @@ public class Robot3182 extends IterativeRobot {
         if (collectReverse == true) {
             pass();
         }
-        
-        
-        
+
         if (limitStat) {
-            
+
             //make LED some color
-            
         } else if (limitStat == false) {
-            
+
             /* make LED's do whatever they normally do when not notifying 
              * the drivers that the bot is in some state
              */
         }
-        
+
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
         SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
-        sendArduino(false, false, false, false);
-        
-        
 
     }
 
     public void disabledInit() {
-
+        sendArduino(true, true, false, false);
     }
 
     public void disabledPeriodic() {
 
     }
 
+    public void testInit() {
+        Collector collectVar = new Collector();
+        new Thread(collectVar).start();
+    }
+
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-        if (buttonsJoystick.getRawButton(1)) {
-            shoot();
-        }
+        Shooter.shootCommand = buttonsJoystick.getRawButton(1);
+        Collector.collectCommand = buttonsJoystick.getRawButton(2);
 
-        if (buttonsJoystick.getRawButton(2)) {
-            collect();
-        }
+        Collector.passCommand = buttonsJoystick.getRawButton(3);
 
-        if (buttonsJoystick.getRawButton(3)) {
-            pass();
-        }
         if (buttonsJoystick.getRawButton(4)) {
             pivot(90);
         }
 
-        if (buttonsJoystick.getRawButton(5)) {
-            collectIn();
-        }
-        if (buttonsJoystick.getRawButton(6)) {
-            collectOut();
-        }
+        Collector.collectInCommand = buttonsJoystick.getRawButton(5);
+        Collector.collectOutCommand = buttonsJoystick.getRawButton(6);
+
         if (buttonsJoystick.getRawButton(7)) {
             shiftHigh();
         }
@@ -396,19 +389,22 @@ public class Robot3182 extends IterativeRobot {
             arduinoSignal.set(true);
             Timer.delay(.01);
             arduinoSignal.set(true);
+            Timer.delay(.01);
+            arduinoSignal.set(true);
             arduinoSignifier.set(false);
+            sendArduino(false, true, false, true);
         }
-        x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
-        if (x > .25) {
-            leftCollector.set(DoubleSolenoid.Value.kForward);
-            rightCollector.set(DoubleSolenoid.Value.kForward);
-        } else if (x < -.25) {
-            leftCollector.set(DoubleSolenoid.Value.kReverse);
-            rightCollector.set(DoubleSolenoid.Value.kReverse);
-        } else {
-            leftCollector.set(DoubleSolenoid.Value.kOff);
-            rightCollector.set(DoubleSolenoid.Value.kOff);
-        }
+//        x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
+//        if (x > .25) {
+//            leftCollector.set(DoubleSolenoid.Value.kForward);
+//            rightCollector.set(DoubleSolenoid.Value.kForward);
+//        } else if (x < -.25) {
+//            leftCollector.set(DoubleSolenoid.Value.kReverse);
+//            rightCollector.set(DoubleSolenoid.Value.kReverse);
+//        } else {
+//            leftCollector.set(DoubleSolenoid.Value.kOff);
+//            rightCollector.set(DoubleSolenoid.Value.kOff);
+//        }
 
     }
 
@@ -455,7 +451,6 @@ public class Robot3182 extends IterativeRobot {
         //drive.drive(0, (i / endLoopDrive));
         //Timer.delay(.01);
         // }
-        
         drive.drive(1, signum(angle_deg));
         Timer.delay(Math.abs(angle_deg / 90));
         drive.drive(0, 0);
@@ -506,7 +501,10 @@ public class Robot3182 extends IterativeRobot {
         arduinoSignal.set(three);
         Timer.delay(.01);
         arduinoSignal.set(four);
+        Timer.delay(.01);
+        arduinoSignal.set(false);
         arduinoSignifier.set(false);
+        cleared = false;
     }
 //    private void getUltraRange(){
 //        distanceRange = rangeFinder.getRangeInches();
