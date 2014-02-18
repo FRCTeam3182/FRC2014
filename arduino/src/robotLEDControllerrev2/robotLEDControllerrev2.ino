@@ -235,6 +235,10 @@ void readSidecar(){
   delayMicroseconds(100000);
   dataRecieved[3] = digitalRead(3);
   delayMicroseconds(100000);
+  Serial.print(dataRecieved[0]);
+  Serial.print(dataRecieved[1]);
+  Serial.print(dataRecieved[2]);
+  Serial.println(dataRecieved[3]);
 }
 
 void shootAndCollect(){
@@ -381,9 +385,9 @@ void celebration(){
       leds[46+z].r = leds[47+z].r;
       leds[46+z].g = leds[47+z].g;
       leds[46+z].b = leds[47+z].b;
-      leds[65-z].r = leds[64-z].r;
-      leds[65-z].g = leds[64-z].g;
-      leds[65-z].b = leds[64-z].b;
+      leds[66-z].r = leds[65-z].r;
+      leds[66-z].g = leds[65-z].g;
+      leds[66-z].b = leds[65-z].b;
       
     }
     
@@ -407,7 +411,7 @@ void idle(){
   //plays when the robot isn't doing anything specific, but is just driving, defending, etc.
   if (idleAnim == 1){
     //starting animation
-
+    
   }
   if (idleAnim == 2){
     //led chase
