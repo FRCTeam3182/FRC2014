@@ -5,10 +5,9 @@
  */
 package edu.team3182.main;
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogChannel;
+//import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -16,27 +15,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Peter
  */
 public class Sensors extends Object implements Runnable {
-
+    private AnalogChannel rangeFinder;
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
-    private Ultrasonic rangeFinder;
-    private AnalogPotentiometer shooterPot;
-    private DigitalInput limitLED;
+    double distance;
+    double avgVolt;
+    //private DigitalInput limitLED;
 
     public Sensors() {
         rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
-        rangeFinder = new Ultrasonic(8, 9);
-        int shooterPotVal;
+        rangeFinder = new AnalogChannel(1,1);
         double distanceRange;
+        
     }
 
     public void run() {
-        double distance;
-        double distanceRange;
-        distanceRange = rangeFinder.getRangeInches();
-        distance = rightDriveEncoder.getDistance();
-        SmartDashboard.putNumber("Distance away: ", distanceRange);
+       distance = rightDriveEncoder.getDistance();
+       avgVolt = rangeFinder.getAverageVoltage();
+       SmartDashboard.putNumber("Average Voltage Range Sensor: ", avgVolt);
+       SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
+       SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
+       
     }
 
 }
