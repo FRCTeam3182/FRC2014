@@ -21,7 +21,6 @@ public class Shooter extends Object implements Runnable {
     private Compressor compressor;
 
     public Shooter() {
-
         shooterMotors = new Talon(4);
         shootCommand = false;
         compressor = new Compressor(7, 1);

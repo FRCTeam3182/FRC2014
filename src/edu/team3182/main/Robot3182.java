@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.team3182.main;
 
+import com.sun.squawk.util.Arrays;
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -78,7 +79,9 @@ public class Robot3182 extends IterativeRobot {
     boolean rightTrigger = false;
     boolean leftTrigger = false;
     boolean limitStat;
-    boolean cleared = false; //for lights
+    boolean[] lightData = new boolean[] {false, false, false, false};
+    boolean[] dummy = new boolean[4];
+    boolean isSame = false;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
@@ -110,7 +113,7 @@ public class Robot3182 extends IterativeRobot {
         //the paramater will probably change depending on where the limit switch is 
 //        limitLED = new DigitalInput(1);
 //        limitStat = limitLED.get();
-        arduinoSignal = new DigitalOutput(5); //sgnal with data
+        arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
 
         //UNCOMMENT WHEN remainder of electronics board is complete
@@ -131,7 +134,6 @@ public class Robot3182 extends IterativeRobot {
 //        rightCollector = new DoubleSolenoid(3, 4);
 
         rangeFinder = new AnalogChannel(1, 2);
-//=================Needs Change:================================
         compressor = new Compressor(7, 1);
         compressor.start();
 
@@ -144,6 +146,9 @@ public class Robot3182 extends IterativeRobot {
     public void autonomousInit() {
 
         //Send command to Arduino for the light strip
+        sendArduino(true, false, true, false); //charging animation
+        sendArduino(false, false, false, false); //stop it imediatly after it finishes
+        //drive forward
         drive.drive(0.3, 0.0);
         Timer.delay(2.0);
         drive.drive(0.5, 0.0);
@@ -153,7 +158,6 @@ public class Robot3182 extends IterativeRobot {
         drive.drive(0.35, 0.0);
         Timer.delay(.3);
         drive.drive(0.0, 0.0);
-
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
@@ -191,11 +195,6 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        if (cleared == false && collect == false) {
-            sendArduino(false, false, false, false);
-            cleared = true;
-        }
-        System.out.println(cleared);
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
@@ -446,11 +445,6 @@ public class Robot3182 extends IterativeRobot {
 
     // pivots robot by some angle, positive is right, negative is left
     private void pivot(float angle_deg) {
-
-        //for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-        //drive.drive(0, (i / endLoopDrive));
-        //Timer.delay(.01);
-        // }
         drive.drive(1, signum(angle_deg));
         Timer.delay(Math.abs(angle_deg / 90));
         drive.drive(0, 0);
@@ -492,19 +486,23 @@ public class Robot3182 extends IterativeRobot {
 
     private void sendArduino(boolean one, boolean two, boolean three, boolean four) {
         //the fuction to send certain data to the arduino
-
-        arduinoSignifier.set(true);
-        arduinoSignal.set(one);
-        Timer.delay(.01);
-        arduinoSignal.set(two);
-        Timer.delay(.01);
-        arduinoSignal.set(three);
-        Timer.delay(.01);
-        arduinoSignal.set(four);
-        Timer.delay(.01);
-        arduinoSignal.set(false);
-        arduinoSignifier.set(false);
-        cleared = false;
+        dummy = new boolean[] {one, two, three, four};
+        isSame = Arrays.equals(dummy, lightData);
+       
+        if (!isSame){
+            arduinoSignifier.set(true);
+            arduinoSignal.set(one);
+            Timer.delay(.01);
+            arduinoSignal.set(two);
+            Timer.delay(.01);
+            arduinoSignal.set(three);
+            Timer.delay(.01);
+            arduinoSignal.set(four);
+            Timer.delay(.01);
+            arduinoSignal.set(false);
+            arduinoSignifier.set(false);
+        }
+        lightData = new boolean[] {one, two, three, four};
     }
 //    private void getUltraRange(){
 //        distanceRange = rangeFinder.getRangeInches();
