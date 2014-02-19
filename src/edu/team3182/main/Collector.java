@@ -33,7 +33,6 @@ public class Collector extends Object implements Runnable {
         collectInCommand = false;
         collectOutCommand = false;
         passCommand = false;
-
     }
 
     public void run() {
