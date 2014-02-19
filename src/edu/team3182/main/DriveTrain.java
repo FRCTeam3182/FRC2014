@@ -17,53 +17,49 @@ import edu.wpi.first.wpilibj.RobotDrive;
  * @author Nodcah
  */
 public class DriveTrain extends Object implements Runnable {
-    
+
     private DoubleSolenoid leftShifter;
     private DoubleSolenoid rightShifter;
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
-    boolean quarterTurnLeft = false;
-    boolean quarterTurnRight = false;
-    boolean halfTurnRight = false;
-    boolean rightTrigger = false;
-    boolean leftTrigger = false;
+    public static boolean rightTriggerCommand;
+    public static boolean leftTriggerCommand;
+    public static boolean quarterTurnLeftCommand;
+    public static boolean quarterTurnRightCommand;
+    public static boolean halfTurnRightCommand;
+
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double yAxisRight;
     double yAxisLeft;
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
-    double p = 0.25; //dead zone of joysticks for drive is between -p and p
-    
-  
-    public DriveTrain(){
-    drive = new RobotDrive(1, 2);
-    drive.setSafetyEnabled (false);
-    rightJoystick  = new Joystick(1);
-    leftJoystick  = new Joystick(2);
-    leftShifter  = new DoubleSolenoid(5, 6);
-    rightShifter  = new DoubleSolenoid(7, 8);
-      
-    }
-    public void run() {
+    double p = 0.10; //dead zone of joysticks for drive is between -p and p
 
-        //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
-        //NOTE: Reloading will be stopped when a maneuver is activated
-        //NOTE: Maneuvers will not be activated if the collector motor is on
-        //Buttons changed to 2 and 3, trigger is shifters
-        rightTrigger = rightJoystick.getRawButton(1);
-        leftTrigger = leftJoystick.getRawButton(1);
-        quarterTurnLeft = leftJoystick.getRawButton(2);
-        quarterTurnRight = rightJoystick.getRawButton(2);
-        halfTurnRight = rightJoystick.getRawButton(3);
+    public DriveTrain() {
+        drive = new RobotDrive(1, 2);
+        drive.setSafetyEnabled(false);
+        rightJoystick = new Joystick(1);
+        leftJoystick = new Joystick(2);
+        leftShifter = new DoubleSolenoid(5, 6);
+        rightShifter = new DoubleSolenoid(7, 8);
+        rightTriggerCommand = false;
+        leftTriggerCommand = false;
+        quarterTurnLeftCommand = false;
+        quarterTurnRightCommand = false;
+        halfTurnRightCommand = false;
+
+    }
+
+    public void run() {
 
         //shifter code
         //while both of the triggers are clicked, the shifter are switched to high gear
-        if (rightTrigger && leftTrigger) {
+        if (rightTriggerCommand && leftTriggerCommand) {
             // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
             shiftHigh();
         }
-        if (rightTrigger == false && leftTrigger == false) {
+        if (rightTriggerCommand == false && leftTriggerCommand == false) {
             // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
             shiftLow();
 
@@ -100,14 +96,14 @@ public class DriveTrain extends Object implements Runnable {
         drive.tankDrive(smoothVarLeft, smoothVarRight);
 
         //does a clockwise 90 degree turn quickly 
-        if (quarterTurnRight == true) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+        if (quarterTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
             pivot(90);
         }
         //does a counter-clockwise 90 degree turn quickly
-        if (quarterTurnLeft == true) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+        if (quarterTurnLeftCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
             pivot(-90);
         }
-        if (halfTurnRight == true) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+        if (halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
             pivot(180);
         }
 
@@ -116,10 +112,6 @@ public class DriveTrain extends Object implements Runnable {
     // pivots robot by some angle, positive is right, negative is left
     private void pivot(float angle_deg) {
 
-        //for (int i = 1; i <= endLoopDrive; i++) { ///takes 1/10th of a second reach full speed
-        //drive.drive(0, (i / endLoopDrive));
-        //Timer.delay(.01);
-        // }
         drive.drive(1, signum(angle_deg));
         Timer.delay(Math.abs(angle_deg / 300));
         drive.drive(0, 0);

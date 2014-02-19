@@ -363,9 +363,7 @@ public class Robot3182 extends IterativeRobot {
 
         Collector.passCommand = buttonsJoystick.getRawButton(3);
 
-        if (buttonsJoystick.getRawButton(4)) {
-            pivot(90);
-        }
+        DriveTrain.quarterTurnRightCommand = buttonsJoystick.getRawButton(4);
 
         Collector.collectInCommand = buttonsJoystick.getRawButton(5);
         Collector.collectOutCommand = buttonsJoystick.getRawButton(6);
@@ -376,12 +374,10 @@ public class Robot3182 extends IterativeRobot {
         if (buttonsJoystick.getRawButton(8)) {
             shiftLow();
         }
-        if (buttonsJoystick.getRawButton(9)) {
-            pivot(-90);
-        }
-        if (buttonsJoystick.getRawButton(10)) {
-            pivot(180);
-        }
+        DriveTrain.quarterTurnLeftCommand = buttonsJoystick.getRawButton(9);
+
+        DriveTrain.halfTurnRightCommand = buttonsJoystick.getRawButton(10);
+
         if (buttonsJoystick.getRawButton(11)) {
             arduinoSignifier.set(true);
             arduinoSignal.set(false);
