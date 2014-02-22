@@ -111,26 +111,28 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
        leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        //the paramater will probably change depending on where the limit switch is
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
 
-        //UNCOMMENT WHEN remainder of electronics board is complete
+        //Motors and stuff
         shooterMotors = new Talon(4);
         collectorMotor = new Talon(3);
         collectorMotor.setSafetyEnabled(true);
         shooterMotors.setSafetyEnabled(false);
 
-       rightDriveEncoder = new Encoder(4, 3);
+        //Encoders and stuff
+        rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
         rightDriveEncoder.reset();
         rightDriveEncoder.setDistancePerPulse(.08168);
 
+        //Solenoids
         leftShifter = new DoubleSolenoid(5, 6);
         rightShifter = new DoubleSolenoid(7, 8);
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
 
+        //Range Finder and compressor
         rangeFinder = new AnalogChannel(1, 2);
         compressor = new Compressor(7, 1);
         compressor.start();
@@ -263,7 +265,7 @@ public class Robot3182 extends IterativeRobot {
         }
 
         //shifter code
-        //while both of the triggers are clicked, the shifter are switched to ??????high gear????????
+        //while both of the triggers are clicked, the shifter are switched to high gear
         if (rightTrigger && leftTrigger) {
             // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
             shiftHigh();
@@ -274,10 +276,12 @@ public class Robot3182 extends IterativeRobot {
 
         }
 
-        //makes sure joystick will not work at +/-25% throttle
-        //smoothVarRight/Left are output variables from a function
-        //to get power from 0 to 1 between P and full throttle on the joysticks
-        //same for full reverse throttle to -P
+        /*-------------------------------------------------------------
+        makes sure joystick will not work at +/-10% throttle
+        smoothVarRight/Left are output variables from a function
+        to get power from 0 to 1 between P and full throttle on the joysticks
+        same for full reverse throttle to -P
+         -------------------------------------------------------------*/
         if (yAxisRight < p && yAxisRight > (-p)) {
             smoothVarRight = 0;
         }
