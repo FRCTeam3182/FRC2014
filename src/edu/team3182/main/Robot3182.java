@@ -67,6 +67,7 @@ public class Robot3182 extends IterativeRobot {
     boolean collectorButton11;
     boolean collectorButton9;
     boolean signalLight = false;
+    boolean killLights;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -218,6 +219,7 @@ public class Robot3182 extends IterativeRobot {
         collect = buttonsJoystick.getRawButton(3);
         signalLight = buttonsJoystick.getRawButton(4);
         collectReverse = buttonsJoystick.getRawButton(5);
+        killLights = buttonsJoystick.getRawButton(7);
         collectorButton11 = buttonsJoystick.getRawButton(11);
         collectorButton9 = buttonsJoystick.getRawButton(9);
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
@@ -326,6 +328,10 @@ public class Robot3182 extends IterativeRobot {
             sendArduino(false, false, true, true);
         }
 
+        if (killLights){
+            //kills the lights until reset
+            sendArduino(true, true, true, true);
+        }
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
         SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
