@@ -8,6 +8,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.AnalogChannel;
 //import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -28,6 +29,7 @@ public class Sensors extends Object implements Runnable {
         leftDriveEncoder = new Encoder(2, 1);
         rangeFinder = new AnalogChannel(1, 1);
         double distanceRange;
+        rightDriveEncoder.setDistancePerPulse(.08168);
 
     }
 
@@ -38,6 +40,8 @@ public class Sensors extends Object implements Runnable {
             SmartDashboard.putNumber("Average Voltage Range Sensor: ", avgVolt);
             SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
             SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
+            System.out.println("Average Voltage: " + avgVolt);
+            Timer.delay(.2);
         }
     }
 

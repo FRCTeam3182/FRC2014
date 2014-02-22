@@ -107,6 +107,7 @@ public class DriveTrain extends Object implements Runnable {
             if (halfTurnRightCommand && !quarterTurnRightCommand && !quarterTurnLeftCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
                 pivot(180);
             }
+            Timer.delay(.1);
         }
     }
 
