@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Peter
  */
 public class Sensors extends Object implements Runnable {
+
     private AnalogChannel rangeFinder;
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
@@ -25,18 +26,19 @@ public class Sensors extends Object implements Runnable {
     public Sensors() {
         rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
-        rangeFinder = new AnalogChannel(1,1);
+        rangeFinder = new AnalogChannel(1, 1);
         double distanceRange;
-        
+
     }
 
     public void run() {
-       distance = rightDriveEncoder.getDistance();
-       avgVolt = rangeFinder.getAverageVoltage();
-       SmartDashboard.putNumber("Average Voltage Range Sensor: ", avgVolt);
-       SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
-       SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
-       
+        while (true) {
+            distance = rightDriveEncoder.getDistance();
+            avgVolt = rangeFinder.getAverageVoltage();
+            SmartDashboard.putNumber("Average Voltage Range Sensor: ", avgVolt);
+            SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
+            SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
+        }
     }
 
 }

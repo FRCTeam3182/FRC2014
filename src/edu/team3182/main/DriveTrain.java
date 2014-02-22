@@ -52,61 +52,62 @@ public class DriveTrain extends Object implements Runnable {
     }
 
     public void run() {
+        while (true) {
+            //shifter code
+            //while both of the triggers are clicked, the shifter are switched to high gear
+            if (rightTriggerCommand && leftTriggerCommand) {
+                // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
+                shiftHigh();
+            }
+            if (rightTriggerCommand == false && leftTriggerCommand == false) {
+                // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
+                shiftLow();
 
-        //shifter code
-        //while both of the triggers are clicked, the shifter are switched to high gear
-        if (rightTriggerCommand && leftTriggerCommand) {
-            // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
-            shiftHigh();
-        }
-        if (rightTriggerCommand == false && leftTriggerCommand == false) {
-            // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
-            shiftLow();
+            }
+            /*=================================================================
+                makes sure joystick will not work at +/-10% throttle
+                smoothVarRight/Left are output variables from a function
+                to get power from 0 to 1 between P and full throttle on the joysticks
+                same for full reverse throttle to -P
+            =================================================================*/
+            if (yAxisRight < p && yAxisRight > (-p)) {
+                smoothVarRight = 0;
+            }
+            if (yAxisLeft < p && yAxisLeft > (-p)) {
+                smoothVarLeft = 0;
+            }
+            // yAxisLeft greater than P, which is pull back on the joystick
+            if (yAxisLeft >= p) {
+                smoothVarLeft = ((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));
+            }
+            // yAxisLeft less than -P, which is push forward on the joystick 
+            if (yAxisLeft <= (-p)) {
+                smoothVarLeft = ((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));
+            }
+            //smooth right joystick
+            // yAxisRight greater than P, which is pull back on the joystick 
+            if (yAxisRight >= p) {
+                smoothVarRight = ((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
+            }
+            // yAxisRight less than -P, which is push forward on the joystick 
+            if (yAxisRight <= (-p)) {
+                smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p))));
+            }
+            //drive using the joysticks
+            drive.tankDrive(smoothVarLeft, smoothVarRight);
 
+            //does a clockwise 90 degree turn quickly 
+            if (quarterTurnRightCommand && !quarterTurnLeftCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+                pivot(90);
+            }
+            //does a counter-clockwise 90 degree turn quickly
+            if (quarterTurnLeftCommand && !quarterTurnRightCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+                pivot(-90);
+            }
+            if (halfTurnRightCommand && !quarterTurnRightCommand && !quarterTurnLeftCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+                pivot(180);
+            }
         }
-
-        //makes sure joystick will not work at +/-25% throttle
-        //smoothVarRight/Left are output variables from a function
-        //to get power from 0 to 1 between P and full throttle on the joysticks
-        //same for full reverse throttle to -P
-        if (yAxisRight < p && yAxisRight > (-p)) {
-            smoothVarRight = 0;
-        }
-        if (yAxisLeft < p && yAxisLeft > (-p)) {
-            smoothVarLeft = 0;
-        }
-        // yAxisLeft greater than P, which is pull back on the joystick
-        if (yAxisLeft >= p) {
-            smoothVarLeft = ((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));
-        }
-        // yAxisLeft less than -P, which is push forward on the joystick 
-        if (yAxisLeft <= (-p)) {
-            smoothVarLeft = ((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));
-        }
-        //smooth right joystick
-        // yAxisRight greater than P, which is pull back on the joystick 
-        if (yAxisRight >= p) {
-            smoothVarRight = ((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
-        }
-        // yAxisRight less than -P, which is push forward on the joystick 
-        if (yAxisRight <= (-p)) {
-            smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p))));
-        }
-        //drive using the joysticks
-        drive.tankDrive(smoothVarLeft, smoothVarRight);
-
-        //does a clockwise 90 degree turn quickly 
-        if (quarterTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-            pivot(90);
-        }
-        //does a counter-clockwise 90 degree turn quickly
-        if (quarterTurnLeftCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-            pivot(-90);
-        }
-        if (halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-            pivot(180);
-        }
-
     }
 
     // pivots robot by some angle, positive is right, negative is left

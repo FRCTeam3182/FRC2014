@@ -324,15 +324,6 @@ public class Robot3182 extends IterativeRobot {
             pass();
         }
 
-        if (limitStat) {
-
-            //make LED some color
-        } else if (limitStat == false) {
-
-            /* make LED's do whatever they normally do when not notifying 
-             * the drivers that the bot is in some state
-             */
-        }
 
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
@@ -349,8 +340,14 @@ public class Robot3182 extends IterativeRobot {
     }
 
     public void testInit() {
+        DriveTrain driveTrainVar = new DriveTrain();
+        new Thread(driveTrainVar).start();
         Collector collectVar = new Collector();
         new Thread(collectVar).start();
+        Shooter shooterVar = new Shooter();
+        new Thread (shooterVar).start();
+        Sensors sensorsVar = new Sensors();
+        new Thread (sensorsVar).start();
     }
 
     /**
