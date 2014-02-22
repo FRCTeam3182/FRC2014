@@ -205,9 +205,11 @@ public class Robot3182 extends IterativeRobot {
         //===================================================
         if (driverStation.getAlliance() == DriverStation.Alliance.kBlue){
             // color to blue
+            sendArduino(true, true, true, false);
         }
         else {
             //color to red
+            sendArduino(true, true, false, true);
             
         }
         //---------------------------------------------------------------------
