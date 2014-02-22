@@ -178,7 +178,7 @@ void loop(){
     distanceColor = 0xFFFF00;
     delay(10);
   }
-    else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
+  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
     //signal to other robots
     signal();
     delay(10);
@@ -539,78 +539,32 @@ void signal(){
 void idle(){
   //plays when the robot isn't doing anything specific, but is just driving, defending, etc.
   FastLED.clear();
-  Serial.println("hi");
-  if (idleAnim == 1){
-    //starting animation
 
+  //newton's cradle animation
+  for (int i = 0; i < 5; i++){ //the five middle leds.
+    leds[54+i] = CRGB::Purple;
+    leds[22+i] = CRGB::Purple;
   }
-  if (idleAnim == 2){
-    //led chase
-    FastLED.clear();
-
-    if (chaseDir == true){ //chase in one direction
-      for (int i = 0; i < 39; i++){
-        leds[i] = CRGB::Purple;
-        leds[79-i] = CRGB::Purple;
-        FastLED.show();
-        delay(200);
-        leds[79-i] = CRGB::Black;
-        leds[i] = CRGB::Black;
-
-      }
-      chaseDir = false;  
-    }
-    else if (chaseDir = false){ //chase in the other direction
-      for (int i = 0; i < 39; i++){
-        leds[39-i] = CRGB::Purple;
-        leds[40+i] = CRGB::Purple;
-        FastLED.show();
-        delay(200);
-        leds[39-i] = CRGB::Black;
-        leds[40+i] = CRGB::Black;
-      }
-      chaseDir = true; 
-    }
-  }
-  if (idleAnim == 3){
-    //newton's cradle animation
-    for (int i = 0; i < 5; i++){ //the five middle leds.
+  FastLED.show();
+  if (newtonDir == false){
+    for (int i = 0; i < 8; i++){ //going up
+      leds[22-i] = CRGB::Purple;
+      leds[22-i+1] = CRGB::Black;
       leds[54+i] = CRGB::Purple;
-      leds[22+i] = CRGB::Purple;
+      leds[54+i-1] = CRGB::Black;
+      FastLED.show();
+      delay((pow(i, 2)/.25) + 50);
     }
-    FastLED.show();
-    if (newtonDir == false){
-      for (int i = 0; i < 8; i++){ //going up
-        leds[22-i] = CRGB::Purple;
-        leds[22-i+1] = CRGB::Black;
-        leds[54+i] = CRGB::Purple;
-        leds[54+i-1] = CRGB::Black;
-        FastLED.show();
-        delay((pow(i, 2)/.25) + 50);
-      }
-      for (int i = 0; i < 8; i++){ //going down
-        leds[22+i] = CRGB::Purple;
-        leds[22+i-1] = CRGB::Black;
-        leds[54-i] = CRGB::Purple;
-        leds[54-i+1] = CRGB::Black;
-        FastLED.show();
-        delay((pow(i, 2)/.25) + 50);
-      }
+    for (int i = 0; i < 8; i++){ //going down
+      leds[22+i] = CRGB::Purple;
+      leds[22+i-1] = CRGB::Black;
+      leds[54-i] = CRGB::Purple;
+      leds[54-i+1] = CRGB::Black;
+      FastLED.show();
+      delay((pow(i, 2)/.25) + 50);
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
