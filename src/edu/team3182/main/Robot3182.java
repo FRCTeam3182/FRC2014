@@ -348,8 +348,14 @@ public class Robot3182 extends IterativeRobot {
     }
 
     public void testInit() {
+        DriveTrain driveTrainVar = new DriveTrain();
+        new Thread(driveTrainVar).start();
         Collector collectVar = new Collector();
         new Thread(collectVar).start();
+        Shooter shooterVar = new Shooter();
+        new Thread (shooterVar).start();
+        Sensors sensorsVar = new Sensors();
+        new Thread (sensorsVar).start();
     }
 
     /**
