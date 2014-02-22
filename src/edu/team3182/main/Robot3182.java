@@ -93,7 +93,6 @@ public class Robot3182 extends IterativeRobot {
     //Coefficients of exponential function to ramp up speed of catapult (so ball doesn't fall out)
     final double a = .005;
     final double b = .9;
-    boolean isReloading = false; //prevents shooting when reloading
 
     //###########For testing:##################
     double x;
@@ -253,13 +252,9 @@ public class Robot3182 extends IterativeRobot {
         // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect) {
             collect();
-        } else if (collect == false) {
-            //idle
         }
         if (collectReverse) {
             pass();
-        } else if (collectReverse == false) {
-            //idle
         }
 
         //shifter code
@@ -321,16 +316,14 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         //Shooting   
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
-        if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
+        if (shoot == true && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
             shoot();
+            sendArduino(false,true,false,false);
         }
-
+       
         if (signalLight) {
             //make LED some color as a signal to other teams
             sendArduino(false, false, true, true);
-        } else if (signalLight == false) {
-            //idle
-            sendArduino(false, false, false, true);
         }
 
         //Display rate of encoder to the dashboard
@@ -340,15 +333,19 @@ public class Robot3182 extends IterativeRobot {
          Sensor to arduino code
          VALUES MUST BE CHANGED
          =============================*/
-        if (getVoltage > 0 && getVoltage < 0) {
-            //arduino code green
-        } 
-        else if (getVoltage > 0 && getVoltage < 0) {
-            //arduino code yellow
-        } 
-        else 
-        {
-            //arduino red
+        if (getVoltage >= 60 && getVoltage <= 72){
+            sendArduino(false, true, true, false); //green
+        }
+        else if (getVoltage >= 3 && getVoltage < 60){
+            sendArduino(true, false, false, false); //red
+        }
+        else if (getVoltage >= 60 && getVoltage <= 72){
+            sendArduino(false, false, true, false); //yellow
+        }
+        
+        //if nothing is happening
+        if (getVoltage > 60 && shoot == false && signalLight == false && collect == false && collectReverse == false){
+            sendArduino(false,false,false,true); //idle
         }
     }
 
