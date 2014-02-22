@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import java.lang.Thread;
 import edu.wpi.first.wpilibj.communication.Semaphore;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -107,7 +108,8 @@ public class DriveTrain extends Object implements Runnable {
             if (halfTurnRightCommand && !quarterTurnRightCommand && !quarterTurnLeftCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
                 pivot(180);
             }
-            Timer.delay(.1);
+            driveToDashboard();
+            Timer.delay(.15);
         }
     }
 
@@ -139,5 +141,14 @@ public class DriveTrain extends Object implements Runnable {
         leftShifter.set(DoubleSolenoid.Value.kReverse);
         rightShifter.set(DoubleSolenoid.Value.kReverse);
     }
-
+    private void driveToDashboard(){
+        SmartDashboard.putString("Left Shifter", leftShifter.get().toString());
+        SmartDashboard.putString("Right Shifter", rightShifter.get().toString());
+        SmartDashboard.putNumber("Joystick Axis Right", yAxisRight);
+        SmartDashboard.putNumber("Joystick Axis Left", yAxisLeft);
+        SmartDashboard.putBoolean("Right Trigger Shifter", rightTriggerCommand);
+        SmartDashboard.putBoolean("Left Trigger Shifter", leftTriggerCommand);
+        SmartDashboard.putNumber("Smooth Var Left", smoothVarLeft);
+        SmartDashboard.putNumber("Smooth Var Right", smoothVarRight);
+    }
 }

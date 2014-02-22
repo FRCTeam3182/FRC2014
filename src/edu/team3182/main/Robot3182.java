@@ -108,35 +108,35 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         //camera = AxisCamera.getInstance();
-        drive = new RobotDrive(1, 2);
-        drive.setSafetyEnabled(false);
-        rightJoystick = new Joystick(1);
-        leftJoystick = new Joystick(2);
+       // drive = new RobotDrive(1, 2);
+       // drive.setSafetyEnabled(false);
+       // rightJoystick = new Joystick(1);
+        //leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
 
         //Motors and stuff
-        shooterMotors = new Talon(4);
-        collectorMotor = new Talon(3);
-        collectorMotor.setSafetyEnabled(true);
-        shooterMotors.setSafetyEnabled(false);
+       // shooterMotors = new Talon(4);
+        //collectorMotor = new Talon(3);
+        //collectorMotor.setSafetyEnabled(true);
+        //shooterMotors.setSafetyEnabled(false);
 
         //Encoders and stuff
-        rightDriveEncoder = new Encoder(4, 3);
-        leftDriveEncoder = new Encoder(2, 1);
-        rightDriveEncoder.reset();
-        rightDriveEncoder.setDistancePerPulse(.08168);
+        //rightDriveEncoder = new Encoder(4, 3);
+        //leftDriveEncoder = new Encoder(2, 1);
+        //rightDriveEncoder.reset();
+        //rightDriveEncoder.setDistancePerPulse(.08168);
 
         //Solenoids
-        leftShifter = new DoubleSolenoid(5, 6);
-        rightShifter = new DoubleSolenoid(7, 8);
-        leftCollector = new DoubleSolenoid(1, 2);
-        rightCollector = new DoubleSolenoid(3, 4);
+//        leftShifter = new DoubleSolenoid(5, 6);
+//        rightShifter = new DoubleSolenoid(7, 8);
+//        leftCollector = new DoubleSolenoid(1, 2);
+//        rightCollector = new DoubleSolenoid(3, 4);
         //Range Finder and compressor
-        rangeFinder = new AnalogChannel(1, 2);
-        compressor = new Compressor(7, 1);
-        compressor.start();
+//        rangeFinder = new AnalogChannel(1, 2);
+//        compressor = new Compressor(7, 1);
+//        compressor.start();
 
     }
 
@@ -368,7 +368,7 @@ public class Robot3182 extends IterativeRobot {
         }
         
         //if nothing is happening
-        if (getVoltage > 60 && shoot == false && signalLight == false && collect == false && collectReverse == false){
+        if (shoot == false && signalLight == false && collect == false && collectReverse == false){
             sendArduino(false,false,false,true); //idle
         }
     }
@@ -417,16 +417,8 @@ public class Robot3182 extends IterativeRobot {
         DriveTrain.halfTurnRightCommand = buttonsJoystick.getRawButton(10);
 
         if (buttonsJoystick.getRawButton(11)) {
-            arduinoSignifier.set(true);
-            arduinoSignal.set(false);
-            Timer.delay(.01);
-            arduinoSignal.set(true);
-            Timer.delay(.01);
-            arduinoSignal.set(true);
-            Timer.delay(.01);
-            arduinoSignal.set(true);
-            arduinoSignifier.set(false);
-            sendArduino(false, true, false, true);
+            
+            sendArduino(true,false, false,false);
         }
 //        x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
 //        if (x > .25) {
@@ -525,7 +517,7 @@ public class Robot3182 extends IterativeRobot {
         isSame = Arrays.equals(dummy, lightData);
 
         if (!isSame) {
-            arduinoSignifier.set(true);
+           arduinoSignifier.set(true);
             arduinoSignal.set(one);
             Timer.delay(.01);
             arduinoSignal.set(two);
@@ -538,6 +530,8 @@ public class Robot3182 extends IterativeRobot {
             arduinoSignifier.set(false);
         }
         lightData = new boolean[]{one, two, three, four};
+        System.out.println("hey");
+          
     }
     private void getUltraRange(){
         if (getVoltage >= 60 && getVoltage <= 72){
@@ -553,4 +547,5 @@ public class Robot3182 extends IterativeRobot {
             sendArduino(false,false,false,true); //idle
         }
     }
+    
 }

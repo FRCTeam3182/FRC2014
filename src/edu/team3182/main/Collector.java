@@ -6,6 +6,7 @@
 package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,7 +61,8 @@ public class Collector extends Object implements Runnable {
             if (passCommand && collectCommand){
                 SmartDashboard.putString("Collect motor error", "Both collect buttons are pressed");
             }
-            Timer.delay(.1);
+            collectToDashboard();
+            Timer.delay(.2);
         }
     }
 
@@ -86,6 +88,12 @@ public class Collector extends Object implements Runnable {
 
         collectorMotor.set(-.9);
 
+    }
+    
+    private void collectToDashboard(){
+        SmartDashboard.putNumber("Collector Motor value", collectorMotor.get());
+        SmartDashboard.putString("Collector Solenoid Right", rightCollector.get().toString());
+        SmartDashboard.putString("Collector Solenoid Left", leftCollector.get().toString());
     }
 
 }

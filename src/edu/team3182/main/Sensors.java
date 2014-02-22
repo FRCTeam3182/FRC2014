@@ -22,6 +22,7 @@ public class Sensors extends Object implements Runnable {
     private Encoder leftDriveEncoder;
     double distance;
     double avgVolt;
+    double voltage;
     //private DigitalInput limitLED;
 
     public Sensors() {
@@ -37,11 +38,12 @@ public class Sensors extends Object implements Runnable {
         while (true) {
             distance = rightDriveEncoder.getDistance();
             avgVolt = rangeFinder.getAverageVoltage();
-            SmartDashboard.putNumber("Average Voltage Range Sensor: ", avgVolt);
-            SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
-            SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
-            System.out.println("Average Voltage: " + avgVolt);
-            Timer.delay(.2);
+            voltage = rangeFinder.getVoltage();
+            SmartDashboard.getNumber("Voltage Range Sensor", voltage);
+            SmartDashboard.putNumber("Average Voltage Range Sensor", avgVolt);
+            SmartDashboard.putNumber("Speed Right", rightDriveEncoder.getRate());
+            SmartDashboard.putNumber("Speed Left", leftDriveEncoder.getRate());
+            Timer.delay(.1);
         }
     }
 

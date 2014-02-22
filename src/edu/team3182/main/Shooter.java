@@ -8,6 +8,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -53,9 +54,16 @@ public class Shooter extends Object implements Runnable {
         while (true) {
             if (shootCommand) {
                 shoot();
-                shootCommand = false;
+                shootCommand = false;  
             }
+            shootToDashboard();
+            Timer.delay(.2);
 
         }
+    }
+    
+    private void shootToDashboard(){
+        SmartDashboard.putBoolean("Shoot Command",shootCommand );
+        SmartDashboard.putNumber("Shooter Motor Value", shooterMotors.get());
     }
 }
