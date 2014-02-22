@@ -125,13 +125,13 @@ void loop(){
   else if (incomingByte == 99){ //c
     dataRecieved[0] = true;
     dataRecieved[1] = false;
-    dataRecieved[2] = true;
+    dataRecieved[2] = false;
     dataRecieved[3] = false;
     //    setGreen();
   }
   else if (incomingByte == 100){ //d
     dataRecieved[0] = false;
-    dataRecieved[1] = true;
+    dataRecieved[1] = false;
     dataRecieved[2] = true;
     dataRecieved[3] = true;
     //    shootAndCollect();
@@ -145,8 +145,8 @@ void loop(){
   else if (incomingByte == 102){ //f
     dataRecieved[0] = false;
     dataRecieved[1] = false;
-    dataRecieved[2] = false;
-    dataRecieved[3] = true;
+    dataRecieved[2] = true;
+    dataRecieved[3] = false;
   }
 
   //Possible cases
@@ -331,7 +331,7 @@ void pass(){
 
     //show the changes
     FastLED.show();
-    if (i != 4) delay(75);
+    if (i != 0) delay(75);
   }
 
   for (int i = 4; i>=0; i--){
@@ -359,7 +359,7 @@ void pass(){
 
     //show the changes
     FastLED.show(); 
-    if (i != 4) delay(75);
+    if (i != 0) delay(75);
   }
 }
 
@@ -501,7 +501,7 @@ void charging(){
     FastLED.show();
     delay(150);
   }
-  delay(1500);
+  delay(1000);
   //shooting the beam
   for (int i = 0; i < 15; i++){
     leds[backRight+i].g = 255;
@@ -523,17 +523,17 @@ void charging(){
 void signal(){
   //plays when we want to signal to the other teams
   for (int i = 0; i < 80; i++){ //blink lights hot pink
-    leds[i] = CRGB::HotPink;
+    leds[i] = CRGB::Aquamarine;
     delayMicroseconds(100);
   }
   FastLED.show();
-  delay(500);
+  delay(250);
   for (int i = 0; i < 80; i++){
     leds[i] = CRGB::Black;
     delayMicroseconds(100);
   }
   FastLED.show();
-  delay(500);
+  delay(250);
 }
 
 void idle(){
