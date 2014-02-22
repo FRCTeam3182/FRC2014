@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -54,7 +53,6 @@ public class Robot3182 extends IterativeRobot {
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
     public SmartDashboard dash;
-    private DigitalInput limitLED;
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
     private AnalogChannel rangeFinder;
@@ -68,6 +66,7 @@ public class Robot3182 extends IterativeRobot {
     boolean toggleIn;
     boolean collectorButton11;
     boolean collectorButton9;
+    boolean signalLight = false;
     boolean shoot = false;
     boolean reverseShooter = false;
     boolean collect = false;
@@ -79,7 +78,7 @@ public class Robot3182 extends IterativeRobot {
     boolean rightTrigger = false;
     boolean leftTrigger = false;
     boolean limitStat;
-    boolean[] lightData = new boolean[] {false, false, false, false};
+    boolean[] lightData = new boolean[]{false, false, false, false};
     boolean[] dummy = new boolean[4];
     boolean isSame = false;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
@@ -110,7 +109,7 @@ public class Robot3182 extends IterativeRobot {
         rightJoystick = new Joystick(1);
         leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        //the paramater will probably change depending on where the limit switch is 
+        //the paramater will probably change depending on where the limit switch is
 //        limitLED = new DigitalInput(1);
 //        limitStat = limitLED.get();
         arduinoSignal = new DigitalOutput(5); //data line
@@ -198,7 +197,6 @@ public class Robot3182 extends IterativeRobot {
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
-//        getUltraRange();
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
 
         //---------------------------------------------------------------------
@@ -217,13 +215,13 @@ public class Robot3182 extends IterativeRobot {
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
 
         //shoot is button 1, collect is 2, ground pass/dump is 3
-        // collector is buttons 10 (out) and 11 (in)
+        // collector is buttons 9 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
-        collect = buttonsJoystick.getRawButton(2);
-        collectReverse = buttonsJoystick.getRawButton(3);
+        collect = buttonsJoystick.getRawButton(3);
+        signalLight = buttonsJoystick.getRawButton(4);
+        collectReverse = buttonsJoystick.getRawButton(5);
         collectorButton11 = buttonsJoystick.getRawButton(11);
         collectorButton9 = buttonsJoystick.getRawButton(9);
-
         //Maneuvers (trigger on left is half turn, trigger on right is quarter turn)
         //NOTE: Reloading will be stopped when a maneuver is activated
         //NOTE: Maneuvers will not be activated if the collector motor is on
@@ -250,6 +248,19 @@ public class Robot3182 extends IterativeRobot {
         if (toggleIn && !collectorButton9) { //when button 11 is let go, the toggle will comence
             collectOut();
             toggleIn = false;
+        }
+        
+        // if button 2 on support function joystick is pressed, run the collector motor at 90%
+        // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
+        if (collect) {
+            collect();
+        } else if (collect == false) {
+            //idle
+        }
+        if (collectReverse) {
+            pass();
+        } else if (collectReverse == false) {
+            //idle
         }
 
         //shifter code
@@ -314,16 +325,13 @@ public class Robot3182 extends IterativeRobot {
         if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
             shoot();
         }
+        
+        if (signalLight) {
+            //make LED some color as a signal to other teams
 
-        // if button 2 on support function joystick is pressed, run the collector motor at 90%
-        // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
-        if (collect == true) {
-            collect();
+        } else if (signalLight == false) {
+            //idle
         }
-        if (collectReverse == true) {
-            pass();
-        }
-
 
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
@@ -479,10 +487,10 @@ public class Robot3182 extends IterativeRobot {
 
     private void sendArduino(boolean one, boolean two, boolean three, boolean four) {
         //the fuction to send certain data to the arduino
-        dummy = new boolean[] {one, two, three, four};
+        dummy = new boolean[]{one, two, three, four};
         isSame = Arrays.equals(dummy, lightData);
-       
-        if (!isSame){
+
+        if (!isSame) {
             arduinoSignifier.set(true);
             arduinoSignal.set(one);
             Timer.delay(.01);
@@ -495,7 +503,7 @@ public class Robot3182 extends IterativeRobot {
             arduinoSignal.set(false);
             arduinoSignifier.set(false);
         }
-        lightData = new boolean[] {one, two, three, four};
+        lightData = new boolean[]{one, two, three, four};
     }
 //    private void getUltraRange(){
 //        distanceRange = rangeFinder.getRangeInches();

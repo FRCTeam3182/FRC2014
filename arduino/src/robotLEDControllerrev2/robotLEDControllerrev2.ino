@@ -131,9 +131,9 @@ void loop(){
   }
   else if (incomingByte == 100){ //d
     dataRecieved[0] = false;
-    dataRecieved[1] = false;
+    dataRecieved[1] = true;
     dataRecieved[2] = true;
-    dataRecieved[3] = false;
+    dataRecieved[3] = true;
     //    shootAndCollect();
   }
   else if (incomingByte == 101){ //e
@@ -161,15 +161,15 @@ void loop(){
     idle();
     delay(10);
   }
-  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
-    //sets the strip to red and the distance color to red
-    setRed();
-    distanceColor = 0xFF0000;
-    delay(10);
-  }  
+
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //plays animation when shooting or collecting
     shootAndCollect();
+    delay(10);
+  }
+  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
+    //plays animation when shooting or collecting
+    pass();
     delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
@@ -184,6 +184,12 @@ void loop(){
     distanceColor = 0x008000;
     delay(10);
   }
+  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
+    //sets the strip to red and the distance color to red
+    setRed();
+    distanceColor = 0xFF0000;
+    delay(10);
+  } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //signal to other teams
     celebration();
@@ -195,11 +201,11 @@ void loop(){
     delay(10);
   } 
   //for debugging
-//  Serial.print(dataRecieved[0]);
-//  Serial.print(dataRecieved[1]);
-//  Serial.print(dataRecieved[2]);
-//  Serial.println(dataRecieved[3]);
-//  delay(200);
+  //  Serial.print(dataRecieved[0]);
+  //  Serial.print(dataRecieved[1]);
+  //  Serial.print(dataRecieved[2]);
+  //  Serial.println(dataRecieved[3]);
+  //  delay(200);
 
   //bricks it in case of spazzing out during a match
   if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
@@ -236,8 +242,6 @@ void readSidecar(){
 
 void shootAndCollect(){
   //shows when robot is shooting or collecting
-  FastLED.clear();
-
   for (int i = 0; i<5; i++){
     //creates the first and third segments
     leds[frontRight-i] = distanceColor;
@@ -263,7 +267,7 @@ void shootAndCollect(){
 
     //show the changes
     FastLED.show();
-    delay(75);
+    if (i != 4) delay(75);
   }
 
   for (int i = 0; i<5; i++){
@@ -291,9 +295,67 @@ void shootAndCollect(){
 
     //show the changes
     FastLED.show(); 
-    delay(75);
+    if (i != 4) delay(75);
   }
 
+}
+void pass(){
+  //shows when robot is shooting or collecting
+  for (int i = 4; i>=0; i--){
+    //creates the first and third segments
+    leds[frontRight-i] = distanceColor;
+    leds[frontRight-i-8] = distanceColor;
+    leds[frontLeft+i] = distanceColor;
+    leds[frontLeft+i+8] = distanceColor;
+    leds[backRight+i] = distanceColor;
+    leds[backRight+i+8] = distanceColor;
+    leds[backRight+i+16] = distanceColor;
+    leds[backLeft-i] = distanceColor;
+    leds[backLeft-i-8] = distanceColor;
+    leds[backLeft-i-16] = distanceColor;
+
+    //creates the second and fourth segments (opposite the first and second)
+    leds[frontRight-i-4] = CRGB::Black;
+    leds[frontRight-i-12] = CRGB::Black;
+    leds[frontLeft+i+4] = CRGB::Black;
+    leds[frontLeft+i+12] = CRGB::Black;
+    leds[backRight+i+4] = CRGB::Black;
+    leds[backRight+i+12] = CRGB::Black;
+    leds[backLeft-i-4] = CRGB::Black;
+    leds[backLeft-i-12] = CRGB::Black;
+
+    //show the changes
+    FastLED.show();
+    if (i != 4) delay(75);
+  }
+
+  for (int i = 4; i>=0; i--){
+    //creates the first and third segments
+    leds[frontRight-i] = CRGB::Black;
+    leds[frontRight-i-8] = CRGB::Black;
+    leds[frontLeft+i] = CRGB::Black;
+    leds[frontLeft+i+8] = CRGB::Black;
+    leds[backRight+i] = CRGB::Black;
+    leds[backRight+i+8] = CRGB::Black;
+    leds[backRight+i+16] = CRGB::Black;
+    leds[backLeft-i] = CRGB::Black;
+    leds[backLeft-i-8] = CRGB::Black;
+    leds[backLeft-i-16] = CRGB::Black;
+
+    //creates the second and fourth segments (opposite the first and second)
+    leds[frontRight-i-4] = distanceColor;
+    leds[frontRight-i-12] = distanceColor;
+    leds[frontLeft+i+4] = distanceColor;
+    leds[frontLeft+i+12] = distanceColor;
+    leds[backRight+i+4] = distanceColor;
+    leds[backRight+i+12] = distanceColor;
+    leds[backLeft-i-4] = distanceColor;
+    leds[backLeft-i-12] = distanceColor;
+
+    //show the changes
+    FastLED.show(); 
+    if (i != 4) delay(75);
+  }
 }
 
 void setGreen(){
@@ -449,8 +511,24 @@ void charging(){
     delay(1);
   }
   FastLED.show();
-  delay(200);
+  delay(1000);
   FastLED.clear();
+}
+
+void signal(){
+  //plays when we want to signal to the other teams
+  for (int i = 0; i < 80; i++){ //blink lights hot pink
+    leds[i] = CRGB::HotPink;
+    delayMicroseconds(100);
+  }
+  FastLED.show();
+  delay(500);
+  for (int i = 0; i < 80; i++){
+    leds[i] = CRGB::Black;
+    delayMicroseconds(100);
+  }
+  FastLED.show();
+  delay(500);
 }
 
 void idle(){
@@ -516,6 +594,7 @@ void idle(){
     }
   }
 }
+
 
 
 
