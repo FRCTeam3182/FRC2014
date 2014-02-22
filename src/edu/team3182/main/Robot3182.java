@@ -208,8 +208,8 @@ public class Robot3182 extends IterativeRobot {
         double abc = rangeFinder.getAverageVoltage();
         double volt = rangeFinder.getVoltage();
         SmartDashboard.putNumber("Distance away: ", distanceRange);
-        System.out.println(abc);
-        System.out.println(volt);
+        System.out.println("Average Voltage: " + abc);
+        System.out.println("Get Voltage : " + volt);
 
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
