@@ -210,15 +210,16 @@ void loop(){
   //  Serial.print(dataRecieved[1]);
   //  Serial.print(dataRecieved[2]);
   //  Serial.println(dataRecieved[3]);
-  //  delay(200);
-
+  Serial.println("hi");
+    delay(200);
+  
   //bricks it in case of spazzing out during a match
-  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
-    FastLED.clear();
-    FastLED.show();
-    delay(100);
-    while(true) delay(1000);
-  }
+//  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
+//    FastLED.clear();
+//    FastLED.show();
+//    delay(100);
+//    while(true) delay(1000);
+//  }
 }
 void readSidecar(){
   //reads the data coming from the sidecar when the interrupt is detected
@@ -231,18 +232,19 @@ void readSidecar(){
   delayMicroseconds(100000);
   dataRecieved[3] = digitalRead(3);
   delayMicroseconds(100000);
+  
   Serial.print(dataRecieved[0]);
   Serial.print(dataRecieved[1]);
   Serial.print(dataRecieved[2]);
   Serial.println(dataRecieved[3]);
 
   //bricks it in case of spazzing out during a match
-  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
-    FastLED.clear();
-    FastLED.show();
-    delayMicroseconds(10000);
-    while(true) delayMicroseconds(10000);
-  }
+//  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
+//    FastLED.clear();
+//    FastLED.show();
+//    delayMicroseconds(10000);
+//    while(true) delayMicroseconds(10000);
+//  }
 }
 
 void shootAndCollect(){
