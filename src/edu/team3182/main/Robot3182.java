@@ -268,9 +268,11 @@ public class Robot3182 extends IterativeRobot {
         // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect) {
             collect();
+            sendArduino(false,true,false,false);
         }
         if (collectReverse) {
             pass();
+            sendArduino(false,true,true,true);
         }
 
         //shifter code
