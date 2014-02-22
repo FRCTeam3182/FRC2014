@@ -156,7 +156,7 @@ void loop(){
     clearLeds();
     delay(10);
   }
-  if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == true){
+  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == true){
     //idle animation
     idle();
     delay(10);
@@ -176,6 +176,11 @@ void loop(){
     //play animation when a ball is in the shooter
     setYellow();
     distanceColor = 0xFFFF00;
+    delay(10);
+  }
+    else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
+    //signal to other robots
+    signal();
     delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){

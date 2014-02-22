@@ -505,16 +505,18 @@ public class Robot3182 extends IterativeRobot {
         }
         lightData = new boolean[]{one, two, three, four};
     }
-//    private void getUltraRange(){
-//        distanceRange = rangeFinder.getRangeInches();
-//        if (distanceRange >= 60 && distanceRange <= 72){
-//            sendArduino(false, true, true, false); //green
-//        }
-//        else if (distanceRange >= 3 && distanceRange < 60){
-//            sendArduino(true, false, false, false); //red
-//        }
-//        else if (distanceRange >= 60 && distanceRange <= 72){
-//            sendArduino(false, false, true, false); //yellow
-//        }
-//    }
+    private void getUltraRange(){
+        if (getVoltage >= 60 && getVoltage <= 72){
+            sendArduino(false, true, true, false); //green
+        }
+        else if (getVoltage >= 3 && getVoltage < 60){
+            sendArduino(true, false, false, false); //red
+        }
+        else if (getVoltage >= 60 && getVoltage <= 72){
+            sendArduino(false, false, true, false); //yellow
+        }
+        else if (getVoltage > 60){
+            sendArduino(false,false,false,true); //idle
+        }
+    }
 }
