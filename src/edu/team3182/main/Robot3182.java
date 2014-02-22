@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.lang.Thread;
@@ -37,6 +39,7 @@ public class Robot3182 extends IterativeRobot {
      * used for any initialization code.
      */
     //Initialization of code for robot drive functions
+    private DriverStation driverStation;
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
@@ -105,11 +108,10 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         //camera = AxisCamera.getInstance();
-
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
-       leftJoystick = new Joystick(2);
+        leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
@@ -131,7 +133,6 @@ public class Robot3182 extends IterativeRobot {
         rightShifter = new DoubleSolenoid(7, 8);
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
-
         //Range Finder and compressor
         rangeFinder = new AnalogChannel(1, 2);
         compressor = new Compressor(7, 1);
@@ -199,7 +200,16 @@ public class Robot3182 extends IterativeRobot {
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
         SmartDashboard.putBoolean("Collector Extended: ", toggleOut);
-
+        //===================================================
+        // team color
+        //===================================================
+        if (driverStation.getAlliance() == DriverStation.Alliance.kBlue){
+            // color to blue
+        }
+        else {
+            //color to red
+            
+        }
         //---------------------------------------------------------------------
         //testing voltage for analog rangefinder
         //---------------------------------------------------------------------
@@ -209,12 +219,12 @@ public class Robot3182 extends IterativeRobot {
         SmartDashboard.putNumber("Distance away: ", distanceRange);
         //System.out.println("Average Voltage: " + getAverageVoltage);
         System.out.println("Get Voltage : " + getVoltage);
-
+        
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
-
+        
         //shoot is button 1, collect is 2, ground pass/dump is 3
         // collector is buttons 9 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
