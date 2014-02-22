@@ -87,6 +87,8 @@ public class Robot3182 extends IterativeRobot {
 
     int shooterPotVal; //position of catapult
     double distanceRange;
+    double getVoltage;
+    double getAverageVoltage;
 
     //Coefficients of exponential function to ramp up speed of catapult (so ball doesn't fall out)
     final double a = .005;
@@ -107,30 +109,27 @@ public class Robot3182 extends IterativeRobot {
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
-        leftJoystick = new Joystick(2);
+       leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         //the paramater will probably change depending on where the limit switch is
-//        limitLED = new DigitalInput(1);
-//        limitStat = limitLED.get();
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
 
         //UNCOMMENT WHEN remainder of electronics board is complete
         shooterMotors = new Talon(4);
-//        collectorMotor = new Talon(3);
-        //collectorMotor.setSafetyEnabled(true);
+        collectorMotor = new Talon(3);
+        collectorMotor.setSafetyEnabled(true);
         shooterMotors.setSafetyEnabled(false);
-        //UNCOMMENT WHEN potentiometer is hooked up
 
-        rightDriveEncoder = new Encoder(4, 3);
+       rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
         rightDriveEncoder.reset();
         rightDriveEncoder.setDistancePerPulse(.08168);
 
         leftShifter = new DoubleSolenoid(5, 6);
         rightShifter = new DoubleSolenoid(7, 8);
-//        leftCollector = new DoubleSolenoid(1, 2);
-//        rightCollector = new DoubleSolenoid(3, 4);
+        leftCollector = new DoubleSolenoid(1, 2);
+        rightCollector = new DoubleSolenoid(3, 4);
 
         rangeFinder = new AnalogChannel(1, 2);
         compressor = new Compressor(7, 1);
@@ -203,11 +202,11 @@ public class Robot3182 extends IterativeRobot {
         //testing voltage for analog rangefinder
         //---------------------------------------------------------------------
         distance = rightDriveEncoder.getDistance();
-        double abc = rangeFinder.getAverageVoltage();
-        double volt = rangeFinder.getVoltage();
+        getAverageVoltage = rangeFinder.getAverageVoltage();
+        getVoltage = rangeFinder.getVoltage();
         SmartDashboard.putNumber("Distance away: ", distanceRange);
-        System.out.println("Average Voltage: " + abc);
-        System.out.println("Get Voltage : " + volt);
+        //System.out.println("Average Voltage: " + getAverageVoltage);
+        System.out.println("Get Voltage : " + getVoltage);
 
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
@@ -249,7 +248,7 @@ public class Robot3182 extends IterativeRobot {
             collectOut();
             toggleIn = false;
         }
-        
+
         // if button 2 on support function joystick is pressed, run the collector motor at 90%
         // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect) {
@@ -325,18 +324,32 @@ public class Robot3182 extends IterativeRobot {
         if (shoot == true && isReloading == false && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
             shoot();
         }
-        
+
         if (signalLight) {
             //make LED some color as a signal to other teams
-
+            sendArduino(false, false, true, true);
         } else if (signalLight == false) {
             //idle
+            sendArduino(false, false, false, true);
         }
 
         //Display rate of encoder to the dashboard
         SmartDashboard.putNumber("Speed", rightDriveEncoder.getRate());
         SmartDashboard.putNumber("Speed", leftDriveEncoder.getRate());
-
+        /*===========================
+         Sensor to arduino code
+         VALUES MUST BE CHANGED
+         =============================*/
+        if (getVoltage > 0 && getVoltage < 0) {
+            //arduino code green
+        } 
+        else if (getVoltage > 0 && getVoltage < 0) {
+            //arduino code yellow
+        } 
+        else 
+        {
+            //arduino red
+        }
     }
 
     public void disabledInit() {
@@ -353,9 +366,9 @@ public class Robot3182 extends IterativeRobot {
         Collector collectVar = new Collector();
         new Thread(collectVar).start();
         Shooter shooterVar = new Shooter();
-        new Thread (shooterVar).start();
+        new Thread(shooterVar).start();
         Sensors sensorsVar = new Sensors();
-        new Thread (sensorsVar).start();
+        new Thread(sensorsVar).start();
     }
 
     /**
