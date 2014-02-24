@@ -118,7 +118,7 @@ public class Robot3182 extends IterativeRobot {
         /*------------------------------------------------------------
             Stuff below is disabled to test threads. Uncomment to run 
             Robot main.
-        *------------------------------------------------------------/
+        *------------------------------------------------------------*/
         //Motors and stuff
        // shooterMotors = new Talon(4);
         //collectorMotor = new Talon(3);
