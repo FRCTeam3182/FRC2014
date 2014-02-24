@@ -115,7 +115,10 @@ public class Robot3182 extends IterativeRobot {
         buttonsJoystick = new Joystick(3);
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
-
+        /*------------------------------------------------------------
+            Stuff below is disabled to test threads. Uncomment to run 
+            Robot main.
+        *------------------------------------------------------------/
         //Motors and stuff
        // shooterMotors = new Talon(4);
         //collectorMotor = new Talon(3);
