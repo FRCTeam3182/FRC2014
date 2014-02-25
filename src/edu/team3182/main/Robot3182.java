@@ -107,6 +107,14 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
+        DriveTrain driveTrainVar = new DriveTrain();
+        new Thread(driveTrainVar).start();
+        Collector collectVar = new Collector();
+        new Thread(collectVar).start();
+        Shooter shooterVar = new Shooter();
+        new Thread(shooterVar).start();
+        Sensors sensorsVar = new Sensors();
+        new Thread(sensorsVar).start();
         //camera = AxisCamera.getInstance();
        // drive = new RobotDrive(1, 2);
        // drive.setSafetyEnabled(false);
@@ -148,20 +156,27 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
-
+        //disable jystick command over the wheels
+        DriveTrain.joystickStateCommand = false;
+        
         //Send command to Arduino for the light strip
         sendArduino(true, false, true, false); //charging animation
         sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
-        drive.drive(0.3, 0.0);
+        DriveTrain.rightMotorCommand = .3;
+        DriveTrain.leftMotorCommand = .3;
         Timer.delay(2.0);
-        drive.drive(0.5, 0.0);
+        DriveTrain.rightMotorCommand = .5;
+        DriveTrain.leftMotorCommand = .5;
         Timer.delay(2);
-        drive.drive(.4, 0.0);
+        DriveTrain.rightMotorCommand = .4;
+        DriveTrain.leftMotorCommand = .4;
         Timer.delay(.1);
-        drive.drive(0.35, 0.0);
+        DriveTrain.rightMotorCommand = .35;
+        DriveTrain.leftMotorCommand = .35;
         Timer.delay(.3);
-        drive.drive(0.0, 0.0);
+        DriveTrain.rightMotorCommand = 0;
+        DriveTrain.leftMotorCommand = 0;
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
@@ -175,7 +190,7 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
-        shoot();
+        Shooter.shootCommand = true;
 
     }
 

@@ -24,15 +24,16 @@ public class DriveTrain extends Object implements Runnable {
     private RobotDrive drive;
     private Joystick rightJoystick;
     private Joystick leftJoystick;
-    public static boolean rightTriggerCommand;
-    public static boolean leftTriggerCommand;
+    public static boolean rightShifterCommand;
+    public static boolean leftShifterCommand;
     public static boolean quarterTurnLeftCommand;
     public static boolean quarterTurnRightCommand;
     public static boolean halfTurnRightCommand;
+    public static boolean joystickStateCommand;
+    public static double rightMotorCommand;
+    public static double leftMotorCommand;
 
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
-    double yAxisRight;
-    double yAxisLeft;
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
@@ -44,55 +45,61 @@ public class DriveTrain extends Object implements Runnable {
         leftJoystick = new Joystick(2);
         leftShifter = new DoubleSolenoid(5, 6);
         rightShifter = new DoubleSolenoid(7, 8);
-        rightTriggerCommand = false;
-        leftTriggerCommand = false;
+        rightShifterCommand = false;
+        leftShifterCommand = false;
         quarterTurnLeftCommand = false;
         quarterTurnRightCommand = false;
         halfTurnRightCommand = false;
-
+        rightMotorCommand = 0;
+        leftMotorCommand = 0;
+        joystickStateCommand = false;
     }
 
     public void run() {
         while (true) {
             //shifter code
             //while both of the triggers are clicked, the shifter are switched to high gear
-            if (rightTriggerCommand && leftTriggerCommand) {
+            if (rightShifterCommand && leftShifterCommand) {
                 // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
                 shiftHigh();
             }
-            if (rightTriggerCommand == false && leftTriggerCommand == false) {
+            if (rightShifterCommand == false && leftShifterCommand == false) {
                 // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
                 shiftLow();
 
             }
+            if (joystickStateCommand) {
+                rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
+                leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
+            }
             /*=================================================================
-                makes sure joystick will not work at +/-10% throttle
-                smoothVarRight/Left are output variables from a function
-                to get power from 0 to 1 between P and full throttle on the joysticks
-                same for full reverse throttle to -P
-            =================================================================*/
-            if (yAxisRight < p && yAxisRight > (-p)) {
+             makes sure joystick will not work at +/-10% throttle
+             smoothVarRight/Left are output variables from a function
+             to get power from 0 to 1 between P and full throttle on the joysticks
+             same for full reverse throttle to -P
+             =================================================================*/
+            if (rightMotorCommand < p && rightMotorCommand > (-p)) {
                 smoothVarRight = 0;
             }
-            if (yAxisLeft < p && yAxisLeft > (-p)) {
+            if (leftMotorCommand < p && leftMotorCommand > (-p)) {
                 smoothVarLeft = 0;
             }
             // yAxisLeft greater than P, which is pull back on the joystick
-            if (yAxisLeft >= p) {
-                smoothVarLeft = ((1 / (1 - p)) * yAxisLeft + (1 - (1 / (1 - p))));
+            if (leftMotorCommand >= p) {
+                smoothVarLeft = ((1 / (1 - p)) * leftMotorCommand + (1 - (1 / (1 - p))));
             }
             // yAxisLeft less than -P, which is push forward on the joystick 
-            if (yAxisLeft <= (-p)) {
-                smoothVarLeft = ((1 / (1 - p)) * yAxisLeft - (1 - (1 / (1 - p))));
+            if (leftMotorCommand <= (-p)) {
+                smoothVarLeft = ((1 / (1 - p)) * leftMotorCommand - (1 - (1 / (1 - p))));
             }
             //smooth right joystick
             // yAxisRight greater than P, which is pull back on the joystick 
-            if (yAxisRight >= p) {
-                smoothVarRight = ((1 / (1 - p)) * yAxisRight + (1 - (1 / (1 - p))));
+            if (rightMotorCommand >= p) {
+                smoothVarRight = ((1 / (1 - p)) * leftMotorCommand + (1 - (1 / (1 - p))));
             }
             // yAxisRight less than -P, which is push forward on the joystick 
-            if (yAxisRight <= (-p)) {
-                smoothVarRight = ((1 / (1 - p)) * yAxisRight - (1 - (1 / (1 - p))));
+            if (rightMotorCommand <= (-p)) {
+                smoothVarRight = ((1 / (1 - p)) * rightMotorCommand - (1 - (1 / (1 - p))));
             }
             //drive using the joysticks
             drive.tankDrive(smoothVarLeft, smoothVarRight);
@@ -141,14 +148,16 @@ public class DriveTrain extends Object implements Runnable {
         leftShifter.set(DoubleSolenoid.Value.kReverse);
         rightShifter.set(DoubleSolenoid.Value.kReverse);
     }
-    private void driveToDashboard(){
+
+    private void driveToDashboard() {
         SmartDashboard.putString("Left Shifter", leftShifter.get().toString());
         SmartDashboard.putString("Right Shifter", rightShifter.get().toString());
-        SmartDashboard.putNumber("Joystick Axis Right", yAxisRight);
-        SmartDashboard.putNumber("Joystick Axis Left", yAxisLeft);
-        SmartDashboard.putBoolean("Right Trigger Shifter", rightTriggerCommand);
-        SmartDashboard.putBoolean("Left Trigger Shifter", leftTriggerCommand);
+        SmartDashboard.putNumber("Joystick Axis Right", leftMotorCommand);
+        SmartDashboard.putNumber("Joystick Axis Left", rightMotorCommand);
+        SmartDashboard.putBoolean("Right Trigger Shifter", rightShifterCommand);
+        SmartDashboard.putBoolean("Left Trigger Shifter", leftShifterCommand);
         SmartDashboard.putNumber("Smooth Var Left", smoothVarLeft);
         SmartDashboard.putNumber("Smooth Var Right", smoothVarRight);
+        SmartDashboard.putBoolean("Joystick state", joystickStateCommand);
     }
 }
