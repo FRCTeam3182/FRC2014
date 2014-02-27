@@ -8,6 +8,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class Shooter extends Object implements Runnable {
-
+    private DriverStation driverStation;
     public static boolean shootCommand;
     private Talon shooterMotors;
     private Compressor compressor;
@@ -51,6 +52,7 @@ public class Shooter extends Object implements Runnable {
     }
 
     public void run() {
+        if(driverStation.isEnabled())
         while (true) {
             if (shootCommand) {
                 shoot();

@@ -156,11 +156,16 @@ public class Robot3182 extends IterativeRobot {
 //        compressor.start();
     }
     
-    public void teleopDisabled() {
+    public void disabledInit() {
+        DriveTrain.leftMotorCommand = 0;
+        DriveTrain.rightMotorCommand = 0;
+        Shooter.shootCommand = false;
+        Collector.collectInCommand = false;
+        Collector.collectInCommand = false;
+        Collector.collectOutCommand = false;
+        sendArduino(true, true, false, false);
         
-    }
-    
-    public void autonomousDisabled() {
+        
         
     }
 
@@ -169,6 +174,9 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
+        driveTrainVar.notify();
+        collectVar.notify();
+        shooterVar.notify();
         //disable jystick command over the wheels
         DriveTrain.joystickStateCommand = false;
 
@@ -388,7 +396,7 @@ public class Robot3182 extends IterativeRobot {
         /*===========================
          Sensor to arduino code
          VALUES MUST BE CHANGED
-         =============================*/
+         =============================
         if (getVoltage >= 60 && getVoltage <= 72) {
             sendArduino(false, true, true, false); //green
         } else if (getVoltage >= 3 && getVoltage < 60) {
@@ -404,9 +412,7 @@ public class Robot3182 extends IterativeRobot {
         */
     }
 
-    public void disabledInit() {
-        sendArduino(true, true, false, false);
-    }
+ 
 
     public void disabledPeriodic() {
 

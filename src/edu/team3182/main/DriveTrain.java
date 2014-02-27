@@ -6,6 +6,7 @@
 package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import java.lang.Thread;
@@ -24,6 +25,7 @@ public class DriveTrain extends Object implements Runnable {
     private final RobotDrive drive;
     private final Joystick rightJoystick;
     private final Joystick leftJoystick;
+    private DriverStation driverStation;
     public static boolean rightShifterCommand;
     public static boolean leftShifterCommand;
     public static boolean quarterTurnLeftCommand;
@@ -39,6 +41,7 @@ public class DriveTrain extends Object implements Runnable {
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
 
     public DriveTrain() {
+       
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -56,6 +59,7 @@ public class DriveTrain extends Object implements Runnable {
     }
 
     public void run() {
+       if (driverStation.isEnabled())
         while (true) {
             //shifter code
             //while both of the triggers are clicked, the shifter are switched to high gear

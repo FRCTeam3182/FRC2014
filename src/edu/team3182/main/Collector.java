@@ -8,6 +8,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Nodcah
  */
 public class Collector extends Object implements Runnable {
-
+    private DriverStation driverStation;
     public static boolean collectCommand;
     public static boolean collectInCommand;
     public static boolean collectOutCommand;
@@ -36,7 +37,13 @@ public class Collector extends Object implements Runnable {
     }
 
     public void run() {
+       
         while (true) {
+           if(!driverStation.isEnabled()){
+               Timer.delay(.1);
+               //continue
+           }
+           
             //when button 10 is let go, the toggle will comence
             if (collectInCommand && !collectOutCommand) {
                 collectIn();
@@ -65,6 +72,7 @@ public class Collector extends Object implements Runnable {
             collectToDashboard();
             Timer.delay(.2);
         }
+           
     }
 
     private void collectIn() {
