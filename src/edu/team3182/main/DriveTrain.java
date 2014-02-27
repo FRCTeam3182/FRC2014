@@ -152,10 +152,10 @@ public class DriveTrain extends Object implements Runnable {
     private void driveToDashboard() {
         SmartDashboard.putString("Left Shifter", leftShifter.get().toString());
         SmartDashboard.putString("Right Shifter", rightShifter.get().toString());
-        SmartDashboard.putNumber("Joystick Axis Right", leftMotorCommand);
-        SmartDashboard.putNumber("Joystick Axis Left", rightMotorCommand);
-        SmartDashboard.putBoolean("Right Trigger Shifter", rightShifterCommand);
-        SmartDashboard.putBoolean("Left Trigger Shifter", leftShifterCommand);
+        SmartDashboard.putNumber("leftMotorCommand", leftMotorCommand);
+        SmartDashboard.putNumber("rightMotorCommand", rightMotorCommand);
+        SmartDashboard.putBoolean("Right Trigger Shifter Command", rightShifterCommand);
+        SmartDashboard.putBoolean("Left Trigger Shifter Command", leftShifterCommand);
         SmartDashboard.putNumber("Smooth Var Left", smoothVarLeft);
         SmartDashboard.putNumber("Smooth Var Right", smoothVarRight);
         SmartDashboard.putBoolean("Joystick state", joystickStateCommand);

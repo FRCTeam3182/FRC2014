@@ -150,6 +150,14 @@ public class Robot3182 extends IterativeRobot {
 //        compressor.start();
 
     }
+    
+    public void teleopDisabled() {
+        
+    }
+    
+    public void autonomousDisabled() {
+        
+    }
 
     /**
      * Called when the robot enters the autonomous period for the first time.
@@ -208,12 +216,14 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.start();
         leftDriveEncoder.start();
         compressor.start();
+       DriveTrain.joystickStateCommand = true;
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+   /*
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
         //----------------------------------------------------------------------
@@ -310,7 +320,7 @@ public class Robot3182 extends IterativeRobot {
         smoothVarRight/Left are output variables from a function
         to get power from 0 to 1 between P and full throttle on the joysticks
         same for full reverse throttle to -P
-         -------------------------------------------------------------*/
+         -------------------------------------------------------------
         if (yAxisRight < p && yAxisRight > (-p)) {
             smoothVarRight = 0;
         }
@@ -374,7 +384,7 @@ public class Robot3182 extends IterativeRobot {
         /*===========================
          Sensor to arduino code
          VALUES MUST BE CHANGED
-         =============================*/
+         =============================
         if (getVoltage >= 60 && getVoltage <= 72){
             sendArduino(false, true, true, false); //green
         }
@@ -389,6 +399,7 @@ public class Robot3182 extends IterativeRobot {
         if (shoot == false && signalLight == false && collect == false && collectReverse == false){
             sendArduino(false,false,false,true); //idle
         }
+        */
     }
 
     public void disabledInit() {
