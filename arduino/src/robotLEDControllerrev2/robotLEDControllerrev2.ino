@@ -41,7 +41,7 @@ CRGB leds[ledsNumber];
 
 //color data
 uint32_t distanceColor = 0xFF0000; //start off with the color being red
-
+uint32_t allianceColor = 0xFF00FF; //start off with the color being purple
 //used for debugging
 int x;
 int incomingByte;
@@ -57,17 +57,12 @@ const int backLeft = 76;
 const int backRight = 3;
 //for random color in celebration
 int r;
+int brightnessVal = 0; //for charging
 
 uint32_t randomColor[] = {
   0xFFFFFF, 0xFFFF00, 0xFF0000, 0xFF0066, 0x0000FF, 0x00FFFF, 0x00FF00, 0xFF6600
 };
 
-//choses which animation to play (changes every time something happens)
-int idleAnim = 2; //1 is the starting animation, 2 is chase, 3 is newton's craddle, 4 is..........
-int brightnessVal = 0; //for charging
-//direction of chase
-boolean chaseDir = false;
-boolean newtonDir = false;
 void setup(){
 
   //communication pin
@@ -89,7 +84,7 @@ void setup(){
   randomSeed(analogRead(0));
 
   //set brightness
-  FastLED.setBrightness(100);
+  FastLED.setBrightness(20);
 }
 
 void loop(){
@@ -123,10 +118,10 @@ void loop(){
     //    setRed();
   }
   else if (incomingByte == 99){ //c
-    dataRecieved[0] = true;
+    dataRecieved[0] = false;
     dataRecieved[1] = false;
     dataRecieved[2] = false;
-    dataRecieved[3] = false;
+    dataRecieved[3] = true;
     //    setGreen();
   }
   else if (incomingByte == 100){ //d
@@ -154,72 +149,68 @@ void loop(){
     //clears the strip
     FastLED.clear();
     clearLeds();
-    delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == true){
     //idle animation
     idle();
-    delay(10);
   }
-
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //plays animation when shooting or collecting
     shootAndCollect();
-    delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
     //plays animation when shooting or collecting
     pass();
-    delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
     //play animation when a ball is in the shooter
     setYellow();
     distanceColor = 0xFFFF00;
-    delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
     //signal to other robots
     signal();
-    delay(10);
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //set lights to green
     setGreen();
     distanceColor = 0x008000;
-    delay(10);
   }
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //sets the strip to red and the distance color to red
     setRed();
     distanceColor = 0xFF0000;
-    delay(10);
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //signal to other teams
     celebration();
-    delay(10);
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
     //play animation during autonomous
     charging();
-    delay(10);
+  } 
+    else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
+    //if the alliance color is blue
+    allianceColor = CRGB::Blue;
+  } 
+    else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+    //if the alliance color is red
+    allianceColor = CRGB::Red;
   } 
   //for debugging
   //  Serial.print(dataRecieved[0]);
   //  Serial.print(dataRecieved[1]);
   //  Serial.print(dataRecieved[2]);
   //  Serial.println(dataRecieved[3]);
-  Serial.println("hi");
-    delay(200);
   
   //bricks it in case of spazzing out during a match
-//  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
-//    FastLED.clear();
-//    FastLED.show();
-//    delay(100);
-//    while(true) delay(1000);
-//  }
+  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
+    FastLED.clear();
+    FastLED.show();
+    delay(100);
+    while(true) delay(1000);
+  }
+  delay(10);
 }
 void readSidecar(){
   //reads the data coming from the sidecar when the interrupt is detected
@@ -239,12 +230,12 @@ void readSidecar(){
   Serial.println(dataRecieved[3]);
 
   //bricks it in case of spazzing out during a match
-//  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
-//    FastLED.clear();
-//    FastLED.show();
-//    delayMicroseconds(10000);
-//    while(true) delayMicroseconds(10000);
-//  }
+  if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
+    FastLED.clear();
+    FastLED.show();
+    delayMicroseconds(10000);
+    while(true) delayMicroseconds(10000);
+  }
 }
 
 void shootAndCollect(){
@@ -525,7 +516,7 @@ void charging(){
 void signal(){
   //plays when we want to signal to the other teams
   for (int i = 0; i < 80; i++){ //blink lights hot pink
-    leds[i] = CRGB::Aquamarine;
+    leds[i] = allianceColor;
     delayMicroseconds(100);
   }
   FastLED.show();
@@ -540,31 +531,7 @@ void signal(){
 
 void idle(){
   //plays when the robot isn't doing anything specific, but is just driving, defending, etc.
-  FastLED.clear();
-
-  //newton's cradle animation
-  for (int i = 0; i < 5; i++){ //the five middle leds.
-    leds[54+i] = CRGB::Purple;
-    leds[22+i] = CRGB::Purple;
-  }
-  FastLED.show();
-  if (newtonDir == false){
-    for (int i = 0; i < 8; i++){ //going up
-      leds[22-i] = CRGB::Purple;
-      leds[22-i+1] = CRGB::Black;
-      leds[54+i] = CRGB::Purple;
-      leds[54+i-1] = CRGB::Black;
-      FastLED.show();
-      delay((pow(i, 2)/.25) + 50);
-    }
-    for (int i = 0; i < 8; i++){ //going down
-      leds[22+i] = CRGB::Purple;
-      leds[22+i-1] = CRGB::Black;
-      leds[54-i] = CRGB::Purple;
-      leds[54-i+1] = CRGB::Black;
-      FastLED.show();
-      delay((pow(i, 2)/.25) + 50);
-    }
+  
   }
 }
 

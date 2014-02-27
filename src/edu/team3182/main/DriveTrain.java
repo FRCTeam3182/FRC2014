@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class DriveTrain extends Object implements Runnable {
 
-    private DoubleSolenoid leftShifter;
-    private DoubleSolenoid rightShifter;
-    private RobotDrive drive;
-    private Joystick rightJoystick;
-    private Joystick leftJoystick;
+    private final DoubleSolenoid leftShifter;
+    private final DoubleSolenoid rightShifter;
+    private final RobotDrive drive;
+    private final Joystick rightJoystick;
+    private final Joystick leftJoystick;
     public static boolean rightShifterCommand;
     public static boolean leftShifterCommand;
     public static boolean quarterTurnLeftCommand;
