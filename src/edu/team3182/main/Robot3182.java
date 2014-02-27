@@ -34,6 +34,11 @@ import edu.wpi.first.wpilibj.communication.Semaphore;
  */
 public class Robot3182 extends IterativeRobot {
 
+    private DriveTrain driveTrainVar;
+    private Collector collectVar;
+    private Shooter shooterVar;
+    private Sensors sensorsVar;
+    private ArduinoLights arduinoLightsVar;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -107,28 +112,30 @@ public class Robot3182 extends IterativeRobot {
      * once
      */
     public void robotInit() {
-        DriveTrain driveTrainVar = new DriveTrain();
+        driveTrainVar = new DriveTrain();
         new Thread(driveTrainVar).start();
-        Collector collectVar = new Collector();
+        collectVar = new Collector();
         new Thread(collectVar).start();
-        Shooter shooterVar = new Shooter();
+        shooterVar = new Shooter();
         new Thread(shooterVar).start();
-        Sensors sensorsVar = new Sensors();
+        sensorsVar = new Sensors();
         new Thread(sensorsVar).start();
+        arduinoLightsVar = new ArduinoLights();
+        new Thread(arduinoLightsVar).start();
         //camera = AxisCamera.getInstance();
-       // drive = new RobotDrive(1, 2);
-       // drive.setSafetyEnabled(false);
-       // rightJoystick = new Joystick(1);
+        // drive = new RobotDrive(1, 2);
+        // drive.setSafetyEnabled(false);
+        // rightJoystick = new Joystick(1);
         //leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
         /*------------------------------------------------------------
-            Stuff below is disabled to test threads. Uncomment to run 
-            Robot main.
-        *------------------------------------------------------------*/
+         Stuff below is disabled to test threads. Uncomment to run 
+         Robot main.
+         *------------------------------------------------------------*/
         //Motors and stuff
-       // shooterMotors = new Talon(4);
+        // shooterMotors = new Talon(4);
         //collectorMotor = new Talon(3);
         //collectorMotor.setSafetyEnabled(true);
         //shooterMotors.setSafetyEnabled(false);
@@ -138,7 +145,6 @@ public class Robot3182 extends IterativeRobot {
         //leftDriveEncoder = new Encoder(2, 1);
         //rightDriveEncoder.reset();
         //rightDriveEncoder.setDistancePerPulse(.08168);
-
         //Solenoids
 //        leftShifter = new DoubleSolenoid(5, 6);
 //        rightShifter = new DoubleSolenoid(7, 8);
@@ -148,7 +154,6 @@ public class Robot3182 extends IterativeRobot {
 //        rangeFinder = new AnalogChannel(1, 2);
 //        compressor = new Compressor(7, 1);
 //        compressor.start();
-
     }
     
     public void teleopDisabled() {
@@ -166,7 +171,7 @@ public class Robot3182 extends IterativeRobot {
     public void autonomousInit() {
         //disable jystick command over the wheels
         DriveTrain.joystickStateCommand = false;
-        
+
         //Send command to Arduino for the light strip
         sendArduino(true, false, true, false); //charging animation
         sendArduino(false, false, false, false); //stop it imediatly after it finishes
@@ -231,14 +236,13 @@ public class Robot3182 extends IterativeRobot {
         //===================================================
         // team color
         //===================================================
-        if (driverStation.getAlliance() == DriverStation.Alliance.kBlue){
+        if (driverStation.getAlliance() == DriverStation.Alliance.kBlue) {
             // color to blue
             sendArduino(true, true, true, false);
-        }
-        else {
+        } else {
             //color to red
             sendArduino(true, true, false, true);
-            
+
         }
         //---------------------------------------------------------------------
         //testing voltage for analog rangefinder
@@ -249,12 +253,12 @@ public class Robot3182 extends IterativeRobot {
         SmartDashboard.putNumber("Distance away: ", distanceRange);
         //System.out.println("Average Voltage: " + getAverageVoltage);
         System.out.println("Get Voltage : " + getVoltage);
-        
+
         // Read commands from the joysticks
         //sets yAxisRight and yAxisLeft to the axis of corresponding joysticks
         yAxisRight = rightJoystick.getAxis(Joystick.AxisType.kY);
         yAxisLeft = leftJoystick.getAxis(Joystick.AxisType.kY);
-        
+
         //shoot is button 1, collect is 2, ground pass/dump is 3
         // collector is buttons 9 (out) and 11 (in)
         shoot = buttonsJoystick.getRawButton(1);
@@ -296,11 +300,11 @@ public class Robot3182 extends IterativeRobot {
         // if button 3 on support function joystick is pressed, run the collector motor in reverse at 90% (ground pass)
         if (collect) {
             collect();
-            sendArduino(false,true,false,false);
+            sendArduino(false, true, false, false);
         }
         if (collectReverse) {
             pass();
-            sendArduino(false,true,true,true);
+            sendArduino(false, true, true, true);
         }
 
         //shifter code
@@ -366,15 +370,15 @@ public class Robot3182 extends IterativeRobot {
         //NOTE: You CANNOT shoot when the catapult is reloading OR when the collector spinning in reverse OR when the collector is in
         if (shoot == true && collectReverse == false && rightCollector.get() == DoubleSolenoid.Value.kReverse) {
             shoot();
-            sendArduino(false,true,false,false);
+            sendArduino(false, true, false, false);
         }
-       
+
         if (signalLight) {
             //make LED some color as a signal to other teams
             sendArduino(false, false, true, true);
         }
 
-        if (killLights){
+        if (killLights) {
             //kills the lights until reset
             sendArduino(true, true, true, true);
         }
@@ -384,20 +388,18 @@ public class Robot3182 extends IterativeRobot {
         /*===========================
          Sensor to arduino code
          VALUES MUST BE CHANGED
-         =============================
-        if (getVoltage >= 60 && getVoltage <= 72){
+         =============================*/
+        if (getVoltage >= 60 && getVoltage <= 72) {
             sendArduino(false, true, true, false); //green
-        }
-        else if (getVoltage >= 3 && getVoltage < 60){
+        } else if (getVoltage >= 3 && getVoltage < 60) {
             sendArduino(true, false, false, false); //red
-        }
-        else if (getVoltage >= 60 && getVoltage <= 72){
+        } else if (getVoltage >= 60 && getVoltage <= 72) {
             sendArduino(false, false, true, false); //yellow
         }
-        
+
         //if nothing is happening
-        if (shoot == false && signalLight == false && collect == false && collectReverse == false){
-            sendArduino(false,false,false,true); //idle
+        if (shoot == false && signalLight == false && collect == false && collectReverse == false) {
+            sendArduino(false, false, false, true); //idle
         }
         */
     }
@@ -446,8 +448,8 @@ public class Robot3182 extends IterativeRobot {
         DriveTrain.halfTurnRightCommand = buttonsJoystick.getRawButton(10);
 
         if (buttonsJoystick.getRawButton(11)) {
-            
-            sendArduino(true,false, false,false);
+
+            sendArduino(true, false, false, false);
         }
 //        x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
 //        if (x > .25) {
@@ -546,7 +548,7 @@ public class Robot3182 extends IterativeRobot {
         isSame = Arrays.equals(dummy, lightData);
 
         if (!isSame) {
-           arduinoSignifier.set(true);
+            arduinoSignifier.set(true);
             arduinoSignal.set(one);
             Timer.delay(.01);
             arduinoSignal.set(two);
@@ -560,21 +562,19 @@ public class Robot3182 extends IterativeRobot {
         }
         lightData = new boolean[]{one, two, three, four};
         System.out.println("hey");
-          
+
     }
-    private void getUltraRange(){
-        if (getVoltage >= 60 && getVoltage <= 72){
+
+    private void getUltraRange() {
+        if (getVoltage >= 60 && getVoltage <= 72) {
             sendArduino(false, true, true, false); //green
-        }
-        else if (getVoltage >= 3 && getVoltage < 60){
+        } else if (getVoltage >= 3 && getVoltage < 60) {
             sendArduino(true, false, false, false); //red
-        }
-        else if (getVoltage >= 60 && getVoltage <= 72){
+        } else if (getVoltage >= 60 && getVoltage <= 72) {
             sendArduino(false, false, true, false); //yellow
-        }
-        else if (getVoltage > 60){
-            sendArduino(false,false,false,true); //idle
+        } else if (getVoltage > 60) {
+            sendArduino(false, false, false, true); //idle
         }
     }
-    
+
 }

@@ -6,7 +6,6 @@
 package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,9 +20,9 @@ public class Collector extends Object implements Runnable {
     public static boolean collectInCommand;
     public static boolean collectOutCommand;
     public static boolean passCommand;
-    private DoubleSolenoid leftCollector;
-    private DoubleSolenoid rightCollector;
-    private Talon collectorMotor;
+    private final DoubleSolenoid leftCollector;
+    private final DoubleSolenoid rightCollector;
+    private final Talon collectorMotor;
 
     public Collector() {
         leftCollector = new DoubleSolenoid(1, 2);
@@ -81,7 +80,6 @@ public class Collector extends Object implements Runnable {
     }
 
     private void collect() {
-        //sendArduino(false, true, false, false);
         collectorMotor.set(1);
 
     }
