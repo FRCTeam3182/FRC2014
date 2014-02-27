@@ -7,6 +7,8 @@ package edu.team3182.main;
 
 import com.sun.squawk.util.Arrays;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -18,16 +20,60 @@ public class ArduinoLights extends Object implements Runnable {
     boolean[] lightData = new boolean[]{false, false, false, false};
     boolean[] dummy = new boolean[4];
     boolean isSame = false;
+    boolean isAuto;
+    boolean thresh = false;
 
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
+    private DriverStation driverStation;
 
     public ArduinoLights() {
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
+        Timer.delay(.5);
+        
+        //---------------------------------------------------
+        //send certain data to arudino based on team color
+        //---------------------------------------------------
+        
+        if (driverStation.getAlliance() == DriverStation.Alliance.kBlue) {
+            //sendArduino
+        } 
+        
+        else if (driverStation.getAlliance() == DriverStation.Alliance.kRed) {
+            //sendArduino
+        } 
+        
+        //---------------------------------------------------
+        //if the match time reaches 100 seoonds set thresh
+        //to true. Then, if the match time is equal to 0
+        //(end of match), and thresh is true. Set arduino
+        //to "celebration mode".
+        //---------------------------------------------------
+        
+        if (driverStation.getMatchTime() == 100){
+            thresh = true;
+           
+        }
+        
+        if(driverStation.getMatchTime() == 0 && thresh){
+            //send arduino
+        }
+        
+    
     }
 
     public void run() {
+        isAuto = driverStation.isAutonomous();
+
+        if (isAuto) {
+            sendArduino(true, false, true, false);
+            sendArduino(false, false, false, false);
+        }
+        else
+        {
+            //teleop arduino code
+        }
 
     }
 

@@ -47,17 +47,19 @@ public class Collector extends Object implements Runnable {
             if (collectOutCommand && !collectInCommand) {
                 collectOut();
             }
-            
+            //if collectOutCommand and collectInCommand are both pressed send a message to dashboard
             if (collectOutCommand && collectInCommand){
                 SmartDashboard.putString("Collect button error", "Both Collect buttons pressed");
             }
-
+            //if collectCommand is pressed and passCommand is not pressed run the collect method
             if (collectCommand && !passCommand) {
                 collect();
             }
+            //if passCommand is pressed and collectCommand is not, run the pass method
             if (passCommand && !collectCommand) {
                 pass();
             }
+            //if both passCommand and collectCommand are pressed, send a message to dashboard
             if (passCommand && collectCommand){
                 SmartDashboard.putString("Collect motor error", "Both collect buttons are pressed");
             }
