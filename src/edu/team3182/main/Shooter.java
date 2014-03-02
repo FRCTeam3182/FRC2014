@@ -25,23 +25,25 @@ public class Shooter extends Object implements Runnable {
     }
     private Talon shooterMotors;
     private Compressor compressor;
+    private Collector collector;
 
-    public Shooter() {
+    public Shooter(Collector collector) {
         shooterMotors = new Talon(4);
         shootCommand = false;
         compressor = new Compressor(7, 1);
         compressor.start();
         driverStation = DriverStation.getInstance();
+        this.collector = collector;
     }
 
     private void shoot() {
 
         compressor.stop();
-        Collector.collectCommand = true;
+        collector.setCollectCommand(true);
         Timer.delay(.25);
-        Collector.collectInCommand = true;
+        collector.setCollectInCommand(true);
         Timer.delay(.3);
-        Collector.collectOutCommand = true;
+        collector.setCollectOutCommand(true);
         Timer.delay(.45);
         shooterMotors.set(1);
         Timer.delay(1.4);

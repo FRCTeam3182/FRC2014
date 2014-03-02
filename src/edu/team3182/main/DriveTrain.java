@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import java.lang.Thread;
-import edu.wpi.first.wpilibj.communication.Semaphore;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,56 +23,22 @@ public class DriveTrain extends Object implements Runnable {
     private final RobotDrive drive;
     private final Joystick rightJoystick;
     private final Joystick leftJoystick;
-    private DriverStation driverStation;
-    public static boolean rightShifterCommand;
-
-    public static void setRightShifterCommand(boolean rightShifterCommand) {
-        DriveTrain.rightShifterCommand = rightShifterCommand;
-    }
-
-    public static void setLeftShifterCommand(boolean leftShifterCommand) {
-        DriveTrain.leftShifterCommand = leftShifterCommand;
-    }
-
-    public static void setQuarterTurnLeftCommand(boolean quarterTurnLeftCommand) {
-        DriveTrain.quarterTurnLeftCommand = quarterTurnLeftCommand;
-    }
-
-    public static void setQuarterTurnRightCommand(boolean quarterTurnRightCommand) {
-        DriveTrain.quarterTurnRightCommand = quarterTurnRightCommand;
-    }
-
-    public static void setHalfTurnRightCommand(boolean halfTurnRightCommand) {
-        DriveTrain.halfTurnRightCommand = halfTurnRightCommand;
-    }
-
-    public static void setJoystickStateCommand(boolean joystickStateCommand) {
-        DriveTrain.joystickStateCommand = joystickStateCommand;
-    }
-
-    public static void setRightMotorCommand(double rightMotorCommand) {
-        DriveTrain.rightMotorCommand = rightMotorCommand;
-    }
-
-    public static void setLeftMotorCommand(double leftMotorCommand) {
-        DriveTrain.leftMotorCommand = leftMotorCommand;
-    }
-    public static boolean leftShifterCommand;
-    public static boolean quarterTurnLeftCommand;
-    public static boolean quarterTurnRightCommand;
-    public static boolean halfTurnRightCommand;
-    public static boolean joystickStateCommand;
-    public static double rightMotorCommand;
-    public static double leftMotorCommand;
+    private final DriverStation driverStation;
+    private boolean rightShifterCommand;
+    private boolean leftShifterCommand;
+    private boolean quarterTurnLeftCommand;
+    private boolean quarterTurnRightCommand;
+    private boolean halfTurnRightCommand;
+    private boolean joystickStateCommand;
+    private double rightMotorCommand;
+    private double leftMotorCommand;
 
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
     
-
     public DriveTrain() {
-
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -88,7 +52,7 @@ public class DriveTrain extends Object implements Runnable {
         halfTurnRightCommand = false;
         rightMotorCommand = 0;
         leftMotorCommand = 0;
-        DriveTrain.joystickStateCommand = false;
+        joystickStateCommand = false;
         driverStation = DriverStation.getInstance();
     }
 
@@ -108,7 +72,7 @@ public class DriveTrain extends Object implements Runnable {
                     shiftLow();
 
                 }
-                if (DriveTrain.joystickStateCommand) {
+                if (joystickStateCommand) {
                     rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
                     leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
                 }
@@ -167,6 +131,38 @@ public class DriveTrain extends Object implements Runnable {
         drive.drive(1, signum(angle_deg));
         Timer.delay(Math.abs(angle_deg / 300));
         drive.drive(0, 0);
+    }
+
+    public synchronized void setRightShifterCommand(boolean rightShifterCommand) {
+        this.rightShifterCommand = rightShifterCommand;
+    }
+
+    public synchronized void setLeftShifterCommand(boolean leftShifterCommand) {
+        this.leftShifterCommand = leftShifterCommand;
+    }
+
+    public synchronized void setQuarterTurnLeftCommand(boolean quarterTurnLeftCommand) {
+        this.quarterTurnLeftCommand = quarterTurnLeftCommand;
+    }
+
+    public synchronized void setQuarterTurnRightCommand(boolean quarterTurnRightCommand) {
+        this.quarterTurnRightCommand = quarterTurnRightCommand;
+    }
+
+    public synchronized void setHalfTurnRightCommand(boolean halfTurnRightCommand) {
+        this.halfTurnRightCommand = halfTurnRightCommand;
+    }
+
+    public synchronized void setJoystickStateCommand(boolean joystickStateCommand) {
+        this.joystickStateCommand = joystickStateCommand;
+    }
+
+    public synchronized void setRightMotorCommand(double rightMotorCommand) {
+        this.rightMotorCommand = rightMotorCommand;
+    }
+
+    public synchronized void setLeftMotorCommand(double leftMotorCommand) {
+        this.leftMotorCommand = leftMotorCommand;
     }
 
     private int signum(float num) {

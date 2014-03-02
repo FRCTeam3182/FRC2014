@@ -16,27 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Nodcah
  */
 public class Collector extends Object implements Runnable {
-    private DriverStation driverStation;
-    public static boolean collectCommand;
-
-    public static void setCollectCommand(boolean collectCommand) {
-        Collector.collectCommand = collectCommand;
-    }
-
-    public static void setCollectInCommand(boolean collectInCommand) {
-        Collector.collectInCommand = collectInCommand;
-    }
-
-    public static void setCollectOutCommand(boolean collectOutCommand) {
-        Collector.collectOutCommand = collectOutCommand;
-    }
-
-    public static void setPassCommand(boolean passCommand) {
-        Collector.passCommand = passCommand;
-    }
-    public static boolean collectInCommand;
-    public static boolean collectOutCommand;
-    public static boolean passCommand;
+    private final DriverStation driverStation;
+    private boolean collectCommand;
+    private boolean collectInCommand;
+    private boolean collectOutCommand;
+    private boolean passCommand;
     private final DoubleSolenoid leftCollector;
     private final DoubleSolenoid rightCollector;
     private final Talon collectorMotor;
@@ -92,6 +76,22 @@ public class Collector extends Object implements Runnable {
            
     }
 
+    public void setCollectCommand(boolean collectCommand) {
+        this.collectCommand = collectCommand;
+    }
+
+    public void setCollectInCommand(boolean collectInCommand) {
+        this.collectInCommand = collectInCommand;
+    }
+
+    public void setCollectOutCommand(boolean collectOutCommand) {
+        this.collectOutCommand = collectOutCommand;
+    }
+
+    public void setPassCommand(boolean passCommand) {
+        this.passCommand = passCommand;
+    }
+
     private void collectIn() {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kForward);
@@ -106,13 +106,10 @@ public class Collector extends Object implements Runnable {
 
     private void collect() {
         collectorMotor.set(1);
-
     }
 
     private void pass() {
-
         collectorMotor.set(-.9);
-
     }
     
     private void collectToDashboard(){

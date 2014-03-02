@@ -113,7 +113,7 @@ public class Robot3182 extends IterativeRobot {
         new Thread(driveTrainVar).start();
         collectVar = new Collector();
         new Thread(collectVar).start();
-        shooterVar = new Shooter();
+        shooterVar = new Shooter(collectVar);
         new Thread(shooterVar).start();
         sensorsVar = new Sensors();
         new Thread(sensorsVar).start();
@@ -154,12 +154,12 @@ public class Robot3182 extends IterativeRobot {
     }
     
     public void disabledInit() {
-        DriveTrain.leftMotorCommand = 0;
-        DriveTrain.rightMotorCommand = 0;
+        driveTrainVar.setLeftMotorCommand(0);
+        driveTrainVar.setRightMotorCommand(0);
         Shooter.shootCommand = false;
-        Collector.collectInCommand = false;
-        Collector.collectInCommand = false;
-        Collector.collectOutCommand = false;
+        collectVar.setCollectCommand(false);
+        collectVar.setCollectInCommand(false);
+        collectVar.setCollectOutCommand(false);
        // sendArduino(true, true, false, false);
         
         
@@ -171,40 +171,35 @@ public class Robot3182 extends IterativeRobot {
      * This is called on a transition from any other state.
      */
     public void autonomousInit() {
-        driveTrainVar.notify();
-        collectVar.notify();
-        shooterVar.notify();
         //disable jystick command over the wheels
-        DriveTrain.joystickStateCommand = false;
+        driveTrainVar.setJoystickStateCommand(false);
 
         //Send command to Arduino for the light strip
        // sendArduino(true, false, true, false); //charging animation
         //sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
-        DriveTrain.rightMotorCommand = .3;
-        DriveTrain.leftMotorCommand = .3;
+        driveTrainVar.setRightMotorCommand(.3);
+        driveTrainVar.setLeftMotorCommand(.3);
         Timer.delay(2.0);
-        DriveTrain.rightMotorCommand = .5;
-        DriveTrain.leftMotorCommand = .5;
+        driveTrainVar.setRightMotorCommand(.5);
+        driveTrainVar.setLeftMotorCommand(.5);
         Timer.delay(2);
-        DriveTrain.rightMotorCommand = .4;
-        DriveTrain.leftMotorCommand = .4;
+        driveTrainVar.setRightMotorCommand(.4);
+        driveTrainVar.setLeftMotorCommand(.4);
         Timer.delay(.1);
-        DriveTrain.rightMotorCommand = .35;
-        DriveTrain.leftMotorCommand = .35;
+        driveTrainVar.setRightMotorCommand(.35);
+        driveTrainVar.setLeftMotorCommand(.35);
         Timer.delay(.3);
-        DriveTrain.rightMotorCommand = 0;
-        DriveTrain.leftMotorCommand = 0;
-        collectorMotor.set(.8);
-        rightCollector.set(DoubleSolenoid.Value.kReverse);
-        leftCollector.set(DoubleSolenoid.Value.kReverse);
-        collectorMotor.set(.8);
+        driveTrainVar.setRightMotorCommand(0);
+        driveTrainVar.setLeftMotorCommand(0);
+        collectVar.setCollectCommand(true);
+        collectVar.setCollectOutCommand(true);
         Timer.delay(.5);
-        collectorMotor.set(.8);
+        collectVar.setCollectCommand(true);
         Timer.delay(.5);
-        collectorMotor.set(.8);
+        collectVar.setCollectCommand(true);
         Timer.delay(.5);
-        collectorMotor.set(0);
+        collectVar.setCollectCommand(false);
         //Shoot:
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
@@ -226,7 +221,7 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.start();
         leftDriveEncoder.start();
         compressor.start();
-        DriveTrain.joystickStateCommand = true;
+        driveTrainVar.setJoystickStateCommand(true);
     }
 
     /**
@@ -416,14 +411,6 @@ public class Robot3182 extends IterativeRobot {
     }
 
     public void testInit() {
-        DriveTrain driveTrainVar = new DriveTrain();
-        new Thread(driveTrainVar).start();
-        Collector collectVar = new Collector();
-        new Thread(collectVar).start();
-        Shooter shooterVar = new Shooter();
-        new Thread(shooterVar).start();
-        Sensors sensorsVar = new Sensors();
-        new Thread(sensorsVar).start();
     }
 
     /**
@@ -431,14 +418,14 @@ public class Robot3182 extends IterativeRobot {
      */
     public void testPeriodic() {
         Shooter.shootCommand = buttonsJoystick.getRawButton(1);
-        Collector.collectCommand = buttonsJoystick.getRawButton(2);
+        collectVar.setCollectCommand(buttonsJoystick.getRawButton(2));
 
-        Collector.passCommand = buttonsJoystick.getRawButton(3);
+        collectVar.setPassCommand(buttonsJoystick.getRawButton(3));
 
-        DriveTrain.quarterTurnRightCommand = buttonsJoystick.getRawButton(4);
+        driveTrainVar.setQuarterTurnRightCommand(buttonsJoystick.getRawButton(4));
 
-        Collector.collectInCommand = buttonsJoystick.getRawButton(5);
-        Collector.collectOutCommand = buttonsJoystick.getRawButton(6);
+        collectVar.setCollectInCommand(buttonsJoystick.getRawButton(5));
+        collectVar.setCollectOutCommand(buttonsJoystick.getRawButton(6));
 
 //        if (buttonsJoystick.getRawButton(7)) {
 //            shiftHigh();
@@ -446,9 +433,9 @@ public class Robot3182 extends IterativeRobot {
 //        if (buttonsJoystick.getRawButton(8)) {
 //            shiftLow();
 //        }
-        DriveTrain.quarterTurnLeftCommand = buttonsJoystick.getRawButton(9);
+        driveTrainVar.setQuarterTurnLeftCommand(buttonsJoystick.getRawButton(9));
 
-        DriveTrain.halfTurnRightCommand = buttonsJoystick.getRawButton(10);
+        driveTrainVar.setHalfTurnRightCommand(buttonsJoystick.getRawButton(10));
 
         if (buttonsJoystick.getRawButton(11)) {
 
