@@ -18,10 +18,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Shooter extends Object implements Runnable {
     private DriverStation driverStation;
-    public static boolean shootCommand;
+    public boolean shootCommand;
 
-    public static void setShootCommand(boolean shootCommand) {
-        Shooter.shootCommand = shootCommand;
+    public synchronized void setShootCommand(boolean shootCommand) {
+        this.shootCommand = shootCommand;
     }
     private Talon shooterMotors;
     private Compressor compressor;

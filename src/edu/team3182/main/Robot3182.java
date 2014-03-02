@@ -156,7 +156,7 @@ public class Robot3182 extends IterativeRobot {
     public void disabledInit() {
         driveTrainVar.setLeftMotorCommand(0);
         driveTrainVar.setRightMotorCommand(0);
-        Shooter.shootCommand = false;
+        shooterVar.setShootCommand(false);
         collectVar.setCollectCommand(false);
         collectVar.setCollectInCommand(false);
         collectVar.setCollectOutCommand(false);
@@ -203,7 +203,7 @@ public class Robot3182 extends IterativeRobot {
         //Shoot:
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
-        Shooter.shootCommand = true;
+        shooterVar.setShootCommand(true);
 
     }
 
@@ -417,7 +417,7 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-        Shooter.shootCommand = buttonsJoystick.getRawButton(1);
+        shooterVar.setShootCommand(buttonsJoystick.getRawButton(1));
         collectVar.setCollectCommand(buttonsJoystick.getRawButton(2));
 
         collectVar.setPassCommand(buttonsJoystick.getRawButton(3));
