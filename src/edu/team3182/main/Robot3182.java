@@ -103,9 +103,6 @@ public class Robot3182 extends IterativeRobot {
     final double a = .005;
     final double b = .9;
 
-    //###########For testing:##################
-    double x;
-
     /**
      * Called when the robot is first turned on. This is a substitute for using
      * the constructor in the class for consistency. This method is only called
@@ -128,8 +125,8 @@ public class Robot3182 extends IterativeRobot {
         // rightJoystick = new Joystick(1);
         //leftJoystick = new Joystick(2);
         buttonsJoystick = new Joystick(3);
-        arduinoSignal = new DigitalOutput(5); //data line
-        arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
+//        arduinoSignal = new DigitalOutput(5); //data line
+//        arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
         /*------------------------------------------------------------
          Stuff below is disabled to test threads. Uncomment to run 
          Robot main.
@@ -163,7 +160,7 @@ public class Robot3182 extends IterativeRobot {
         Collector.collectInCommand = false;
         Collector.collectInCommand = false;
         Collector.collectOutCommand = false;
-        sendArduino(true, true, false, false);
+       // sendArduino(true, true, false, false);
         
         
         
@@ -181,8 +178,8 @@ public class Robot3182 extends IterativeRobot {
         DriveTrain.joystickStateCommand = false;
 
         //Send command to Arduino for the light strip
-        sendArduino(true, false, true, false); //charging animation
-        sendArduino(false, false, false, false); //stop it imediatly after it finishes
+       // sendArduino(true, false, true, false); //charging animation
+        //sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
         DriveTrain.rightMotorCommand = .3;
         DriveTrain.leftMotorCommand = .3;
@@ -229,7 +226,7 @@ public class Robot3182 extends IterativeRobot {
         rightDriveEncoder.start();
         leftDriveEncoder.start();
         compressor.start();
-       DriveTrain.joystickStateCommand = true;
+        DriveTrain.joystickStateCommand = true;
     }
 
     /**
@@ -443,19 +440,19 @@ public class Robot3182 extends IterativeRobot {
         Collector.collectInCommand = buttonsJoystick.getRawButton(5);
         Collector.collectOutCommand = buttonsJoystick.getRawButton(6);
 
-        if (buttonsJoystick.getRawButton(7)) {
-            shiftHigh();
-        }
-        if (buttonsJoystick.getRawButton(8)) {
-            shiftLow();
-        }
+//        if (buttonsJoystick.getRawButton(7)) {
+//            shiftHigh();
+//        }
+//        if (buttonsJoystick.getRawButton(8)) {
+//            shiftLow();
+//        }
         DriveTrain.quarterTurnLeftCommand = buttonsJoystick.getRawButton(9);
 
         DriveTrain.halfTurnRightCommand = buttonsJoystick.getRawButton(10);
 
         if (buttonsJoystick.getRawButton(11)) {
 
-            sendArduino(true, false, false, false);
+            //sendArduino(true, false, false, false);
         }
 //        x = buttonsJoystick.getAxis(Joystick.AxisType.kY);
 //        if (x > .25) {
@@ -472,115 +469,115 @@ public class Robot3182 extends IterativeRobot {
     }
 
     // bring shooter up then down
-    private void shoot() {
-        compressor.stop();
-        collectorMotor.set(.8);
-        Timer.delay(.25);
-        collectIn();
-        Timer.delay(.3);
-        collectOut();
-        Timer.delay(.45);
-        shooterMotors.set(1);
-        Timer.delay(1.4);
-        shooterMotors.set(0);
-        Timer.delay(.5);
-        //start reload
-        collectorMotor.set(0);
-        // remember to set negative
-        shooterMotors.set(-.15);
-        Timer.delay(1.5);
-        shooterMotors.set(0);
-        compressor.start();
-    }
+//    private void shoot() {
+//        compressor.stop();
+//        collectorMotor.set(.8);
+//        Timer.delay(.25);
+//        collectIn();
+//        Timer.delay(.3);
+//        collectOut();
+//        Timer.delay(.45);
+//        shooterMotors.set(1);
+//        Timer.delay(1.4);
+//        shooterMotors.set(0);
+//        Timer.delay(.5);
+//        //start reload
+//        collectorMotor.set(0);
+//        // remember to set negative
+//        shooterMotors.set(-.15);
+//        Timer.delay(1.5);
+//        shooterMotors.set(0);
+//        compressor.start();
+//    }
 
     // runs collect forward relies on safety config disabling
-    private void collect() {
-        sendArduino(false, true, false, false);
-        collectorMotor.set(.8);
-
-    }
+//    private void collect() {
+//       // sendArduino(false, true, false, false);
+//        collectorMotor.set(.8);
+//
+//    }
 
     // runs collect backward relies on safety config disabling
-    private void pass() {
-
-        collectorMotor.set(-.9);
-
-    }
+//    private void pass() {
+//
+//        collectorMotor.set(-.9);
+//
+//    }
 
     // pivots robot by some angle, positive is right, negative is left
-    private void pivot(float angle_deg) {
-        drive.drive(1, signum(angle_deg));
-        Timer.delay(Math.abs(angle_deg / 90));
-        drive.drive(0, 0);
-    }
+//    private void pivot(float angle_deg) {
+//        drive.drive(1, signum(angle_deg));
+//        Timer.delay(Math.abs(angle_deg / 90));
+//        drive.drive(0, 0);
+//    }
+//
+//    private int signum(float num) {
+//        if (num > 0) {
+//            return 1;
+//        } else if (num < 0) {
+//            return -1;
+//        } else {
+//            return 0;
+//        }
+//
+//    }
+//
+//    private void collectIn() {
+//        collectorMotor.set(.8);
+//        rightCollector.set(DoubleSolenoid.Value.kForward);
+//        leftCollector.set(DoubleSolenoid.Value.kForward);
+//
+//    }
+//
+//    private void collectOut() {
+//        collectorMotor.set(.8);
+//        rightCollector.set(DoubleSolenoid.Value.kReverse);
+//        leftCollector.set(DoubleSolenoid.Value.kReverse);
+//    }
+//
+//    private void shiftHigh() {
+//        leftShifter.set(DoubleSolenoid.Value.kForward);
+//        rightShifter.set(DoubleSolenoid.Value.kForward);
+//    }
+//
+//    private void shiftLow() {
+//        leftShifter.set(DoubleSolenoid.Value.kReverse);
+//        rightShifter.set(DoubleSolenoid.Value.kReverse);
+//    }
 
-    private int signum(float num) {
-        if (num > 0) {
-            return 1;
-        } else if (num < 0) {
-            return -1;
-        } else {
-            return 0;
-        }
+//    private void sendArduino(boolean one, boolean two, boolean three, boolean four) {
+//        //the fuction to send certain data to the arduino
+//        dummy = new boolean[]{one, two, three, four};
+//        isSame = Arrays.equals(dummy, lightData);
+//
+//        if (!isSame) {
+//            arduinoSignifier.set(true);
+//            arduinoSignal.set(one);
+//            Timer.delay(.01);
+//            arduinoSignal.set(two);
+//            Timer.delay(.01);
+//            arduinoSignal.set(three);
+//            Timer.delay(.01);
+//            arduinoSignal.set(four);
+//            Timer.delay(.01);
+//            arduinoSignal.set(false);
+//            arduinoSignifier.set(false);
+//        }
+//        lightData = new boolean[]{one, two, three, four};
+//        System.out.println("hey");
+//
+//    }
 
-    }
-
-    private void collectIn() {
-        collectorMotor.set(.8);
-        rightCollector.set(DoubleSolenoid.Value.kForward);
-        leftCollector.set(DoubleSolenoid.Value.kForward);
-
-    }
-
-    private void collectOut() {
-        collectorMotor.set(.8);
-        rightCollector.set(DoubleSolenoid.Value.kReverse);
-        leftCollector.set(DoubleSolenoid.Value.kReverse);
-    }
-
-    private void shiftHigh() {
-        leftShifter.set(DoubleSolenoid.Value.kForward);
-        rightShifter.set(DoubleSolenoid.Value.kForward);
-    }
-
-    private void shiftLow() {
-        leftShifter.set(DoubleSolenoid.Value.kReverse);
-        rightShifter.set(DoubleSolenoid.Value.kReverse);
-    }
-
-    private void sendArduino(boolean one, boolean two, boolean three, boolean four) {
-        //the fuction to send certain data to the arduino
-        dummy = new boolean[]{one, two, three, four};
-        isSame = Arrays.equals(dummy, lightData);
-
-        if (!isSame) {
-            arduinoSignifier.set(true);
-            arduinoSignal.set(one);
-            Timer.delay(.01);
-            arduinoSignal.set(two);
-            Timer.delay(.01);
-            arduinoSignal.set(three);
-            Timer.delay(.01);
-            arduinoSignal.set(four);
-            Timer.delay(.01);
-            arduinoSignal.set(false);
-            arduinoSignifier.set(false);
-        }
-        lightData = new boolean[]{one, two, three, four};
-        System.out.println("hey");
-
-    }
-
-    private void getUltraRange() {
-        if (getVoltage >= 60 && getVoltage <= 72) {
-            sendArduino(false, true, true, false); //green
-        } else if (getVoltage >= 3 && getVoltage < 60) {
-            sendArduino(true, false, false, false); //red
-        } else if (getVoltage >= 60 && getVoltage <= 72) {
-            sendArduino(false, false, true, false); //yellow
-        } else if (getVoltage > 60) {
-            sendArduino(false, false, false, true); //idle
-        }
-    }
+//    private void getUltraRange() {
+//        if (getVoltage >= 60 && getVoltage <= 72) {
+//            sendArduino(false, true, true, false); //green
+//        } else if (getVoltage >= 3 && getVoltage < 60) {
+//            sendArduino(true, false, false, false); //red
+//        } else if (getVoltage >= 60 && getVoltage <= 72) {
+//            sendArduino(false, false, true, false); //yellow
+//        } else if (getVoltage > 60) {
+//            sendArduino(false, false, false, true); //idle
+//        }
+//    }
 
 }

@@ -29,7 +29,8 @@ public class ArduinoLights extends Object implements Runnable {
 
     public ArduinoLights() {
         arduinoSignal = new DigitalOutput(5); //data line
-        arduinoSignifier = new DigitalOutput(6); //tells arduino when to read data
+        arduinoSignifier = new DigitalOutput(6);//tells arduino when to read data
+        driverStation = DriverStation.getInstance();                                
         Timer.delay(.5);
         
         //---------------------------------------------------

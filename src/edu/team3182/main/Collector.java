@@ -18,6 +18,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Collector extends Object implements Runnable {
     private DriverStation driverStation;
     public static boolean collectCommand;
+
+    public static void setCollectCommand(boolean collectCommand) {
+        Collector.collectCommand = collectCommand;
+    }
+
+    public static void setCollectInCommand(boolean collectInCommand) {
+        Collector.collectInCommand = collectInCommand;
+    }
+
+    public static void setCollectOutCommand(boolean collectOutCommand) {
+        Collector.collectOutCommand = collectOutCommand;
+    }
+
+    public static void setPassCommand(boolean passCommand) {
+        Collector.passCommand = passCommand;
+    }
     public static boolean collectInCommand;
     public static boolean collectOutCommand;
     public static boolean passCommand;
@@ -34,6 +50,7 @@ public class Collector extends Object implements Runnable {
         collectInCommand = false;
         collectOutCommand = false;
         passCommand = false;
+        driverStation = DriverStation.getInstance();
     }
 
     public void run() {
