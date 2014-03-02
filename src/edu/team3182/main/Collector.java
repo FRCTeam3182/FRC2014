@@ -41,7 +41,7 @@ public class Collector extends Object implements Runnable {
         while (true) {
            if(!driverStation.isEnabled()){
                Timer.delay(.1);
-               //continue
+               continue;
            }
            
             //when button 10 is let go, the toggle will comence
