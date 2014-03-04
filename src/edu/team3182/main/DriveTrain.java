@@ -32,6 +32,7 @@ public class DriveTrain extends Object implements Runnable {
     private volatile boolean joystickStateCommand;
     private volatile double rightMotorCommand;
     private volatile double leftMotorCommand;
+    
 
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
@@ -60,6 +61,13 @@ public class DriveTrain extends Object implements Runnable {
 
         while (true) {
             boolean isEna = driverStation.isEnabled();
+             if (joystickStateCommand) {
+                    rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
+                    leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
+                    rightShifterCommand = rightJoystick.getRawButton(1);
+                    leftShifterCommand = leftJoystick.getRawButton(1);
+                    
+                }
             if (isEna) {
                 //shifter code
                 //while both of the triggers are clicked, the shifter are switched to high gear
@@ -72,10 +80,7 @@ public class DriveTrain extends Object implements Runnable {
                     shiftLow();
 
                 }
-                if (joystickStateCommand) {
-                    rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
-                    leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
-                }
+               
                 /*=================================================================
                  makes sure joystick will not work at +/-10% throttle
                  smoothVarRight/Left are output variables from a function

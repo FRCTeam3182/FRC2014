@@ -236,6 +236,7 @@ public class Robot3182 extends IterativeRobot {
         collectVar.setPassCommand(buttonsJoystick.getRawButton(5));
         shooterVar.setShootCommand(buttonsJoystick.getRawButton(1));
         
+        
    /*
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
