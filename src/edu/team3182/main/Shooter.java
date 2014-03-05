@@ -8,6 +8,7 @@ package edu.team3182.main;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -63,7 +64,8 @@ public class Shooter extends Object implements Runnable {
 
         while (true) {
             if (driverStation.isEnabled()) {
-                if (shootCommand) {
+                if (shootCommand && collector.getRightCollectorValue() == DoubleSolenoid.Value.kReverse) {
+                    
                     shoot();
                     shootCommand = false;
                 }

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Nodcah
  */
 public class Collector extends Object implements Runnable {
+
     private final DriverStation driverStation;
     private volatile boolean collectCommand;
     private volatile boolean collectInCommand;
@@ -25,7 +26,7 @@ public class Collector extends Object implements Runnable {
     private final DoubleSolenoid rightCollector;
     private final Talon collectorMotor;
     private boolean collectMotorVar = false;
-
+    
     public Collector() {
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
@@ -36,31 +37,34 @@ public class Collector extends Object implements Runnable {
         collectOutCommand = false;
         passCommand = false;
         driverStation = DriverStation.getInstance();
-        
+
+    }
+    public synchronized DoubleSolenoid.Value getRightCollectorValue() {
+        return rightCollector.get();
     }
 
     public void run() {
-       
+
         while (true) {
-           if(!driverStation.isEnabled()){
-               Timer.delay(.1);
-               continue;
-           }
-           if (collectorMotor.isAlive()){
-               collectMotorVar = true;
-           }
-               
+            if (!driverStation.isEnabled()) {
+                Timer.delay(.1);
+                continue;
+            }
+            if (collectorMotor.isAlive()) {
+                collectMotorVar = true;
+            }
+
             //when button 10 is let go, the toggle will comence
             if (collectInCommand && !collectOutCommand) {
                 collectIn();
             }
-            
+
             //when button 11 is let go, the toggle will comence
             if (collectOutCommand && !collectInCommand) {
                 collectOut();
             }
             //if collectOutCommand and collectInCommand are both pressed send a message to dashboard
-            if (collectOutCommand && collectInCommand){
+            if (collectOutCommand && collectInCommand) {
                 SmartDashboard.putString("Collect button error", "Both Collect buttons pressed");
             }
             //if collectCommand is pressed and passCommand is not pressed run the collect method
@@ -72,13 +76,13 @@ public class Collector extends Object implements Runnable {
                 pass();
             }
             //if both passCommand and collectCommand are pressed, send a message to dashboard
-            if (passCommand && collectCommand){
+            if (passCommand && collectCommand) {
                 SmartDashboard.putString("Collect motor error", "Both collect buttons are pressed");
             }
             collectToDashboard();
             Timer.delay(.2);
         }
-           
+
     }
 
     public void setCollectCommand(boolean collectCommand) {
@@ -116,12 +120,24 @@ public class Collector extends Object implements Runnable {
     private void pass() {
         collectorMotor.set(-.9);
     }
-    
-    private void collectToDashboard(){
+
+    private void collectToDashboard() {
         SmartDashboard.putBoolean("isAlive True?", collectMotorVar);
         SmartDashboard.putNumber("Collector Motor value", collectorMotor.get());
-        SmartDashboard.putString("Collector Solenoid Right", rightCollector.get().toString());
-        SmartDashboard.putString("Collector Solenoid Left", leftCollector.get().toString());
+        SmartDashboard.putString("Collector Solenoid Right", toString(rightCollector));
+        SmartDashboard.putString("Collector Solenoid Left", toString(leftCollector));
     }
 
+    public static String toString(DoubleSolenoid solenoid) {
+        String str;
+        if (solenoid.get() == DoubleSolenoid.Value.kForward) {
+            str = "Collector Foward";
+        } else if (solenoid.get() == DoubleSolenoid.Value.kReverse) {
+            str = "Collector Reverse";
+        } else {
+            str = "Collector OFF";
+        }
+
+        return str;
+    }
 }

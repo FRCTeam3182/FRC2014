@@ -102,8 +102,9 @@ public class ArduinoLights extends Object implements Runnable {
             arduinoSignal.set(false);
             arduinoSignifier.set(false);
             Timer.delay(.01);
+            System.out.println("hey");
         }
         lightData = blah;
-        System.out.println("hey");
+        
     }
 }

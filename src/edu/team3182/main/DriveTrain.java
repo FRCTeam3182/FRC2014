@@ -110,7 +110,7 @@ public class DriveTrain extends Object implements Runnable {
                     smoothVarRight = ((1 / (1 - p)) * rightMotorCommand - (1 - (1 / (1 - p))));
                 }
                 //drive using the joysticks
-                drive.tankDrive(smoothVarLeft, smoothVarRight);
+                drive.tankDrive(-smoothVarLeft, -smoothVarRight);
 
                 //does a clockwise 90 degree turn quickly 
                 if (quarterTurnRightCommand && !quarterTurnLeftCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
@@ -191,8 +191,9 @@ public class DriveTrain extends Object implements Runnable {
     }
 
     private void driveToDashboard() {
-        SmartDashboard.putString("Left Shifter", leftShifter.get().toString());
-        SmartDashboard.putString("Right Shifter", rightShifter.get().toString());
+        
+        SmartDashboard.putString("Left Shifter", leftShifter.toString());
+        SmartDashboard.putString("Right Shifter", rightShifter.toString());
         SmartDashboard.putNumber("leftMotorCommand", leftMotorCommand);
         SmartDashboard.putNumber("rightMotorCommand", rightMotorCommand);
         SmartDashboard.putBoolean("Right Trigger Shifter Command", rightShifterCommand);
@@ -201,4 +202,6 @@ public class DriveTrain extends Object implements Runnable {
         SmartDashboard.putNumber("Smooth Var Right", smoothVarRight);
         SmartDashboard.putBoolean("Joystick state", joystickStateCommand);
     }
+    
+   
 }
