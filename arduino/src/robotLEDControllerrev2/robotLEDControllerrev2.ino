@@ -189,11 +189,11 @@ void loop(){
     //play animation during autonomous
     charging();
   } 
-    else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
     //if the alliance color is blue
     allianceColor = CRGB::Blue;
   } 
-    else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //if the alliance color is red
     allianceColor = CRGB::Red;
   } 
@@ -202,7 +202,7 @@ void loop(){
   //  Serial.print(dataRecieved[1]);
   //  Serial.print(dataRecieved[2]);
   //  Serial.println(dataRecieved[3]);
-  
+
   //bricks it in case of spazzing out during a match
   if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == true){
     FastLED.clear();
@@ -223,7 +223,7 @@ void readSidecar(){
   delayMicroseconds(100000);
   dataRecieved[3] = digitalRead(3);
   delayMicroseconds(100000);
-  
+
   Serial.print(dataRecieved[0]);
   Serial.print(dataRecieved[1]);
   Serial.print(dataRecieved[2]);
@@ -531,9 +531,14 @@ void signal(){
 
 void idle(){
   //plays when the robot isn't doing anything specific, but is just driving, defending, etc.
-  
+  FastLED.clear();
+  for(int i = 1; i<25; i++){
+    r = random(0, 79);
+    leds[r] = allianceColor;
   }
+  
 }
+
 
 
 

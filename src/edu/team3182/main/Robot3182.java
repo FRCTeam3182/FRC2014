@@ -110,15 +110,16 @@ public class Robot3182 extends IterativeRobot {
      */
     public void robotInit() {
         driveTrainVar = new DriveTrain();
-        new Thread(driveTrainVar).start();
+        new Thread(driveTrainVar, "DriveTrain").start();
         collectVar = new Collector();
-        new Thread(collectVar).start();
+        new Thread(collectVar, "Collector").start();
         shooterVar = new Shooter(collectVar);
-        new Thread(shooterVar).start();
+        new Thread(shooterVar, "Shooter").start();
         sensorsVar = new Sensors();
-        new Thread(sensorsVar).start();
-        arduinoLightsVar = new ArduinoLights();
-        new Thread(arduinoLightsVar).start();
+        new Thread(sensorsVar, "Sensors").start();
+        arduinoLightsVar = new ArduinoLights(sensorsVar);
+        new Thread(arduinoLightsVar, "Arduino").start();
+
         //camera = AxisCamera.getInstance();
         // drive = new RobotDrive(1, 2);
         // drive.setSafetyEnabled(false);
@@ -218,9 +219,9 @@ public class Robot3182 extends IterativeRobot {
      * is called on a transition from any other state.
      */
     public void teleopInit() {
-        rightDriveEncoder.start();
-        leftDriveEncoder.start();
-        compressor.start();
+        
+        
+        
         driveTrainVar.setJoystickStateCommand(true);
     }
 
@@ -228,6 +229,14 @@ public class Robot3182 extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+      
+        
+        collectVar.setCollectInCommand(buttonsJoystick.getRawButton(11));
+        collectVar.setCollectOutCommand(buttonsJoystick.getRawButton(9));
+        collectVar.setCollectCommand(buttonsJoystick.getRawButton(3));
+        collectVar.setPassCommand(buttonsJoystick.getRawButton(5));
+        shooterVar.setShootCommand(buttonsJoystick.getRawButton(1));
+        
    /*
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E

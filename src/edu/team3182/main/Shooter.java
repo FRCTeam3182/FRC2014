@@ -17,8 +17,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class Shooter extends Object implements Runnable {
+
     private DriverStation driverStation;
-    public boolean shootCommand;
+    public volatile boolean shootCommand;
 
     public synchronized void setShootCommand(boolean shootCommand) {
         this.shootCommand = shootCommand;
@@ -59,20 +60,22 @@ public class Shooter extends Object implements Runnable {
     }
 
     public void run() {
-        if(driverStation.isEnabled())
+
         while (true) {
-            if (shootCommand) {
-                shoot();
-                shootCommand = false;  
+            if (driverStation.isEnabled()) {
+                if (shootCommand) {
+                    shoot();
+                    shootCommand = false;
+                }
             }
             shootToDashboard();
             Timer.delay(.2);
 
         }
     }
-    
-    private void shootToDashboard(){
-        SmartDashboard.putBoolean("Shoot Command",shootCommand );
+
+    private void shootToDashboard() {
+        SmartDashboard.putBoolean("Shoot Command", shootCommand);
         SmartDashboard.putNumber("Shooter Motor Value", shooterMotors.get());
     }
 }

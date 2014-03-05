@@ -17,13 +17,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Collector extends Object implements Runnable {
     private final DriverStation driverStation;
-    private boolean collectCommand;
-    private boolean collectInCommand;
-    private boolean collectOutCommand;
-    private boolean passCommand;
+    private volatile boolean collectCommand;
+    private volatile boolean collectInCommand;
+    private volatile boolean collectOutCommand;
+    private volatile boolean passCommand;
     private final DoubleSolenoid leftCollector;
     private final DoubleSolenoid rightCollector;
     private final Talon collectorMotor;
+    private boolean collectMotorVar = false;
 
     public Collector() {
         leftCollector = new DoubleSolenoid(1, 2);
@@ -35,6 +36,7 @@ public class Collector extends Object implements Runnable {
         collectOutCommand = false;
         passCommand = false;
         driverStation = DriverStation.getInstance();
+        
     }
 
     public void run() {
@@ -44,7 +46,10 @@ public class Collector extends Object implements Runnable {
                Timer.delay(.1);
                continue;
            }
-           
+           if (collectorMotor.isAlive()){
+               collectMotorVar = true;
+           }
+               
             //when button 10 is let go, the toggle will comence
             if (collectInCommand && !collectOutCommand) {
                 collectIn();
@@ -113,6 +118,7 @@ public class Collector extends Object implements Runnable {
     }
     
     private void collectToDashboard(){
+        SmartDashboard.putBoolean("isAlive True?", collectMotorVar);
         SmartDashboard.putNumber("Collector Motor value", collectorMotor.get());
         SmartDashboard.putString("Collector Solenoid Right", rightCollector.get().toString());
         SmartDashboard.putString("Collector Solenoid Left", leftCollector.get().toString());

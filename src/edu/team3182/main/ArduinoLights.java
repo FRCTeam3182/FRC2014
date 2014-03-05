@@ -19,6 +19,7 @@ public class ArduinoLights extends Object implements Runnable {
 
     boolean[] lightData = new boolean[]{false, false, false, false};
     boolean[] dummy = new boolean[4];
+    boolean[] dataToSend = new boolean[4];
     boolean isSame = false;
     boolean isAuto;
     boolean thresh = false;
@@ -26,78 +27,83 @@ public class ArduinoLights extends Object implements Runnable {
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
     private DriverStation driverStation;
-
-    public ArduinoLights() {
+    private Sensors sensors;
+    
+    public ArduinoLights(Sensors sensors) {
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6);//tells arduino when to read data
-        driverStation = DriverStation.getInstance();                                
+        driverStation = DriverStation.getInstance();
+        this.sensors = sensors;
         Timer.delay(.5);
-        
+
         //---------------------------------------------------
         //send certain data to arudino based on team color
         //---------------------------------------------------
-        
         if (driverStation.getAlliance() == DriverStation.Alliance.kBlue) {
-            //sendArduino
-        } 
-        
-        else if (driverStation.getAlliance() == DriverStation.Alliance.kRed) {
-            //sendArduino
-        } 
-        
-        //---------------------------------------------------
-        //if the match time reaches 100 seoonds set thresh
-        //to true. Then, if the match time is equal to 0
-        //(end of match), and thresh is true. Set arduino
-        //to "celebration mode".
-        //---------------------------------------------------
-        
-        if (driverStation.getMatchTime() == 100){
-            thresh = true;
-           
+            //send arduino if color is blue
+
+        } else if (driverStation.getAlliance() == DriverStation.Alliance.kRed) {
+            //send arduino if color is red
+
         }
-        
-        if(driverStation.getMatchTime() == 0 && thresh){
-            //send arduino
-        }
-        
-    
     }
 
     public void run() {
-        isAuto = driverStation.isAutonomous();
+        while (true) {
+            isAuto = driverStation.isAutonomous();
 
-        if (isAuto) {
-            sendArduino(true, false, true, false);
-            sendArduino(false, false, false, false);
-        }
-        else
-        {
-            //teleop arduino code
-        }
+            //---------------------------------------------------
+            //if the match time reaches 100 seoonds set thresh
+            //to true. Then, if the match time is equal to 0
+            //(end of match), and thresh is true. Set arduino
+            //to "celebration mode".
+            //---------------------------------------------------
+            if (driverStation.getMatchTime() == 100) {
+                thresh = true;
+            }
+            if (driverStation.getMatchTime() == 0 && thresh) {
+                //send arduino to do celebration
+            }
 
+            if (isAuto) {
+                dataToSend = new boolean[]{true, false, true, false};
+                sendArduino(dataToSend);
+                dataToSend = new boolean[]{false, false, false, false};
+                sendArduino(dataToSend);
+            }
+            else { //teleop arduino code with hierarchy of importance (least important to most important)
+                //idle (if nothing is happening)
+                dataToSend = new boolean[]{false, false, false, true};
+
+                //signal
+                dataToSend = new boolean[]{false, false, true, true};
+
+            //distance
+                sendArduino(dataToSend);
+            }
+        }
     }
 
-    private void sendArduino(boolean one, boolean two, boolean three, boolean four) {
+    private void sendArduino(boolean[] blah) {
         //the fuction to send certain data to the arduino
-        dummy = new boolean[]{one, two, three, four};
+        dummy = blah;
         isSame = Arrays.equals(dummy, lightData);
 
         if (!isSame) {
             arduinoSignifier.set(true);
-            arduinoSignal.set(one);
+            arduinoSignal.set(blah[0]);
             Timer.delay(.01);
-            arduinoSignal.set(two);
+            arduinoSignal.set(blah[1]);
             Timer.delay(.01);
-            arduinoSignal.set(three);
+            arduinoSignal.set(blah[2]);
             Timer.delay(.01);
-            arduinoSignal.set(four);
+            arduinoSignal.set(blah[3]);
             Timer.delay(.01);
             arduinoSignal.set(false);
             arduinoSignifier.set(false);
+            Timer.delay(.01);
         }
-        lightData = new boolean[]{one, two, three, four};
+        lightData = blah;
         System.out.println("hey");
-
     }
 }

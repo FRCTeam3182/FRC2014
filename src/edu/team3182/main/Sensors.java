@@ -17,34 +17,53 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Sensors extends Object implements Runnable {
 
-    private AnalogChannel rangeFinder;
+    private AnalogChannel leftRangeFinder;
+    private AnalogChannel rightRangeFinder;
     private Encoder rightDriveEncoder;
     private Encoder leftDriveEncoder;
-    double distance;
-    double avgVolt;
-    double voltage;
-    //private DigitalInput limitLED;
+    double leftAvgVolt;
+    double rightAvgVolt;
+    volatile int shootDistance;
+    
 
     public Sensors() {
         rightDriveEncoder = new Encoder(4, 3);
         leftDriveEncoder = new Encoder(2, 1);
-        rangeFinder = new AnalogChannel(1, 1);
-        double distanceRange;
+        leftRangeFinder = new AnalogChannel(1, 1);
+        rightRangeFinder = new AnalogChannel(1, 2);
         rightDriveEncoder.setDistancePerPulse(.08168);
 
     }
 
     public void run() {
         while (true) {
-            distance = rightDriveEncoder.getDistance();
-            avgVolt = rangeFinder.getAverageVoltage();
-            voltage = rangeFinder.getVoltage();
-            SmartDashboard.getNumber("Voltage Range Sensor", voltage);
-            SmartDashboard.putNumber("Average Voltage Range Sensor", avgVolt);
+            leftAvgVolt = leftRangeFinder.getAverageVoltage();
+            rightAvgVolt = rightRangeFinder.getAverageVoltage();
+            
+            SmartDashboard.putNumber("Average Voltage left", leftAvgVolt);
+            SmartDashboard.putNumber("Average Voltage right", rightAvgVolt);
             SmartDashboard.putNumber("Speed Right", rightDriveEncoder.getRate());
             SmartDashboard.putNumber("Speed Left", leftDriveEncoder.getRate());
             Timer.delay(.1);
+             
+            if (Math.abs(leftAvgVolt-rightAvgVolt) > .3) {
+                leftAvgVolt = 0;
+                rightAvgVolt = 0;
+            }
+            
+            //distance from wall (for shooter)
+            if (leftAvgVolt >= .45 && leftAvgVolt <= 1.2) {
+            shootDistance = 1; //just right
+            } else if (leftAvgVolt >= 3 && leftAvgVolt < 60) {
+            shootDistance = 2; //too far
+            } else if (leftAvgVolt >= 60 && leftAvgVolt <= 72) {
+            shootDistance = 0; //too close
+            }
         }
+    }
+    
+    public synchronized int shootingDistance() {
+        return shootDistance;
     }
 
 }

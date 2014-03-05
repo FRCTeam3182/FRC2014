@@ -24,20 +24,20 @@ public class DriveTrain extends Object implements Runnable {
     private final Joystick rightJoystick;
     private final Joystick leftJoystick;
     private final DriverStation driverStation;
-    private boolean rightShifterCommand;
-    private boolean leftShifterCommand;
-    private boolean quarterTurnLeftCommand;
-    private boolean quarterTurnRightCommand;
-    private boolean halfTurnRightCommand;
-    private boolean joystickStateCommand;
-    private double rightMotorCommand;
-    private double leftMotorCommand;
+    private volatile boolean rightShifterCommand;
+    private volatile boolean leftShifterCommand;
+    private volatile boolean quarterTurnLeftCommand;
+    private volatile boolean quarterTurnRightCommand;
+    private volatile boolean halfTurnRightCommand;
+    private volatile boolean joystickStateCommand;
+    private volatile double rightMotorCommand;
+    private volatile double leftMotorCommand;
 
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
-    
+
     public DriveTrain() {
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
@@ -61,7 +61,7 @@ public class DriveTrain extends Object implements Runnable {
         while (true) {
             boolean isEna = driverStation.isEnabled();
             if (isEna) {
-            //shifter code
+                //shifter code
                 //while both of the triggers are clicked, the shifter are switched to high gear
                 if (rightShifterCommand && leftShifterCommand) {
                     // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
@@ -96,12 +96,12 @@ public class DriveTrain extends Object implements Runnable {
                 if (leftMotorCommand <= (-p)) {
                     smoothVarLeft = ((1 / (1 - p)) * leftMotorCommand - (1 - (1 / (1 - p))));
                 }
-            //smooth right joystick
+                //smooth right joystick
                 // yAxisRight greater than P, which is pull back on the joystick 
                 if (rightMotorCommand >= p) {
-                    smoothVarRight = ((1 / (1 - p)) * leftMotorCommand + (1 - (1 / (1 - p))));
+                    smoothVarRight = ((1 / (1 - p)) * rightMotorCommand + (1 - (1 / (1 - p))));
                 }
-                // yAxisRight less than -P, which is push forward on the joystick 
+                // yAxisLeft less than -P, which is push forward on the joystick 
                 if (rightMotorCommand <= (-p)) {
                     smoothVarRight = ((1 / (1 - p)) * rightMotorCommand - (1 - (1 / (1 - p))));
                 }
