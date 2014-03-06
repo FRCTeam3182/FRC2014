@@ -65,13 +65,15 @@ public class ArduinoLights extends Object implements Runnable {
                 //send arduino to do celebration
             }
 
-            if (isAuto) {
+            if (isAuto && driverStation.isEnabled()) {
                 dataToSend = new boolean[]{true, false, true, false};
                 sendArduino(dataToSend);
                 dataToSend = new boolean[]{false, false, false, false};
                 sendArduino(dataToSend);
+                System.out.println(dataToSend[0]);
+                Timer.delay(10.01);
             }
-            else { //teleop arduino code with hierarchy of importance (least important to most important)
+            else if(driverStation.isEnabled()){ //teleop arduino code with hierarchy of importance (least important to most important)
                 //idle (if nothing is happening)
                 dataToSend = new boolean[]{false, false, false, true};
 
@@ -103,6 +105,10 @@ public class ArduinoLights extends Object implements Runnable {
             arduinoSignifier.set(false);
             Timer.delay(.01);
             System.out.println("hey");
+            System.out.println(blah[0]);
+            System.out.println(blah[1]);
+            System.out.println(blah[2]);
+            System.out.println(blah[3]);
         }
         lightData = blah;
         
