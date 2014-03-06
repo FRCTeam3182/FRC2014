@@ -79,5 +79,6 @@ public class Shooter extends Object implements Runnable {
     private void shootToDashboard() {
         SmartDashboard.putBoolean("Shoot Command", shootCommand);
         SmartDashboard.putNumber("Shooter Motor Value", shooterMotors.get());
+        SmartDashboard.putBoolean("Compressor", compressor.enabled());
     }
 }

@@ -23,6 +23,7 @@ public class ArduinoLights extends Object implements Runnable {
     boolean isSame = false;
     boolean isAuto;
     boolean thresh = false;
+    int distance;
 
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
@@ -51,7 +52,7 @@ public class ArduinoLights extends Object implements Runnable {
     public void run() {
         while (true) {
             isAuto = driverStation.isAutonomous();
-
+            distance = sensors.shootingDistance();
             //---------------------------------------------------
             //if the match time reaches 100 seoonds set thresh
             //to true. Then, if the match time is equal to 0
@@ -64,7 +65,15 @@ public class ArduinoLights extends Object implements Runnable {
             if (driverStation.getMatchTime() == 0 && thresh) {
                 //send arduino to do celebration
             }
-
+            if (distance == 1){
+            
+            }
+            else if (distance == 0){
+                
+            }
+            else if (distance == 2){
+                
+            }
             if (isAuto && driverStation.isEnabled()) {
                 dataToSend = new boolean[]{true, false, true, false};
                 sendArduino(dataToSend);
@@ -80,9 +89,9 @@ public class ArduinoLights extends Object implements Runnable {
                 //signal
                 dataToSend = new boolean[]{false, false, true, true};
 
-            //distance
                 sendArduino(dataToSend);
             }
+            
         }
     }
 
