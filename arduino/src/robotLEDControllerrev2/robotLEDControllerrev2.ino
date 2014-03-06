@@ -3,12 +3,11 @@
 // 
 // Functions:
 // -distance from wall (DONE)
-// -shooting animation (NEEDS TO BE TESTED)
-// -when the ball is in the craddle (charging animation)
-// -ground pass
-// -catch
-// -idle: purple, newton's ball, one led going around, 
-// -winning dance
+// -shooting animation (DONE)
+// -autonomous (charging animation) (DONE)
+// -ground pass (DONE)
+// -idle: charging (DONE)
+// -winning dance (fireworks) (DONE)
 //
 // Diagrams of robot: (everything here should be flipped(front->back)!!!!!)
 //   =========Front:==========
@@ -38,6 +37,7 @@
 //led string stuff:
 const int ledsNumber = 80; //number of leds on the strip
 CRGB leds[ledsNumber];
+boolean idleStart[ledsNumber];
 
 //color data
 uint32_t distanceColor = 0xFF0000; //start off with the color being red
@@ -69,10 +69,19 @@ void setup(){
   pinMode(3, INPUT);
 
   //interupt pin
-  attachInterrupt(0, readSidecar, RISING);
+  attachInterrupt(1, readSidecar, RISING);
+
+  //seed for random stuff
+  randomSeed(analogRead(3));
 
   //setup the led strip
   FastLED.addLeds<WS2801, RGB>(leds, ledsNumber);
+
+  //set 54 random leds for the idle animation
+  for(int i = 0; i<35; i++){
+    r = random(0, 79);
+    idleStart[r] = true;
+  }
 
   //clear the LED strip data
   FastLED.clear();
@@ -80,11 +89,8 @@ void setup(){
   //Debugging
   Serial.begin(9600);  //For debugging 
 
-  //random stuff
-  randomSeed(analogRead(0));
-
   //set brightness
-  FastLED.setBrightness(20);
+  FastLED.setBrightness(100);
 }
 
 void loop(){
@@ -102,48 +108,48 @@ void loop(){
   if (Serial.available() > 0) {
     // read the incoming byte:
     incomingByte = Serial.read();
-  }
-  if (incomingByte == 97){ //a
-    dataRecieved[0] = false;
-    dataRecieved[1] = false;
-    dataRecieved[2] = false;
-    dataRecieved[3] = false;
-    //    clearLeds();
-  }
-  else if (incomingByte == 98){ //b
-    dataRecieved[0] = true;
-    dataRecieved[1] = true;
-    dataRecieved[2] = false;
-    dataRecieved[3] = false;
-    //    setRed();
-  }
-  else if (incomingByte == 99){ //c
-    dataRecieved[0] = false;
-    dataRecieved[1] = false;
-    dataRecieved[2] = false;
-    dataRecieved[3] = true;
-    //    setGreen();
-  }
-  else if (incomingByte == 100){ //d
-    dataRecieved[0] = false;
-    dataRecieved[1] = false;
-    dataRecieved[2] = true;
-    dataRecieved[3] = true;
-    //    shootAndCollect();
-  }
-  else if (incomingByte == 101){ //e
-    dataRecieved[0] = false;
-    dataRecieved[1] = true;
-    dataRecieved[2] = false;
-    dataRecieved[3] = false;
-  }
-  else if (incomingByte == 102){ //f
-    dataRecieved[0] = false;
-    dataRecieved[1] = false;
-    dataRecieved[2] = true;
-    dataRecieved[3] = false;
-  }
 
+    if (incomingByte == 97){ //a
+      dataRecieved[0] = false;
+      dataRecieved[1] = false;
+      dataRecieved[2] = false;
+      dataRecieved[3] = false;
+      //    clearLeds();
+    }
+    else if (incomingByte == 98){ //b
+      dataRecieved[0] = true;
+      dataRecieved[1] = true;
+      dataRecieved[2] = false;
+      dataRecieved[3] = true;
+      //    setRed();
+    }
+    else if (incomingByte == 99){ //c
+      dataRecieved[0] = false;
+      dataRecieved[1] = false;
+      dataRecieved[2] = false;
+      dataRecieved[3] = true;
+      //    setGreen();
+    }
+    else if (incomingByte == 100){ //d
+      dataRecieved[0] = false;
+      dataRecieved[1] = false;
+      dataRecieved[2] = true;
+      dataRecieved[3] = true;
+      //    shootAndCollect();
+    }
+    else if (incomingByte == 101){ //e
+      dataRecieved[0] = false;
+      dataRecieved[1] = true;
+      dataRecieved[2] = false;
+      dataRecieved[3] = false;
+    }
+    else if (incomingByte == 102){ //f
+      dataRecieved[0] = true;
+      dataRecieved[1] = false;
+      dataRecieved[2] = true;
+      dataRecieved[3] = false;
+    }
+  }
   //Possible cases
   if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //clears the strip
@@ -189,11 +195,11 @@ void loop(){
     //play animation during autonomous
     charging();
   } 
-  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //if the alliance color is blue
     allianceColor = CRGB::Blue;
   } 
-  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
     //if the alliance color is red
     allianceColor = CRGB::Red;
   } 
@@ -215,14 +221,14 @@ void loop(){
 void readSidecar(){
   //reads the data coming from the sidecar when the interrupt is detected
   delayMicroseconds(5000);
-  dataRecieved[0] = digitalRead(3);
+  dataRecieved[0] = digitalRead(12);
   delayMicroseconds(10000);
-  dataRecieved[1] = digitalRead(3);
+  dataRecieved[1] = digitalRead(12);
   delayMicroseconds(10000);
-  dataRecieved[2] = digitalRead(3);
-  delayMicroseconds(100000);
-  dataRecieved[3] = digitalRead(3);
-  delayMicroseconds(100000);
+  dataRecieved[2] = digitalRead(12);
+  delayMicroseconds(10000);
+  dataRecieved[3] = digitalRead(12);
+  delayMicroseconds(10000);
 
   Serial.print(dataRecieved[0]);
   Serial.print(dataRecieved[1]);
@@ -532,12 +538,58 @@ void signal(){
 void idle(){
   //plays when the robot isn't doing anything specific, but is just driving, defending, etc.
   FastLED.clear();
-  for(int i = 1; i<25; i++){
-    r = random(0, 79);
-    leds[r] = allianceColor;
+
+  //start with random leds lit
+  for(int i = 0; i < 80; i++){
+    if(idleStart[i] == true){
+      leds[i] = allianceColor;
+    }
   }
-  
+  FastLED.show();
+  for(int timesPlayed = 0; timesPlayed < 20; timesPlayed++){
+    //make the leds go down the strip
+    for(int i = 0; i < 19; i++){ 
+      leds[i].r = leds[i+1].r;
+      leds[i].g = leds[i+1].g;
+      leds[i].b = leds[i+1].b;
+    }
+    leds[19].r = leds[0].r;
+    leds[19].g = leds[0].g;
+    leds[19].b = leds[0].b;
+
+    for(int i = 39; i >= 21; i--){
+      leds[i].r = leds[i-1].r;
+      leds[i].g = leds[i-1].g;
+      leds[i].b = leds[i-1].b;
+    }
+    leds[20].r = leds[39].r;
+    leds[20].g = leds[39].g;
+    leds[20].b = leds[39].b;
+    for(int i = 40; i < 59; i++){
+      leds[i].r = leds[i+1].r;
+      leds[i].g = leds[i+1].g;
+      leds[i].b = leds[i+1].b;
+    }
+    leds[59].r = leds[40].r;
+    leds[59].g = leds[40].g;
+    leds[59].b = leds[40].b;
+    for(int i = 79; i >= 61; i--){
+      leds[i].r = leds[i-1].r;
+      leds[i].g = leds[i-1].g;
+      leds[i].b = leds[i-1].b;
+    }
+    leds[60].r = leds[79].r;
+    leds[60].g = leds[79].g;
+    leds[60].b = leds[79].b;
+    FastLED.show();
+    delay(100);
+    Serial.println("hi");
+  }
 }
+
+
+
+
 
 
 
