@@ -161,10 +161,6 @@ public class Robot3182 extends IterativeRobot {
         collectVar.setCollectCommand(false);
         collectVar.setCollectInCommand(false);
         collectVar.setCollectOutCommand(false);
-       // sendArduino(true, true, false, false);
-        
-        
-        
     }
 
     /**
@@ -179,27 +175,23 @@ public class Robot3182 extends IterativeRobot {
        // sendArduino(true, false, true, false); //charging animation
         //sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
-        driveTrainVar.setRightMotorCommand(.3);
-        driveTrainVar.setLeftMotorCommand(.3);
+        driveTrainVar.setRightMotorCommand(-.3);
+        driveTrainVar.setLeftMotorCommand(-.3);
         Timer.delay(2.0);
-        driveTrainVar.setRightMotorCommand(.5);
-        driveTrainVar.setLeftMotorCommand(.5);
+        driveTrainVar.setRightMotorCommand(-.5);
+        driveTrainVar.setLeftMotorCommand(-.5);
         Timer.delay(2);
-        driveTrainVar.setRightMotorCommand(.4);
-        driveTrainVar.setLeftMotorCommand(.4);
+        driveTrainVar.setRightMotorCommand(-.4);
+        driveTrainVar.setLeftMotorCommand(-.4);
         Timer.delay(.1);
-        driveTrainVar.setRightMotorCommand(.35);
-        driveTrainVar.setLeftMotorCommand(.35);
+        driveTrainVar.setRightMotorCommand(-.35);
+        driveTrainVar.setLeftMotorCommand(-.35);
         Timer.delay(.3);
         driveTrainVar.setRightMotorCommand(0);
         driveTrainVar.setLeftMotorCommand(0);
         collectVar.setCollectCommand(true);
         collectVar.setCollectOutCommand(true);
-        Timer.delay(.5);
-        collectVar.setCollectCommand(true);
-        Timer.delay(.5);
-        collectVar.setCollectCommand(true);
-        Timer.delay(.5);
+        Timer.delay(1.5);
         collectVar.setCollectCommand(false);
         //Shoot:
         // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
@@ -219,9 +211,6 @@ public class Robot3182 extends IterativeRobot {
      * is called on a transition from any other state.
      */
     public void teleopInit() {
-        
-        
-        
         driveTrainVar.setJoystickStateCommand(true);
     }
 
@@ -236,7 +225,7 @@ public class Robot3182 extends IterativeRobot {
         collectVar.setCollectCommand(buttonsJoystick.getRawButton(3));
         collectVar.setPassCommand(buttonsJoystick.getRawButton(5));
         shooterVar.setShootCommand(buttonsJoystick.getRawButton(1));
-        
+        arduinoLightsVar.signal(buttonsJoystick.getRawButton(4));
    /*
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E

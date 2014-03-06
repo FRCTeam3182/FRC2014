@@ -23,6 +23,7 @@ public class ArduinoLights extends Object implements Runnable {
     boolean isSame = false;
     boolean isAuto;
     boolean thresh = false;
+    boolean signal = false;
     int distance;
 
     private DigitalOutput arduinoSignal;
@@ -66,10 +67,12 @@ public class ArduinoLights extends Object implements Runnable {
                 //send arduino to do celebration
             }
             if (distance == 1){
-            
+                dataToSend = new boolean[]{true, false, true, false};
+                sendArduino(dataToSend);
             }
             else if (distance == 0){
-                
+                dataToSend = new boolean[]{true, false, true, false};
+                sendArduino(dataToSend);
             }
             else if (distance == 2){
                 
@@ -87,8 +90,9 @@ public class ArduinoLights extends Object implements Runnable {
                 dataToSend = new boolean[]{false, false, false, true};
 
                 //signal
+                if(signal){
                 dataToSend = new boolean[]{false, false, true, true};
-
+                }
                 sendArduino(dataToSend);
             }
             
@@ -121,5 +125,8 @@ public class ArduinoLights extends Object implements Runnable {
         }
         lightData = blah;
         
+    }
+    public void signal(boolean signal) {
+        this.signal = signal;
     }
 }

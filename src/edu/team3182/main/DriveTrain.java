@@ -65,7 +65,6 @@ public class DriveTrain extends Object implements Runnable {
                     leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
                     rightShifterCommand = rightJoystick.getRawButton(1);
                     leftShifterCommand = leftJoystick.getRawButton(1);
-                    
                 }
             if (isEna) {
                 //shifter code
@@ -119,9 +118,6 @@ public class DriveTrain extends Object implements Runnable {
                 //does a counter-clockwise 90 degree turn quickly
                 if (quarterTurnLeftCommand && !quarterTurnRightCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
                     pivot(-90);
-                }
-                if (halfTurnRightCommand && !quarterTurnRightCommand && !quarterTurnLeftCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-                    pivot(180);
                 }
             }
             driveToDashboard();

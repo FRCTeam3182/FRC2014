@@ -169,8 +169,7 @@ void loop(){
     pass();
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
-    //play animation when a ball is in the shooter
-    setYellow();
+    //set lights to yellow
     distanceColor = 0xFFFF00;
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
@@ -179,12 +178,10 @@ void loop(){
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //set lights to green
-    setGreen();
     distanceColor = 0x008000;
   }
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //sets the strip to red and the distance color to red
-    setRed();
     distanceColor = 0xFF0000;
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
@@ -362,34 +359,34 @@ void pass(){
   }
 }
 
-void setGreen(){
-  //sets the strip to be all red
-
-  for (int i = 0; i < 80; i++){
-    leds[i] = CRGB::Green;
-    delayMicroseconds(100);
-  }
-  FastLED.show();
-}
-
-void setYellow(){
-  //sets the strip to be all yellow
-
-    for (int i = 0; i < 80; i++){
-    leds[i] = CRGB::Yellow;
-    delayMicroseconds(100);
-  }
-  FastLED.show();
-}
-
-void setRed(){
-  //sets the strip to be all red
-  for (int i = 0; i < 80; i++){
-    leds[i] = CRGB::Red;
-    delayMicroseconds(100);
-  }
-  FastLED.show();
-}
+//void setGreen(){
+//  //sets the strip to be all red
+//
+//  for (int i = 0; i < 80; i++){
+//    leds[i] = CRGB::Green;
+//    delayMicroseconds(100);
+//  }
+//  FastLED.show();
+//}
+//
+//void setYellow(){
+//  //sets the strip to be all yellow
+//
+//    for (int i = 0; i < 80; i++){
+//    leds[i] = CRGB::Yellow;
+//    delayMicroseconds(100);
+//  }
+//  FastLED.show();
+//}
+//
+//void setRed(){
+//  //sets the strip to be all red
+//  for (int i = 0; i < 80; i++){
+//    leds[i] = CRGB::Red;
+//    delayMicroseconds(100);
+//  }
+//  FastLED.show();
+//}
 
 
 void clearLeds(){
@@ -542,7 +539,7 @@ void idle(){
   //start with random leds lit
   for(int i = 0; i < 80; i++){
     if(idleStart[i] == true){
-      leds[i] = allianceColor;
+      leds[i] = distanceColor;
     }
   }
   FastLED.show();

@@ -31,7 +31,6 @@ public class Collector extends Object implements Runnable {
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
         collectorMotor = new Talon(3);
-        collectorMotor.setSafetyEnabled(true);
         collectCommand = false;
         collectInCommand = false;
         collectOutCommand = false;
@@ -69,12 +68,19 @@ public class Collector extends Object implements Runnable {
             }
             //if collectCommand is pressed and passCommand is not pressed run the collect method
             if (collectCommand && !passCommand) {
-                collect();
+                collect(1);
+            }
+            if (!collectCommand){
+                collect(0);
             }
             //if passCommand is pressed and collectCommand is not, run the pass method
             if (passCommand && !collectCommand) {
-                pass();
+                pass(-1);
             }
+            if (!passCommand) {
+                pass(0);
+            }
+            
             //if both passCommand and collectCommand are pressed, send a message to dashboard
             if (passCommand && collectCommand) {
                 SmartDashboard.putString("Collect motor error", "Both collect buttons are pressed");
@@ -113,12 +119,12 @@ public class Collector extends Object implements Runnable {
         leftCollector.set(DoubleSolenoid.Value.kReverse);
     }
 
-    private void collect() {
-        collectorMotor.set(1);
+    private void collect(double x) {
+        collectorMotor.set(x);
     }
 
-    private void pass() {
-        collectorMotor.set(-.9);
+    private void pass(double x) {
+        collectorMotor.set(x);
     }
 
     private void collectToDashboard() {
