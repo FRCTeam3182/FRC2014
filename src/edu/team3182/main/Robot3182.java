@@ -4,6 +4,10 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+//sooting collector motors
+//auto collector motors
+//auto driving
+//lights
 package edu.team3182.main;
 
 import com.sun.squawk.util.Arrays;
