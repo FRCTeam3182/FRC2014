@@ -70,14 +70,11 @@ public class Collector extends Object implements Runnable {
             if (collectCommand && !passCommand) {
                 collect(1);
             }
-            if (!collectCommand){
-                collect(0);
-            }
             //if passCommand is pressed and collectCommand is not, run the pass method
             if (passCommand && !collectCommand) {
                 pass(-1);
             }
-            if (!passCommand) {
+            if (!passCommand && !collectCommand) {
                 pass(0);
             }
             
