@@ -8,6 +8,10 @@
 //auto collector motors
 //auto driving
 //lights
+//Stuff to test:
+//-Ultrasonic
+//-Pivoting
+
 package edu.team3182.main;
 
 import com.sun.squawk.util.Arrays;
@@ -91,6 +95,11 @@ public class Robot3182 extends IterativeRobot {
     boolean rightTrigger = false;
     boolean leftTrigger = false;
     boolean limitStat;
+    
+    boolean isPassing;
+    boolean isShooting;
+    boolean isCollecting;
+    
     boolean[] lightData = new boolean[]{false, false, false, false};
     boolean[] dummy = new boolean[4];
     boolean isSame = false;
@@ -179,21 +188,18 @@ public class Robot3182 extends IterativeRobot {
        // sendArduino(true, false, true, false); //charging animation
         //sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
-        driveTrainVar.setRightMotorCommand(-.3);
-        driveTrainVar.setLeftMotorCommand(-.3);
+        driveTrainVar.setRightMotorCommand(-.7);
+        driveTrainVar.setLeftMotorCommand(-.7);
         Timer.delay(2.0);
+        driveTrainVar.setRightMotorCommand(-.6);
+        driveTrainVar.setLeftMotorCommand(-.6);
+        Timer.delay(.1);
         driveTrainVar.setRightMotorCommand(-.5);
         driveTrainVar.setLeftMotorCommand(-.5);
-        Timer.delay(2.0);
-        driveTrainVar.setRightMotorCommand(-.4);
-        driveTrainVar.setLeftMotorCommand(-.4);
-        Timer.delay(.1);
-        driveTrainVar.setRightMotorCommand(-.35);
-        driveTrainVar.setLeftMotorCommand(-.35);
         Timer.delay(.3);
         driveTrainVar.setRightMotorCommand(0);
         driveTrainVar.setLeftMotorCommand(0);
-        collectVar.setCollectCommand(true);
+//        collectVar.setCollectCommand(true);
         collectVar.setCollectOutCommand(true);
         Timer.delay(1.5);
         collectVar.setCollectCommand(false);
@@ -223,13 +229,20 @@ public class Robot3182 extends IterativeRobot {
      */
     public void teleopPeriodic() {
       
+        isShooting = buttonsJoystick.getRawButton(1); //shooting
+        isCollecting = buttonsJoystick.getRawButton(3); //collect
+        isPassing = buttonsJoystick.getRawButton(5); //pass
         
         collectVar.setCollectInCommand(buttonsJoystick.getRawButton(11));
         collectVar.setCollectOutCommand(buttonsJoystick.getRawButton(9));
-        collectVar.setCollectCommand(buttonsJoystick.getRawButton(3));
-        collectVar.setPassCommand(buttonsJoystick.getRawButton(5));
-        shooterVar.setShootCommand(buttonsJoystick.getRawButton(1));
+        collectVar.setCollectCommand(isCollecting);
+        collectVar.setPassCommand(isPassing);
+        shooterVar.setShootCommand(isShooting);
         arduinoLightsVar.signal(buttonsJoystick.getRawButton(4));
+        arduinoLightsVar.kill(buttonsJoystick.getRawButton(6));
+        arduinoLightsVar.isPassing(isPassing);
+        arduinoLightsVar.isShooting(isShooting);
+        arduinoLightsVar.isCollecting(isCollecting);
    /*
         //----------------------------------------------------------------------
         // T E L E O P    D R I V E    C O D E
@@ -424,8 +437,7 @@ public class Robot3182 extends IterativeRobot {
 
         collectVar.setPassCommand(buttonsJoystick.getRawButton(3));
 
-        driveTrainVar.setQuarterTurnRightCommand(buttonsJoystick.getRawButton(4));
-
+        
         collectVar.setCollectInCommand(buttonsJoystick.getRawButton(5));
         collectVar.setCollectOutCommand(buttonsJoystick.getRawButton(6));
 
@@ -435,10 +447,6 @@ public class Robot3182 extends IterativeRobot {
 //        if (buttonsJoystick.getRawButton(8)) {
 //            shiftLow();
 //        }
-        driveTrainVar.setQuarterTurnLeftCommand(buttonsJoystick.getRawButton(9));
-
-        driveTrainVar.setHalfTurnRightCommand(buttonsJoystick.getRawButton(10));
-
         if (buttonsJoystick.getRawButton(11)) {
 
             //sendArduino(true, false, false, false);

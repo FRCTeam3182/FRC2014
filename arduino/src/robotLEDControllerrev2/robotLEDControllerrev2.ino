@@ -38,6 +38,7 @@
 const int ledsNumber = 80; //number of leds on the strip
 CRGB leds[ledsNumber];
 boolean idleStart[ledsNumber];
+CRGB rainbow[ledsNumber];
 
 //color data
 uint32_t distanceColor = 0xFF0000; //start off with the color being red
@@ -82,7 +83,7 @@ void setup(){
     r = random(0, 79);
     idleStart[r] = true;
   }
-
+  
   //clear the LED strip data
   FastLED.clear();
 
@@ -181,7 +182,7 @@ void loop(){
     distanceColor = 0x008000;
   }
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
-    //sets the strip to red and the distance color to red
+    //sets the distance color to red
     distanceColor = 0xFF0000;
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
@@ -199,6 +200,10 @@ void loop(){
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
     //if the alliance color is red
     allianceColor = CRGB::Red;
+  } 
+  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
+    //rainbow after fireworks
+    rainbow();
   } 
   //for debugging
   //  Serial.print(dataRecieved[0]);
@@ -523,13 +528,13 @@ void signal(){
     delayMicroseconds(100);
   }
   FastLED.show();
-  delay(250);
+  delay(200);
   for (int i = 0; i < 80; i++){
     leds[i] = CRGB::Black;
     delayMicroseconds(100);
   }
   FastLED.show();
-  delay(250);
+  delay(200);
 }
 
 void idle(){
@@ -579,10 +584,58 @@ void idle(){
     leds[60].g = leds[79].g;
     leds[60].b = leds[79].b;
     FastLED.show();
-    delay(100);
+    delay(50);
     Serial.println("hi");
   }
 }
+//void rainbow(){
+//  //makes a rainbow matrix
+//  FastLED.clear();
+//  
+//  //start with rainbow
+//  for(int i = 0; i<79; i++){
+//    leds[i] = rainbow[i];
+//  }
+//  
+//  for(int timesPlayed = 0; timesPlayed < 20; timesPlayed++){
+//    //make the leds go down the strip
+//    for(int i = 0; i < 19; i++){ 
+//      leds[i].r = leds[i+1].r;
+//      leds[i].g = leds[i+1].g;
+//      leds[i].b = leds[i+1].b;
+//    }
+//    leds[19].r = leds[0].r;
+//    leds[19].g = leds[0].g;
+//    leds[19].b = leds[0].b;
+//
+//    for(int i = 39; i >= 21; i--){
+//      leds[i].r = leds[i-1].r;
+//      leds[i].g = leds[i-1].g;
+//      leds[i].b = leds[i-1].b;
+//    }
+//    leds[20].r = leds[39].r;
+//    leds[20].g = leds[39].g;
+//    leds[20].b = leds[39].b;
+//    for(int i = 40; i < 59; i++){
+//      leds[i].r = leds[i+1].r;
+//      leds[i].g = leds[i+1].g;
+//      leds[i].b = leds[i+1].b;
+//    }
+//    leds[59].r = leds[40].r;
+//    leds[59].g = leds[40].g;
+//    leds[59].b = leds[40].b;
+//    for(int i = 79; i >= 61; i--){
+//      leds[i].r = leds[i-1].r;
+//      leds[i].g = leds[i-1].g;
+//      leds[i].b = leds[i-1].b;
+//    }
+//    leds[60].r = leds[79].r;
+//    leds[60].g = leds[79].g;
+//    leds[60].b = leds[79].b;
+//    FastLED.show();
+//    delay(50);
+//  }
+//}
 
 
 

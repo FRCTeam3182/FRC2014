@@ -24,8 +24,12 @@ public class ArduinoLights extends Object implements Runnable {
     boolean isAuto;
     boolean thresh = false;
     boolean signal = false;
+    boolean isCollecting = false;
+    boolean isShooting = false;
+    boolean isPassing = false;
     boolean isSendingColor = true;
     boolean isSendingAuto = true;
+    boolean kill = false;
     int oldDistance = 2;
     int distance;
 
@@ -69,6 +73,11 @@ public class ArduinoLights extends Object implements Runnable {
             }
             if (driverStation.getMatchTime() == 0 && thresh) {
                 //send arduino to do celebration
+                dataToSend = new boolean[] {true, true, false, false};
+                sendArduino(dataToSend);
+                Timer.delay(2);
+//                dataToSend = new boolean[] {false, true, false, true};
+//                sendArduino(dataToSend);
             }
             if (distance == 1 && oldDistance != 1) {
                 dataToSend = new boolean[]{false, true, true, false};
@@ -86,26 +95,39 @@ public class ArduinoLights extends Object implements Runnable {
             if (isAuto && driverStation.isEnabled() && isSendingAuto) {
                 dataToSend = new boolean[]{true, false, true, false};
                 sendArduino(dataToSend);
+                Timer.delay(1.01);
                 dataToSend = new boolean[]{false, false, false, false};
                 sendArduino(dataToSend);
                 System.out.println(dataToSend[0]);
-                Timer.delay(10.01);
+                Timer.delay(9.0);
                 isSendingAuto = false;
             } else if (driverStation.isEnabled()) { //teleop arduino code with hierarchy of importance (least important to most important)
                 //idle (if nothing is happening)
                 dataToSend = new boolean[]{false, false, false, true};
 
+                //passing
+                if (isPassing){
+                    dataToSend = new boolean[]{false, true, true, true};
+                }
+                //collecting / shooting
+                if (isCollecting || isShooting){
+                dataToSend = new boolean[]{false, true, false, false};
+                }
+                
                 //signal
                 if (signal) {
                     dataToSend = new boolean[]{false, false, true, true};
                 }
                 sendArduino(dataToSend);
             }
-            else{
+            else if (kill){
+                dataToSend = new boolean[] {true, true, true, true};
+                sendArduino(dataToSend);
+            }
+            else if (driverStation.isDisabled() && !(driverStation.getMatchTime() == 0 && thresh)){
                 dataToSend = new boolean[] {false, false, false, false};
                 sendArduino(dataToSend);
             }
-
         }
     }
 
@@ -139,5 +161,17 @@ public class ArduinoLights extends Object implements Runnable {
 
     public void signal(boolean signal) {
         this.signal = signal;
+    }
+    public void isCollecting(boolean isCollecting) {
+        this.isCollecting = isCollecting;
+    }
+    public void isShooting(boolean isShooting) {
+        this.isShooting = isShooting;
+    }
+    public void isPassing(boolean isPassing) {
+        this.isPassing = isPassing;
+    }
+    public void kill(boolean kill) {
+        this.kill = kill;
     }
 }

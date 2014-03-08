@@ -109,6 +109,7 @@ public class Collector extends Object implements Runnable {
         rightCollector.set(DoubleSolenoid.Value.kForward);
         leftCollector.set(DoubleSolenoid.Value.kForward);
         Timer.delay(.5);
+        collectorMotor.set(0);
     }
 
     private void collectOut() {
@@ -116,6 +117,7 @@ public class Collector extends Object implements Runnable {
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
         Timer.delay(.5);
+        collectorMotor.set(0);
     }
 
     private void collect(double x) {

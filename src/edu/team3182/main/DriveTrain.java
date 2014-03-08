@@ -26,12 +26,14 @@ public class DriveTrain extends Object implements Runnable {
     private final DriverStation driverStation;
     private volatile boolean rightShifterCommand;
     private volatile boolean leftShifterCommand;
-    private volatile boolean quarterTurnLeftCommand;
-    private volatile boolean quarterTurnRightCommand;
-    private volatile boolean halfTurnRightCommand;
+//    private volatile boolean quarterTurnLeftCommand;
+//    private volatile boolean quarterTurnRightCommand;
+//    private volatile boolean halfTurnRightCommand;
     private volatile boolean joystickStateCommand;
     private volatile double rightMotorCommand;
     private volatile double leftMotorCommand;
+    boolean turnRightCommand;
+    boolean turnLeftCommand;
 
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
@@ -47,9 +49,9 @@ public class DriveTrain extends Object implements Runnable {
         rightShifter = new DoubleSolenoid(7, 8);
         rightShifterCommand = false;
         leftShifterCommand = false;
-        quarterTurnLeftCommand = false;
-        quarterTurnRightCommand = false;
-        halfTurnRightCommand = false;
+//        quarterTurnLeftCommand = false;
+//        quarterTurnRightCommand = false;
+//        halfTurnRightCommand = false;
         rightMotorCommand = 0;
         leftMotorCommand = 0;
         joystickStateCommand = false;
@@ -65,6 +67,8 @@ public class DriveTrain extends Object implements Runnable {
                     leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
                     rightShifterCommand = rightJoystick.getRawButton(1);
                     leftShifterCommand = leftJoystick.getRawButton(1);
+                    turnRightCommand = rightJoystick.getRawButton(3);
+                    turnLeftCommand = leftJoystick.getRawButton(4);
                 }
             if (isEna) {
                 //shifter code
@@ -76,7 +80,15 @@ public class DriveTrain extends Object implements Runnable {
                 if (rightShifterCommand == false && leftShifterCommand == false) {
                     // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
                     shiftLow();
-
+                }
+                
+                if (turnRightCommand){ //pivoting
+                    rightMotorCommand = 1;
+                    leftMotorCommand = -1;
+                }
+                 if (turnLeftCommand){
+                    rightMotorCommand = -1;
+                    leftMotorCommand = 1;
                 }
                
                 /*=================================================================
@@ -111,14 +123,14 @@ public class DriveTrain extends Object implements Runnable {
                 //drive using the joysticks
                 drive.tankDrive(-smoothVarLeft, -smoothVarRight);
 
-                //does a clockwise 90 degree turn quickly 
-                if (quarterTurnRightCommand && !quarterTurnLeftCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-                    pivot(90);
-                }
-                //does a counter-clockwise 90 degree turn quickly
-                if (quarterTurnLeftCommand && !quarterTurnRightCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-                    pivot(-90);
-                }
+//                //does a clockwise 90 degree turn quickly 
+//                if (quarterTurnRightCommand && !quarterTurnLeftCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+//                    pivot(90);
+//                }
+//                //does a counter-clockwise 90 degree turn quickly
+//                if (quarterTurnLeftCommand && !quarterTurnRightCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
+//                    pivot(-90);
+//                }
             }
             driveToDashboard();
             Timer.delay(.15);
@@ -126,12 +138,12 @@ public class DriveTrain extends Object implements Runnable {
     }
 
     // pivots robot by some angle, positive is right, negative is left
-    private void pivot(float angle_deg) {
-
-        drive.drive(1, signum(angle_deg));
-        Timer.delay(Math.abs(angle_deg / 300));
-        drive.drive(0, 0);
-    }
+//    private void pivot(float angle_deg) {
+//
+//        drive.drive(1, signum(angle_deg));
+//        Timer.delay(Math.abs(angle_deg / 300));
+//        drive.drive(0, 0);
+//    }
 
     public synchronized void setRightShifterCommand(boolean rightShifterCommand) {
         this.rightShifterCommand = rightShifterCommand;
@@ -141,17 +153,13 @@ public class DriveTrain extends Object implements Runnable {
         this.leftShifterCommand = leftShifterCommand;
     }
 
-    public synchronized void setQuarterTurnLeftCommand(boolean quarterTurnLeftCommand) {
-        this.quarterTurnLeftCommand = quarterTurnLeftCommand;
-    }
-
-    public synchronized void setQuarterTurnRightCommand(boolean quarterTurnRightCommand) {
-        this.quarterTurnRightCommand = quarterTurnRightCommand;
-    }
-
-    public synchronized void setHalfTurnRightCommand(boolean halfTurnRightCommand) {
-        this.halfTurnRightCommand = halfTurnRightCommand;
-    }
+//    public synchronized void setTurnLeftCommand(boolean turnLeftCommand) {
+//        this.turnLeftCommand = turnLeftCommand;
+//    }
+//
+//    public synchronized void setTurnRightCommand(boolean turnRightCommand) {
+//        this.turnRightCommand = turnRightCommand;
+//    }
 
     public synchronized void setJoystickStateCommand(boolean joystickStateCommand) {
         this.joystickStateCommand = joystickStateCommand;
