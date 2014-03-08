@@ -24,13 +24,16 @@ public class ArduinoLights extends Object implements Runnable {
     boolean isAuto;
     boolean thresh = false;
     boolean signal = false;
+    boolean isSendingColor = true;
+    boolean isSendingAuto = true;
+    int oldDistance = 2;
     int distance;
 
     private DigitalOutput arduinoSignal;
     private DigitalOutput arduinoSignifier;
     private DriverStation driverStation;
     private Sensors sensors;
-    
+
     public ArduinoLights(Sensors sensors) {
         arduinoSignal = new DigitalOutput(5); //data line
         arduinoSignifier = new DigitalOutput(6);//tells arduino when to read data
@@ -41,12 +44,13 @@ public class ArduinoLights extends Object implements Runnable {
         //---------------------------------------------------
         //send certain data to arudino based on team color
         //---------------------------------------------------
-        if (driverStation.getAlliance() == DriverStation.Alliance.kBlue) {
+        if (driverStation.getAlliance() == DriverStation.Alliance.kBlue && isSendingColor) {
             //send arduino if color is blue
 
-        } else if (driverStation.getAlliance() == DriverStation.Alliance.kRed) {
+            isSendingColor = false;
+        } else if (driverStation.getAlliance() == DriverStation.Alliance.kRed && isSendingColor) {
             //send arduino if color is red
-
+            isSendingColor = false;
         }
     }
 
@@ -66,36 +70,42 @@ public class ArduinoLights extends Object implements Runnable {
             if (driverStation.getMatchTime() == 0 && thresh) {
                 //send arduino to do celebration
             }
-            if (distance == 1){
-                dataToSend = new boolean[]{true, false, true, false};
+            if (distance == 1 && oldDistance != 1) {
+                dataToSend = new boolean[]{false, true, true, false};
                 sendArduino(dataToSend);
-            }
-            else if (distance == 0){
-                dataToSend = new boolean[]{true, false, true, false};
+                oldDistance = 1;
+            } else if (distance == 0 && oldDistance != 0) {
+                dataToSend = new boolean[]{true, false, false, false};
                 sendArduino(dataToSend);
+                oldDistance = 0;
+            } else if (distance == 2 && oldDistance != 2) {
+                dataToSend = new boolean[]{false, false, true, false};
+                sendArduino(dataToSend);
+                oldDistance = 2;
             }
-            else if (distance == 2){
-                
-            }
-            if (isAuto && driverStation.isEnabled()) {
+            if (isAuto && driverStation.isEnabled() && isSendingAuto) {
                 dataToSend = new boolean[]{true, false, true, false};
                 sendArduino(dataToSend);
                 dataToSend = new boolean[]{false, false, false, false};
                 sendArduino(dataToSend);
                 System.out.println(dataToSend[0]);
                 Timer.delay(10.01);
-            }
-            else if(driverStation.isEnabled()){ //teleop arduino code with hierarchy of importance (least important to most important)
+                isSendingAuto = false;
+            } else if (driverStation.isEnabled()) { //teleop arduino code with hierarchy of importance (least important to most important)
                 //idle (if nothing is happening)
                 dataToSend = new boolean[]{false, false, false, true};
 
                 //signal
-                if(signal){
-                dataToSend = new boolean[]{false, false, true, true};
+                if (signal) {
+                    dataToSend = new boolean[]{false, false, true, true};
                 }
                 sendArduino(dataToSend);
             }
-            
+            else{
+                dataToSend = new boolean[] {false, false, false, false};
+                sendArduino(dataToSend);
+            }
+
         }
     }
 
@@ -124,8 +134,9 @@ public class ArduinoLights extends Object implements Runnable {
             System.out.println(blah[3]);
         }
         lightData = blah;
-        
+
     }
+
     public void signal(boolean signal) {
         this.signal = signal;
     }
