@@ -108,12 +108,14 @@ public class Collector extends Object implements Runnable {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kForward);
         leftCollector.set(DoubleSolenoid.Value.kForward);
+        Timer.delay(.5);
     }
 
     private void collectOut() {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
+        Timer.delay(.5);
     }
 
     private void collect(double x) {
