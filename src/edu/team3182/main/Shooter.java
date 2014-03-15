@@ -21,6 +21,8 @@ public class Shooter extends Object implements Runnable {
 
     private DriverStation driverStation;
     public volatile boolean shootCommand;
+    public volatile boolean armUpCommand;
+    public volatile boolean armDownCommand;
 
     public synchronized void setShootCommand(boolean shootCommand) {
         this.shootCommand = shootCommand;
@@ -70,10 +72,38 @@ public class Shooter extends Object implements Runnable {
                     shootCommand = false;
                 }
             }
+            
+            if (armUpCommand && !armDownCommand){
+                armUp();
+            }
+            
+            if (armDownCommand && !armUpCommand){
+                armDown();
+            }
+            
+            if (armDownCommand && armUpCommand){
+                SmartDashboard.putString("Arm error", "Both buttons were pressed");
+            }
             shootToDashboard();
             Timer.delay(.2);
 
         }
+    }
+    
+    private void armUp(){
+        //bring arm up
+    }
+    
+    private void armDown(){
+        //bring arm down
+    }
+    
+    public void setArmUpCommand(boolean armUpCommand){
+        this.armUpCommand = armUpCommand;
+    }
+    
+    public void setArmDownCommand (boolean armDownCommand){
+        this.armDownCommand = armDownCommand;
     }
 
     private void shootToDashboard() {
