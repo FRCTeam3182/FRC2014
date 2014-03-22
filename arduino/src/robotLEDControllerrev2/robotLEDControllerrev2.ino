@@ -67,7 +67,7 @@ uint32_t randomColor[] = {
 void setup(){
 
   //communication pin
-  pinMode(3, INPUT);
+  pinMode(12, INPUT);
 
   //interupt pin
   attachInterrupt(1, readSidecar, RISING);
