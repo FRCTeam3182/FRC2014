@@ -36,19 +36,19 @@ public class Sensors extends Object implements Runnable {
             SmartDashboard.putNumber("Speed Left", leftDriveEncoder.getRate());
             Timer.delay(.1);
              
-            if (Math.abs(leftVoltage-rightVoltage) > .3) {
-                leftVoltage = 0;
-                rightVoltage = 0;
-            }
+//            if (Math.abs(leftVoltage-rightVoltage) > .3) {
+//                leftVoltage = 0;
+//                rightVoltage = 0;
+//            }
             
             //If voltage is between x and y, we're in the right position
-            if (leftVoltage >= .45 && leftVoltage <= 1.2) {
+            if (leftVoltage >= .598 && leftVoltage <= .897) {
             shootDistance = 1; 
             //If voltage is between x and y, we're too far
-            } else if (leftVoltage >= 3 && leftVoltage < 60) {
+            } else if (leftVoltage >= 3 && leftVoltage < .898) {
             shootDistance = 2; 
             //If voltage is between x and y, we;re too close
-            } else if (leftVoltage >= 60 && leftVoltage <= 72) {
+            } else if (leftVoltage >= .001 && leftVoltage <= .597) {
             shootDistance = 0; 
             }
         }
