@@ -35,7 +35,6 @@ public class Collector extends Object implements Runnable {
     }
 
     public void run() {
-
         while (true) {
             if (!driverStation.isEnabled()) {
                 Timer.delay(.1);

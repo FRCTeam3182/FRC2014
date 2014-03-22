@@ -23,7 +23,6 @@ public class Sensors extends Object implements Runnable {
         leftRangeFinder = new AnalogChannel(1, 1);
         rightRangeFinder = new AnalogChannel(1, 2);
         rightDriveEncoder.setDistancePerPulse(.08168);
-
     }
 
     public void run() {
@@ -58,5 +57,4 @@ public class Sensors extends Object implements Runnable {
     public synchronized int shootingDistance() {
         return shootDistance;
     }
-
 }

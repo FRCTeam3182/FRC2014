@@ -52,8 +52,6 @@ public class DriveTrain extends Object implements Runnable {
                 leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
                 rightShifterCommand = rightJoystick.getRawButton(1);
                 leftShifterCommand = leftJoystick.getRawButton(1);
-                forwardCommand = rightJoystick.getRawButton(3);
-                backwardCommand = leftJoystick.getRawButton(4);
             }
             if (isEna) {
                 //shifter code
@@ -62,19 +60,10 @@ public class DriveTrain extends Object implements Runnable {
                     // if (rightShifter.get() == DoubleSolenoid.Value.kReverse) {
                     shiftHigh();
                 }
+                
                 if (rightShifterCommand == false && leftShifterCommand == false) {
                     // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
                     shiftLow();
-                }
-                //If button 3 is pressed make the robot go forward
-                if (forwardCommand) {
-                    rightMotorCommand = 1;
-                    leftMotorCommand = 1;
-                }
-                //If button 4 is pressed, make the robot go backward
-                if (backwardCommand) {
-                    rightMotorCommand = -1;
-                    leftMotorCommand = -1;
                 }
 
                 /*=================================================================
@@ -108,8 +97,8 @@ public class DriveTrain extends Object implements Runnable {
                 }
                 //drive using the joysticks
                 drive.tankDrive(-smoothVarLeft, -smoothVarRight);
-
             }
+            
             driveToDashboard();
             Timer.delay(.15);
         }
@@ -122,14 +111,6 @@ public class DriveTrain extends Object implements Runnable {
     public synchronized void setLeftShifterCommand(boolean leftShifterCommand) {
         this.leftShifterCommand = leftShifterCommand;
     }
-
-//    public synchronized void setTurnLeftCommand(boolean backwardCommand) {
-//        this.backwardCommand = backwardCommand;
-//    }
-//
-//    public synchronized void setTurnRightCommand(boolean forwardCommand) {
-//        this.forwardCommand = forwardCommand;
-//    }
     
     public synchronized void setJoystickStateCommand(boolean joystickStateCommand) {
         this.joystickStateCommand = joystickStateCommand;
@@ -154,7 +135,6 @@ public class DriveTrain extends Object implements Runnable {
     }
 
     private void driveToDashboard() {
-
         SmartDashboard.putString("Left Shifter", leftShifter.toString());
         SmartDashboard.putString("Right Shifter", rightShifter.toString());
         SmartDashboard.putNumber("leftMotorCommand", leftMotorCommand);
@@ -165,5 +145,4 @@ public class DriveTrain extends Object implements Runnable {
         SmartDashboard.putNumber("Smooth Var Right", smoothVarRight);
         SmartDashboard.putBoolean("Joystick state", joystickStateCommand);
     }
-
 }
