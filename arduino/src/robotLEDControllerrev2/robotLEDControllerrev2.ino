@@ -41,7 +41,7 @@ boolean idleStart[ledsNumber];
 CRGB rainbow[ledsNumber];
 
 //color data
-uint32_t distanceColor = 0xFF0000; //start off with the color being red
+uint32_t distanceColor = 0xFF00FF; //start off with the color being purple
 uint32_t allianceColor = 0xFF00FF; //start off with the color being purple
 //used for debugging
 int x;
@@ -171,7 +171,7 @@ void loop(){
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
     //set lights to yellow
-    distanceColor = 0xFFFF00;
+//    distanceColor = 0xFFFF00;
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
     //signal to other robots
@@ -179,11 +179,11 @@ void loop(){
   }
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //set lights to green
-    distanceColor = 0x008000;
+//    distanceColor = 0x008000;
   }
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
     //sets the distance color to red
-    distanceColor = 0xFF0000;
+//    distanceColor = 0xFF0000;
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
     //signal to other teams
@@ -195,15 +195,15 @@ void loop(){
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
     //if the alliance color is blue
-    allianceColor = CRGB::Blue;
+//    allianceColor = CRGB::Blue;
   } 
   else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
     //if the alliance color is red
-    allianceColor = CRGB::Red;
+//    allianceColor = CRGB::Red;
   } 
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
     //rainbow after fireworks
-    rainbow();
+   // rainbow();
   } 
   //for debugging
   //  Serial.print(dataRecieved[0]);
