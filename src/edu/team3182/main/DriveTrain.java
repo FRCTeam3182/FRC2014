@@ -32,8 +32,8 @@ public class DriveTrain extends Object implements Runnable {
     private volatile boolean joystickStateCommand;
     private volatile double rightMotorCommand;
     private volatile double leftMotorCommand;
-    boolean turnRightCommand;
-    boolean turnLeftCommand;
+    boolean forwardCommand;
+    boolean backwardCommand;
 
     //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
@@ -67,8 +67,8 @@ public class DriveTrain extends Object implements Runnable {
                     leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
                     rightShifterCommand = rightJoystick.getRawButton(1);
                     leftShifterCommand = leftJoystick.getRawButton(1);
-                    turnRightCommand = rightJoystick.getRawButton(3);
-                    turnLeftCommand = leftJoystick.getRawButton(4);
+                    forwardCommand = rightJoystick.getRawButton(3);
+                    backwardCommand = leftJoystick.getRawButton(4);
                 }
             if (isEna) {
                 //shifter code
@@ -82,13 +82,13 @@ public class DriveTrain extends Object implements Runnable {
                     shiftLow();
                 }
                 
-                if (turnRightCommand){ //pivoting
+                if (forwardCommand){ //quick defense
                     rightMotorCommand = 1;
-                    leftMotorCommand = -1;
-                }
-                 if (turnLeftCommand){
-                    rightMotorCommand = -1;
                     leftMotorCommand = 1;
+                }
+                 if (backwardCommand){
+                    rightMotorCommand = -1;
+                    leftMotorCommand = -1;
                 }
                
                 /*=================================================================
@@ -153,12 +153,12 @@ public class DriveTrain extends Object implements Runnable {
         this.leftShifterCommand = leftShifterCommand;
     }
 
-//    public synchronized void setTurnLeftCommand(boolean turnLeftCommand) {
-//        this.turnLeftCommand = turnLeftCommand;
+//    public synchronized void setTurnLeftCommand(boolean backwardCommand) {
+//        this.backwardCommand = backwardCommand;
 //    }
 //
-//    public synchronized void setTurnRightCommand(boolean turnRightCommand) {
-//        this.turnRightCommand = turnRightCommand;
+//    public synchronized void setTurnRightCommand(boolean forwardCommand) {
+//        this.forwardCommand = forwardCommand;
 //    }
 
     public synchronized void setJoystickStateCommand(boolean joystickStateCommand) {

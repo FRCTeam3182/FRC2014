@@ -188,12 +188,12 @@ public class Robot3182 extends IterativeRobot {
        // sendArduino(true, false, true, false); //charging animation
         //sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
-        driveTrainVar.setRightMotorCommand(-.7);
+        driveTrainVar.setRightMotorCommand(-.71);
         driveTrainVar.setLeftMotorCommand(-.7);
-        Timer.delay(2.0);
+        Timer.delay(1.7);
         driveTrainVar.setRightMotorCommand(-.6);
         driveTrainVar.setLeftMotorCommand(-.6);
-        Timer.delay(.1);
+        Timer.delay(1.5);
         driveTrainVar.setRightMotorCommand(-.5);
         driveTrainVar.setLeftMotorCommand(-.5);
         Timer.delay(.3);
