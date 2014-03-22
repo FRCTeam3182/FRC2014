@@ -39,7 +39,7 @@ public class DriveTrain extends Object implements Runnable {
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
-
+    
     public DriveTrain() {
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
@@ -62,6 +62,7 @@ public class DriveTrain extends Object implements Runnable {
 
         while (true) {
             boolean isEna = driverStation.isEnabled();
+//If joystickStateCommand is true, initialize all this stuff
              if (joystickStateCommand) {
                     rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
                     leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
@@ -81,11 +82,12 @@ public class DriveTrain extends Object implements Runnable {
                     // if (leftShifter.get() == DoubleSolenoid.Value.kForward) {
                     shiftLow();
                 }
-                
-                if (forwardCommand){ //quick defense
+                //If button 3 is pressed make the robot go forward
+                if (forwardCommand){ 
                     rightMotorCommand = 1;
                     leftMotorCommand = 1;
                 }
+                //If button 4 is pressed, make the robot go backward
                  if (backwardCommand){
                     rightMotorCommand = -1;
                     leftMotorCommand = -1;
@@ -122,28 +124,12 @@ public class DriveTrain extends Object implements Runnable {
                 }
                 //drive using the joysticks
                 drive.tankDrive(-smoothVarLeft, -smoothVarRight);
-
-//                //does a clockwise 90 degree turn quickly 
-//                if (quarterTurnRightCommand && !quarterTurnLeftCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-//                    pivot(90);
-//                }
-//                //does a counter-clockwise 90 degree turn quickly
-//                if (quarterTurnLeftCommand && !quarterTurnRightCommand && !halfTurnRightCommand) { //&&&&&&&&&&&&&&&&&&&&&&&&&& add semaphore to see is collector is in
-//                    pivot(-90);
-//                }
+                
             }
             driveToDashboard();
             Timer.delay(.15);
         }
     }
-
-    // pivots robot by some angle, positive is right, negative is left
-//    private void pivot(float angle_deg) {
-//
-//        drive.drive(1, signum(angle_deg));
-//        Timer.delay(Math.abs(angle_deg / 300));
-//        drive.drive(0, 0);
-//    }
 
     public synchronized void setRightShifterCommand(boolean rightShifterCommand) {
         this.rightShifterCommand = rightShifterCommand;
@@ -171,17 +157,6 @@ public class DriveTrain extends Object implements Runnable {
 
     public synchronized void setLeftMotorCommand(double leftMotorCommand) {
         this.leftMotorCommand = leftMotorCommand;
-    }
-
-    private int signum(float num) {
-        if (num > 0) {
-            return 1;
-        } else if (num < 0) {
-            return -1;
-        } else {
-            return 0;
-        }
-
     }
 
     private void shiftHigh() {

@@ -41,7 +41,8 @@ public class Shooter extends Object implements Runnable {
     }
 
     private void shoot() {
-
+// turn off compressor then bring the collector in 
+// shoot then turn compressor back on
         compressor.stop();
         collector.setCollectInCommand(true);
         collector.setCollectOutCommand(false);
@@ -54,8 +55,6 @@ public class Shooter extends Object implements Runnable {
         shooterMotors.set(0);
         Timer.delay(.5);
         //start reload
-        // collectorMotor.set(0);
-        // remember to set negative
         shooterMotors.set(-.15);
         Timer.delay(1.5);
         shooterMotors.set(0);
@@ -65,6 +64,8 @@ public class Shooter extends Object implements Runnable {
     public void run() {
 
         while (true) {
+// If the robot is enabled check if button to shoot was pressed and if the 
+// collector is reversed. If both true, shoot, then set shootCommand to false
             if (driverStation.isEnabled()) {
                 if (shootCommand && collector.getRightCollectorValue() == DoubleSolenoid.Value.kReverse) {
                     
@@ -81,6 +82,7 @@ public class Shooter extends Object implements Runnable {
     
 
     private void shootToDashboard() {
+// print stuff to dashboard
         SmartDashboard.putBoolean("Shoot Command", shootCommand);
         SmartDashboard.putNumber("Shooter Motor Value", shooterMotors.get());
         SmartDashboard.putBoolean("Compressor", compressor.enabled());

@@ -136,6 +136,7 @@ public class Collector extends Object implements Runnable {
     }
 
     public static String toString(DoubleSolenoid solenoid) {
+//Override toString
         String str;
         if (solenoid.get() == DoubleSolenoid.Value.kForward) {
             str = "Collector Foward";
