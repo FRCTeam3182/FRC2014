@@ -73,38 +73,12 @@ public class Shooter extends Object implements Runnable {
                 }
             }
             
-            if (armUpCommand && !armDownCommand){
-                armUp();
-            }
-            
-            if (armDownCommand && !armUpCommand){
-                armDown();
-            }
-            
-            if (armDownCommand && armUpCommand){
-                SmartDashboard.putString("Arm error", "Both buttons were pressed");
-            }
             shootToDashboard();
             Timer.delay(.2);
 
         }
     }
     
-    private void armUp(){
-        //bring arm up
-    }
-    
-    private void armDown(){
-        //bring arm down
-    }
-    
-    public void setArmUpCommand(boolean armUpCommand){
-        this.armUpCommand = armUpCommand;
-    }
-    
-    public void setArmDownCommand (boolean armDownCommand){
-        this.armDownCommand = armDownCommand;
-    }
 
     private void shootToDashboard() {
         SmartDashboard.putBoolean("Shoot Command", shootCommand);

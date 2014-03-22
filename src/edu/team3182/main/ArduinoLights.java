@@ -116,7 +116,7 @@ public class ArduinoLights extends Object implements Runnable {
                 
                 //signal
                 if (signal) {
-                    dataToSend = new boolean[]{false, false, true, true};
+                    dataToSend = new boolean[]{true, true, false, false};
                 }
                 sendArduino(dataToSend);
             }
