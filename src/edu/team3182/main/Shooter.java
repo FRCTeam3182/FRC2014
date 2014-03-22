@@ -39,6 +39,7 @@ public class Shooter extends Object implements Runnable {
         collector.setCollectorOutCommand(true);
         collector.setCollectorInCommand(false);
         Timer.delay(.45);
+        collector.setCollectorOutCommand(false);
         shooterMotors.set(1);
         Timer.delay(1.4);
         shooterMotors.set(0);
