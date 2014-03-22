@@ -43,11 +43,11 @@ public class Shooter extends Object implements Runnable {
     private void shoot() {
 
         compressor.stop();
-        collector.setCollectInCommand(true);
-        collector.setCollectOutCommand(false);
+        collector.setCollectorInCommand(true);
+        collector.setCollectorOutCommand(false);
         Timer.delay(.3);
-        collector.setCollectOutCommand(true);
-        collector.setCollectInCommand(false);
+        collector.setCollectorOutCommand(true);
+        collector.setCollectorInCommand(false);
         Timer.delay(.45);
         shooterMotors.set(1);
         Timer.delay(1.4);

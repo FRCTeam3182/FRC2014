@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -18,10 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Collector extends Object implements Runnable {
 
     private final DriverStation driverStation;
-    private volatile boolean collectCommand;
-    private volatile boolean collectInCommand;
-    private volatile boolean collectOutCommand;
-    private volatile boolean passCommand;
+    private volatile boolean collectMotorCommand;
+    private volatile boolean collectorInCommand;
+    private volatile boolean collectorOutCommand;
+    private volatile boolean passMotorCommand;
     private final DoubleSolenoid leftCollector;
     private final DoubleSolenoid rightCollector;
     private final Talon collectorMotor;
@@ -31,10 +26,10 @@ public class Collector extends Object implements Runnable {
         leftCollector = new DoubleSolenoid(1, 2);
         rightCollector = new DoubleSolenoid(3, 4);
         collectorMotor = new Talon(3);
-        collectCommand = false;
-        collectInCommand = false;
-        collectOutCommand = false;
-        passCommand = false;
+        collectMotorCommand = false;
+        collectorInCommand = false;
+        collectorOutCommand = false;
+        passMotorCommand = false;
         driverStation = DriverStation.getInstance();
 
     }
@@ -54,57 +49,61 @@ public class Collector extends Object implements Runnable {
             }
 
             //when button 10 is let go, the toggle will comence
-            if (collectInCommand && !collectOutCommand) {
-                collectIn();
+            if (collectorInCommand && !collectorOutCommand) {
+                collectorIn();
             }
 
             //when button 11 is let go, the toggle will comence
-            if (collectOutCommand && !collectInCommand) {
-                collectOut();
+            if (collectorOutCommand && !collectorInCommand) {
+                collectorOut();
             }
-            //if collectOutCommand and collectInCommand are both pressed send a message to dashboard
-            if (collectOutCommand && collectInCommand) {
+            //if collectorOutCommand and collectorInCommand are both pressed send a message to dashboard
+            if (collectorOutCommand && collectorInCommand) {
                 SmartDashboard.putString("Collect button error", "Both Collect buttons pressed");
             }
             //if collectCommand is pressed and passCommand is not pressed run the collect method
-            if (collectCommand && !passCommand) {
-                collect(1);
+            if (collectMotorCommand && !passMotorCommand) {
+                //move collectorMoter to collect ball
+                moveCollectorMotor(1);
             }
             //if passCommand is pressed and collectCommand is not, run the pass method
-            if (passCommand && !collectCommand) {
-                pass(-1);
+            if (passMotorCommand && !collectMotorCommand) {
+                //move collectorMotor to pass
+                moveCollectorMotor(-1);
             }
-            if (!passCommand && !collectCommand) {
-                pass(0);
+            if (!passMotorCommand && !collectMotorCommand) {
+                //stop collectorMotor
+                moveCollectorMotor(0);
             }
             
-            //if both passCommand and collectCommand are pressed, send a message to dashboard
-            if (passCommand && collectCommand) {
+            if (passMotorCommand && collectMotorCommand) {
+                //if both passCommand and collectCommand are pressed, send a message to dashboard
                 SmartDashboard.putString("Collect motor error", "Both collect buttons are pressed");
             }
+            //print all of the vars to smartboard
             collectToDashboard();
             Timer.delay(.2);
         }
 
     }
 
-    public void setCollectCommand(boolean collectCommand) {
-        this.collectCommand = collectCommand;
+    public void setCollectMotorCommand(boolean collectMotorCommand) {
+        this.collectMotorCommand = collectMotorCommand;
     }
 
-    public void setCollectInCommand(boolean collectInCommand) {
-        this.collectInCommand = collectInCommand;
+    public void setCollectorInCommand(boolean collectorInCommand) {
+        this.collectorInCommand = collectorInCommand;
     }
 
-    public void setCollectOutCommand(boolean collectOutCommand) {
-        this.collectOutCommand = collectOutCommand;
+    public void setCollectorOutCommand(boolean collectorOutCommand) {
+        this.collectorOutCommand = collectorOutCommand;
     }
 
     public void setPassCommand(boolean passCommand) {
-        this.passCommand = passCommand;
+        this.passMotorCommand = passCommand;
     }
 
-    private void collectIn() {
+    private void collectorIn() {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kForward);
         leftCollector.set(DoubleSolenoid.Value.kForward);
@@ -112,7 +111,7 @@ public class Collector extends Object implements Runnable {
         collectorMotor.set(0);
     }
 
-    private void collectOut() {
+    private void collectorOut() {
         collectorMotor.set(.8);
         rightCollector.set(DoubleSolenoid.Value.kReverse);
         leftCollector.set(DoubleSolenoid.Value.kReverse);
@@ -120,11 +119,7 @@ public class Collector extends Object implements Runnable {
         collectorMotor.set(0);
     }
 
-    private void collect(double x) {
-        collectorMotor.set(x);
-    }
-
-    private void pass(double x) {
+    private void moveCollectorMotor(double x) {
         collectorMotor.set(x);
     }
 
