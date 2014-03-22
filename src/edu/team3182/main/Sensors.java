@@ -45,12 +45,13 @@ public class Sensors extends Object implements Runnable {
             if (leftVoltage >= .598 && leftVoltage <= .897) {
             shootDistance = 1; 
             //If voltage is between x and y, we're too far
-            } else if (leftVoltage >= 3 && leftVoltage < .898) {
+            } else if (leftVoltage >= .898) {
             shootDistance = 2; 
             //If voltage is between x and y, we;re too close
             } else if (leftVoltage >= .001 && leftVoltage <= .597) {
             shootDistance = 0; 
             }
+            SmartDashboard.putNumber("shootDistance Variable", shootDistance);
         }
     }
     
