@@ -61,8 +61,10 @@ public class Robot3182 extends IterativeRobot {
     public void autonomousInit() {
         //disable joystick command over the wheels
         driveTrainVar.setJoystickStateCommand(false);
-
+        double delayAuto;
+        delayAuto = SmartDashboard.getNumber("AUTO DELAY TIME");
         //drive forward
+        Timer.delay(delayAuto);
         driveTrainVar.setRightMotorCommand(-.71);
         driveTrainVar.setLeftMotorCommand(-.7);
         Timer.delay(1.7);
