@@ -21,8 +21,6 @@ public class Shooter extends Object implements Runnable {
 
     private DriverStation driverStation;
     public volatile boolean shootCommand;
-    public volatile boolean armUpCommand;
-    public volatile boolean armDownCommand;
 
     public synchronized void setShootCommand(boolean shootCommand) {
         this.shootCommand = shootCommand;
