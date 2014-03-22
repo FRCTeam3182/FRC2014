@@ -26,9 +26,6 @@ public class DriveTrain extends Object implements Runnable {
     private final DriverStation driverStation;
     private volatile boolean rightShifterCommand;
     private volatile boolean leftShifterCommand;
-//    private volatile boolean quarterTurnLeftCommand;
-//    private volatile boolean quarterTurnRightCommand;
-//    private volatile boolean halfTurnRightCommand;
     private volatile boolean joystickStateCommand;
     private volatile double rightMotorCommand;
     private volatile double leftMotorCommand;
@@ -49,9 +46,6 @@ public class DriveTrain extends Object implements Runnable {
         rightShifter = new DoubleSolenoid(7, 8);
         rightShifterCommand = false;
         leftShifterCommand = false;
-//        quarterTurnLeftCommand = false;
-//        quarterTurnRightCommand = false;
-//        halfTurnRightCommand = false;
         rightMotorCommand = 0;
         leftMotorCommand = 0;
         joystickStateCommand = false;
