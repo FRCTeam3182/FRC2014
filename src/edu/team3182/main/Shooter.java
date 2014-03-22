@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.Talon;
@@ -12,11 +7,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Peter
- *
- */
 public class Shooter extends Object implements Runnable {
 
     private DriverStation driverStation;
@@ -30,6 +20,7 @@ public class Shooter extends Object implements Runnable {
     private Collector collector;
 
     public Shooter(Collector collector) {
+        //initializing everything
         shooterMotors = new Talon(4);
         shootCommand = false;
         compressor = new Compressor(7, 1);
@@ -39,19 +30,20 @@ public class Shooter extends Object implements Runnable {
     }
 
     private void shoot() {
-// turn off compressor then bring the collector in 
-// shoot then turn compressor back on
+        // turn off compressor then bring the collector in 
+        // shoot then turn compressor back on
         compressor.stop();
-        collector.setCollectInCommand(true);
-        collector.setCollectOutCommand(false);
+        collector.setCollectorInCommand(true);
+        collector.setCollectorOutCommand(false);
         Timer.delay(.3);
-        collector.setCollectOutCommand(true);
-        collector.setCollectInCommand(false);
+        collector.setCollectorOutCommand(true);
+        collector.setCollectorInCommand(false);
         Timer.delay(.45);
         shooterMotors.set(1);
         Timer.delay(1.4);
         shooterMotors.set(0);
         Timer.delay(.5);
+        
         //start reload
         shooterMotors.set(-.15);
         Timer.delay(1.5);
@@ -62,19 +54,19 @@ public class Shooter extends Object implements Runnable {
     public void run() {
 
         while (true) {
-// If the robot is enabled check if button to shoot was pressed and if the 
-// collector is reversed. If both true, shoot, then set shootCommand to false
+        // If the robot is enabled check if button to shoot was pressed and if the 
+        // collector is reversed. If both true, shoot, then set shootCommand to false
             if (driverStation.isEnabled()) {
                 if (shootCommand && collector.getRightCollectorValue() == DoubleSolenoid.Value.kReverse) {
-                    
+                    shootToDashboard();
                     shoot();
                     shootCommand = false;
                 }
             }
             
+            //shows shooter data on dashboard
             shootToDashboard();
             Timer.delay(.2);
-
         }
     }
     

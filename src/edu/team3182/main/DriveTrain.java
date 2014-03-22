@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.team3182.main;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -12,10 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- * @author Nodcah
- */
 public class DriveTrain extends Object implements Runnable {
 
     private final DoubleSolenoid leftShifter;
@@ -31,13 +22,12 @@ public class DriveTrain extends Object implements Runnable {
     private volatile double leftMotorCommand;
     boolean forwardCommand;
     boolean backwardCommand;
-
-    //yAxisLeft/Right read in values of joysticks, values of joysticks are output inversely like airplane drive 
     double smoothVarRight = 0; //for making joysticks linear function between of zero to 1
     double smoothVarLeft = 0;
     double p = 0.10; //dead zone of joysticks for drive is between -p and p
-    
+
     public DriveTrain() {
+        //initializing everything
         drive = new RobotDrive(1, 2);
         drive.setSafetyEnabled(false);
         rightJoystick = new Joystick(1);
@@ -56,15 +46,15 @@ public class DriveTrain extends Object implements Runnable {
 
         while (true) {
             boolean isEna = driverStation.isEnabled();
-//If joystickStateCommand is true, initialize all this stuff
-             if (joystickStateCommand) {
-                    rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
-                    leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
-                    rightShifterCommand = rightJoystick.getRawButton(1);
-                    leftShifterCommand = leftJoystick.getRawButton(1);
-                    forwardCommand = rightJoystick.getRawButton(3);
-                    backwardCommand = leftJoystick.getRawButton(4);
-                }
+            //if joystickStateCommand is true, initialize all this stuff
+            if (joystickStateCommand) {
+                rightMotorCommand = rightJoystick.getAxis(Joystick.AxisType.kY);
+                leftMotorCommand = leftJoystick.getAxis(Joystick.AxisType.kY);
+                rightShifterCommand = rightJoystick.getRawButton(1);
+                leftShifterCommand = leftJoystick.getRawButton(1);
+                forwardCommand = rightJoystick.getRawButton(3);
+                backwardCommand = leftJoystick.getRawButton(4);
+            }
             if (isEna) {
                 //shifter code
                 //while both of the triggers are clicked, the shifter are switched to high gear
@@ -77,16 +67,16 @@ public class DriveTrain extends Object implements Runnable {
                     shiftLow();
                 }
                 //If button 3 is pressed make the robot go forward
-                if (forwardCommand){ 
+                if (forwardCommand) {
                     rightMotorCommand = 1;
                     leftMotorCommand = 1;
                 }
                 //If button 4 is pressed, make the robot go backward
-                 if (backwardCommand){
+                if (backwardCommand) {
                     rightMotorCommand = -1;
                     leftMotorCommand = -1;
                 }
-               
+
                 /*=================================================================
                  makes sure joystick will not work at +/-10% throttle
                  smoothVarRight/Left are output variables from a function
@@ -118,7 +108,7 @@ public class DriveTrain extends Object implements Runnable {
                 }
                 //drive using the joysticks
                 drive.tankDrive(-smoothVarLeft, -smoothVarRight);
-                
+
             }
             driveToDashboard();
             Timer.delay(.15);
@@ -140,7 +130,7 @@ public class DriveTrain extends Object implements Runnable {
 //    public synchronized void setTurnRightCommand(boolean forwardCommand) {
 //        this.forwardCommand = forwardCommand;
 //    }
-
+    
     public synchronized void setJoystickStateCommand(boolean joystickStateCommand) {
         this.joystickStateCommand = joystickStateCommand;
     }
@@ -164,7 +154,7 @@ public class DriveTrain extends Object implements Runnable {
     }
 
     private void driveToDashboard() {
-        
+
         SmartDashboard.putString("Left Shifter", leftShifter.toString());
         SmartDashboard.putString("Right Shifter", rightShifter.toString());
         SmartDashboard.putNumber("leftMotorCommand", leftMotorCommand);
@@ -175,6 +165,5 @@ public class DriveTrain extends Object implements Runnable {
         SmartDashboard.putNumber("Smooth Var Right", smoothVarRight);
         SmartDashboard.putBoolean("Joystick state", joystickStateCommand);
     }
-    
-   
+
 }
