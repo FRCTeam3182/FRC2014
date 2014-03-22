@@ -185,7 +185,7 @@ public class Robot3182 extends IterativeRobot {
         driveTrainVar.setJoystickStateCommand(false);
 
         //Send command to Arduino for the light strip
-       // sendArduino(true, false, true, false); //charging animation
+        // sendArduino(true, false, true, false); //charging animation
         //sendArduino(false, false, false, false); //stop it imediatly after it finishes
         //drive forward
         driveTrainVar.setRightMotorCommand(-.71);
@@ -204,7 +204,6 @@ public class Robot3182 extends IterativeRobot {
         Timer.delay(1.5);
         collectVar.setCollectCommand(false);
         //Shoot:
-        // SHOULD WE ADD LOGIC TO TURN AROUND AFTER FIRING
         //quickly speed up motors, then wait for the ball to be shot
         shooterVar.setShootCommand(true);
 
