@@ -119,8 +119,8 @@ void loop(){
       //    clearLeds();
     }
     else if (incomingByte == 98){ //b
-      dataRecieved[0] = true;
-      dataRecieved[1] = true;
+      dataRecieved[0] = false;
+      dataRecieved[1] = false;
       dataRecieved[2] = false;
       dataRecieved[3] = true;
       //    setRed();
@@ -128,15 +128,15 @@ void loop(){
     else if (incomingByte == 99){ //c
       dataRecieved[0] = false;
       dataRecieved[1] = false;
-      dataRecieved[2] = false;
-      dataRecieved[3] = true;
+      dataRecieved[2] = true;
+      dataRecieved[3] = false;
       //    setGreen();
     }
     else if (incomingByte == 100){ //d
       dataRecieved[0] = false;
-      dataRecieved[1] = false;
+      dataRecieved[1] = true;
       dataRecieved[2] = true;
-      dataRecieved[3] = true;
+      dataRecieved[3] = false;
       //    shootAndCollect();
     }
     else if (incomingByte == 101){ //e
