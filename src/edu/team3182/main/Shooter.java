@@ -33,13 +33,6 @@ public class Shooter extends Object implements Runnable {
         // turn off compressor then bring the collector in 
         // shoot then turn compressor back on
         compressor.stop();
-        collector.setCollectorInCommand(true);
-        collector.setCollectorOutCommand(false);
-        Timer.delay(.3);
-        collector.setCollectorOutCommand(true);
-        collector.setCollectorInCommand(false);
-        Timer.delay(.45);
-        collector.setCollectorOutCommand(false);
         shooterMotors.set(1);
         Timer.delay(1.4);
         shooterMotors.set(0);
