@@ -43,6 +43,7 @@ CRGB rainbow[ledsNumber];
 //color data
 uint32_t distanceColor = 0xFF00FF; //start off with the color being purple
 uint32_t allianceColor = 0xFF00FF; //start off with the color being purple
+
 //used for debugging
 int x;
 int incomingByte;
