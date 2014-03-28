@@ -67,7 +67,7 @@ public class Robot3182 extends IterativeRobot {
        
         //drive forward
         Timer.delay(num);
-        driveTrainVar.setRightMotorCommand(-.71);
+        driveTrainVar.setRightMotorCommand(-.7);
         driveTrainVar.setLeftMotorCommand(-.7);
         Timer.delay(1.7);
         driveTrainVar.setRightMotorCommand(-.6);
