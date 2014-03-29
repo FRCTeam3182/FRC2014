@@ -59,6 +59,24 @@ public class Robot3182 extends IterativeRobot {
     }
 
     public void autonomousInit() {
+        //**********************
+        //LOW GOAL AUTO
+        //**********************
+//        driveTrainVar.setRightMotorCommand(-.7);
+//        driveTrainVar.setLeftMotorCommand(-.7);
+//        Timer.delay(.8);
+//        driveTrainVar.setRightMotorCommand(-.6);
+//        driveTrainVar.setLeftMotorCommand(-.6);
+//        Timer.delay(1.4);
+//        driveTrainVar.setRightMotorCommand(-.3);
+//        driveTrainVar.setLeftMotorCommand(-.3);
+//        Timer.delay(.5);
+//        driveTrainVar.setRightMotorCommand(0);
+//        driveTrainVar.setLeftMotorCommand(0);
+//        collectVar.setCollectorOutCommand(true);
+//        Timer.delay(1);
+//        collectVar.setCollectorOutCommand(false);
+        
         //disable joystick command over the wheels
         driveTrainVar.setJoystickStateCommand(false);
         double delayNum = 0;
