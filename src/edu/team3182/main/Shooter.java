@@ -11,9 +11,13 @@ public class Shooter extends Object implements Runnable {
 
     private DriverStation driverStation;
     public volatile boolean shootCommand;
-
+    public volatile boolean backShootCommand;
+    
     public synchronized void setShootCommand(boolean shootCommand) {
         this.shootCommand = shootCommand;
+    }
+    public synchronized void setBackShootCommand(boolean backShootCommand) {
+        this.backShootCommand = backShootCommand;
     }
     private Talon shooterMotors;
     private Compressor compressor;
@@ -39,7 +43,7 @@ public class Shooter extends Object implements Runnable {
         Timer.delay(.5);
         
         //start reload
-        shooterMotors.set(-.15);
+        shooterMotors.set(-.25);
         Timer.delay(1.5);
         shooterMotors.set(0);
         compressor.start();
@@ -55,6 +59,12 @@ public class Shooter extends Object implements Runnable {
                     shootToDashboard();
                     shoot();
                     shootCommand = false;
+                }
+                if(backShootCommand){
+                    shooterMotors.set(-.2);
+                }
+                else if(backShootCommand == false){
+                    shooterMotors.set(0);
                 }
             }
             

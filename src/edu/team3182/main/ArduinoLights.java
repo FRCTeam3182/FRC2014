@@ -116,8 +116,8 @@ public class ArduinoLights extends Object implements Runnable {
                 }
 
                 //signal
-                if (signal) {
-                    dataToSend = new boolean[]{true, true, false, false};
+                if (signal){
+                    dataToSend = new boolean[]{false, false, true, true};
                 }
                 sendArduino(dataToSend);
             } 
@@ -127,10 +127,11 @@ public class ArduinoLights extends Object implements Runnable {
                 sendArduino(dataToSend);
             } 
             else if (driverStation.isDisabled() && !(driverStation.getMatchTime() == 0 && thresh)) {
-                //clears the lights when it is disabled
-                dataToSend = new boolean[]{false, false, false, false};
+                //rainbow
+                dataToSend = new boolean[]{false, true, false, true};
                 sendArduino(dataToSend);
             }
+             
         }
     }
 

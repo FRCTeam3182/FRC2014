@@ -69,16 +69,17 @@ public class Robot3182 extends IterativeRobot {
         Timer.delay(num);
         driveTrainVar.setRightMotorCommand(-.7);
         driveTrainVar.setLeftMotorCommand(-.7);
-        Timer.delay(1.7);
+        Timer.delay(.8);
         driveTrainVar.setRightMotorCommand(-.6);
         driveTrainVar.setLeftMotorCommand(-.6);
         Timer.delay(1.5);
-        driveTrainVar.setRightMotorCommand(-.5);
-        driveTrainVar.setLeftMotorCommand(-.5);
-        Timer.delay(.3);
+        driveTrainVar.setRightMotorCommand(-.3);
+        driveTrainVar.setLeftMotorCommand(-.3);
+        Timer.delay(.5);
         driveTrainVar.setRightMotorCommand(0);
         driveTrainVar.setLeftMotorCommand(0);
         //mo
+        Timer.delay(1);
         collectVar.setCollectorOutCommand(true);
         Timer.delay(1.5);
         collectVar.setCollectMotorCommand(false);
@@ -108,6 +109,7 @@ public class Robot3182 extends IterativeRobot {
 
         //send joystick data to Shooter
         shooterVar.setShootCommand(isShooting);
+        shooterVar.setBackShootCommand(buttonsJoystick.getRawButton(2));
 
         //send joystick data to ArduinoLights
         arduinoLightsVar.signal(buttonsJoystick.getRawButton(4));
