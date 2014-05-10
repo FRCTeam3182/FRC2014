@@ -102,7 +102,13 @@ public class ArduinoLights extends Object implements Runnable {
             else if (driverStation.isEnabled()) { 
                 //teleop arduino code with hierarchy of importance (least important to most important)
                 
-                //idle (if nothing is happening)
+                //pauses the lights
+                if(isShooting){
+                    dataToSend = new boolean[]{true, true, false, false};
+                    sendArduino(dataToSend);
+                }
+                
+                //idle
                 dataToSend = new boolean[]{false, false, false, true};
 
                 //passing
@@ -111,7 +117,7 @@ public class ArduinoLights extends Object implements Runnable {
                 }
                 
                 //collecting or shooting
-                if (isCollecting || isShooting) {
+                if (isCollecting) {
                     dataToSend = new boolean[]{false, true, false, false};
                 }
 

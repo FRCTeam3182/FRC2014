@@ -133,7 +133,18 @@ public class DriveTrain extends Object implements Runnable {
         leftShifter.set(DoubleSolenoid.Value.kReverse);
         rightShifter.set(DoubleSolenoid.Value.kReverse);
     }
-
+public static String toString(DoubleSolenoid solenoid) {
+    //Override toString
+        String str;
+        if (solenoid.get() == DoubleSolenoid.Value.kForward) {
+            str = "Shifter Forward";
+        } else if (solenoid.get() == DoubleSolenoid.Value.kReverse) {
+            str = "Shifter Reverse";
+        } else {
+            str = "Shifter OFF";
+        }
+        return str;
+    }
     private void driveToDashboard() {
         SmartDashboard.putString("Left Shifter", leftShifter.toString());
         SmartDashboard.putString("Right Shifter", rightShifter.toString());

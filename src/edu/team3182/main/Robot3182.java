@@ -62,47 +62,56 @@ public class Robot3182 extends IterativeRobot {
         //**********************
         //LOW GOAL AUTO
         //**********************
+//        driveTrainVar.setJoystickStateCommand(false);
+//        Timer.delay(.1);
+//        driveTrainVar.setRightMotorCommand(.7);
+//        driveTrainVar.setLeftMotorCommand(.7);
+//        Timer.delay(1.2);
+//        driveTrainVar.setRightMotorCommand(.6);
+//        driveTrainVar.setLeftMotorCommand(.6);
+//        Timer.delay(1.6);
+//        driveTrainVar.setRightMotorCommand(.3);
+//        driveTrainVar.setLeftMotorCommand(.3);
+//        Timer.delay(.5);
+//        driveTrainVar.setRightMotorCommand(0);
+//        driveTrainVar.setLeftMotorCommand(0);
+//        collectVar.setPassCommand(true);
+//        Timer.delay(1.5);
+//        driveTrainVar.setRightMotorCommand(-.4);
+//        driveTrainVar.setLeftMotorCommand(-.4);
+//        Timer.delay(.7);
+//        driveTrainVar.setRightMotorCommand(.7);
+//        driveTrainVar.setLeftMotorCommand(.7);
+//        Timer.delay(1);
+//        driveTrainVar.setRightMotorCommand(0);
+//        driveTrainVar.setLeftMotorCommand(0);
+        
+        //disable joystick command over the wheels
+        //driveTrainVar.setJoystickStateCommand(false);
+//        double delayNum = 0;
+//        SmartDashboard.putNumber("Auto Delay Time", delayNum);
+//        double num = SmartDashboard.getNumber("Auto delay", delayNum);
+//       
+//        //drive forward
+//        Timer.delay(num);
 //        driveTrainVar.setRightMotorCommand(-.7);
 //        driveTrainVar.setLeftMotorCommand(-.7);
 //        Timer.delay(.8);
 //        driveTrainVar.setRightMotorCommand(-.6);
 //        driveTrainVar.setLeftMotorCommand(-.6);
-//        Timer.delay(1.4);
+//        Timer.delay(1.5);
 //        driveTrainVar.setRightMotorCommand(-.3);
 //        driveTrainVar.setLeftMotorCommand(-.3);
-//        Timer.delay(.5);
+//        Timer.delay(1);
 //        driveTrainVar.setRightMotorCommand(0);
 //        driveTrainVar.setLeftMotorCommand(0);
-//        collectVar.setCollectorOutCommand(true);
+//        //mo
 //        Timer.delay(1);
-//        collectVar.setCollectorOutCommand(false);
-        
-        //disable joystick command over the wheels
-        driveTrainVar.setJoystickStateCommand(false);
-        double delayNum = 0;
-        SmartDashboard.putNumber("Auto Delay Time", delayNum);
-        double num = SmartDashboard.getNumber("Auto delay", delayNum);
-       
-        //drive forward
-        Timer.delay(num);
-        driveTrainVar.setRightMotorCommand(-.7);
-        driveTrainVar.setLeftMotorCommand(-.7);
-        Timer.delay(.8);
-        driveTrainVar.setRightMotorCommand(-.6);
-        driveTrainVar.setLeftMotorCommand(-.6);
-        Timer.delay(1.5);
-        driveTrainVar.setRightMotorCommand(-.3);
-        driveTrainVar.setLeftMotorCommand(-.3);
-        Timer.delay(.5);
-        driveTrainVar.setRightMotorCommand(0);
-        driveTrainVar.setLeftMotorCommand(0);
-        //mo
-        Timer.delay(1);
-        collectVar.setCollectorOutCommand(true);
-        Timer.delay(1.5);
-        collectVar.setCollectMotorCommand(false);
-        //Shoot
-        shooterVar.setShootCommand(true);
+//        collectVar.setCollectorOutCommand(true);
+//        Timer.delay(1.5);
+//        collectVar.setCollectMotorCommand(false);
+//        //Shoot
+//        shooterVar.setShootCommand(true);
     }
 
     public void autonomousPeriodic() {
