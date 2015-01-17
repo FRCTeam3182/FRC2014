@@ -38,7 +38,6 @@
 const int ledsNumber = 80; //number of leds on the strip
 CRGB leds[ledsNumber];
 boolean idleStart[ledsNumber];
-CRGB rainbow[ledsNumber];
 
 //color data
 uint32_t distanceColor = 0xFF00FF; //start off with the color being purple
@@ -88,7 +87,7 @@ void setup(){
   //clear the LED strip data
   FastLED.clear();
 
-  //Debugging
+  //debugging
   Serial.begin(9600);  //For debugging 
 
   //set brightness
@@ -170,41 +169,44 @@ void loop(){
     //plays animation when shooting or collecting
     pass();
   }
-  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
-    //set lights to yellow
-    distanceColor = 0xFFFF00;
-  }
+  //  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
+  //    //set lights to yellow
+  //    distanceColor = 0xFFFF00;
+  //  }
   else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == true){
-    //signal to other robots
-    signal();
-  }
-  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
-    //set lights to green
-    distanceColor = 0x008000;
-  }
-  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
-    //sets the distance color to red
-    distanceColor = 0xFF0000;
-  } 
-  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
-    //signal to other teams
+    //fireworks!!! (it used to be signal)
     celebration();
-  } 
+  }
+  //  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+  //    //set lights to green
+  //    distanceColor = 0x008000;
+  //  }
+  //  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
+  //    //sets the distance color to red
+  //    distanceColor = 0xFF0000;
+  //  } 
+//  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
+//    //turn off lights temporarily while shooting
+//    FastLED.clear();
+//    delay(10);
+//    FastLED.show();
+//    delay(2500);
+//  } 
   else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
     //play animation during autonomous
     charging();
   } 
-  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
-    //if the alliance color is blue
-    allianceColor = CRGB::Blue;
-  } 
-  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
-    //if the alliance color is red
-    allianceColor = CRGB::Red;
-  } 
+  //  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+  //    //if the alliance color is blue
+  //    allianceColor = CRGB::Blue;
+  //  } 
+  //  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
+  //    //if the alliance color is red
+  //    allianceColor = CRGB::Red;
+  //  } 
   else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
-    //rainbow after fireworks
-   // rainbow();
+    //rainbow during disabled
+    rainbow();
   } 
   //for debugging
   //  Serial.print(dataRecieved[0]);
@@ -245,6 +247,36 @@ void readSidecar(){
     delayMicroseconds(10000);
     while(true) delayMicroseconds(10000);
   }
+  //all other ifs to change variables
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+    //if the alliance color is blue
+    allianceColor = CRGB::Blue;
+  } 
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == true){
+    //if the alliance color is red
+    allianceColor = CRGB::Red;
+  } 
+  else if (dataRecieved[0] == false && dataRecieved[1] == false && dataRecieved[2] == true && dataRecieved[3] == false){
+    //set lights to yellow
+    distanceColor = 0xFFFF00;
+  }
+  else if (dataRecieved[0] == false && dataRecieved[1] == true && dataRecieved[2] == true && dataRecieved[3] == false){
+    //set lights to green
+    distanceColor = 0x008000;
+  }
+  else if (dataRecieved[0] == true && dataRecieved[1] == false && dataRecieved[2] == false && dataRecieved[3] == false){
+    //sets the distance color to red
+    distanceColor = 0xFF0000;
+  } 
+  else if (dataRecieved[0] == true && dataRecieved[1] == true && dataRecieved[2] == false && dataRecieved[3] == false){
+    //turn off lights temporarily while shooting
+    FastLED.clear();
+    delay(10);
+    FastLED.show();
+    delay(2500);
+  } 
+  //set the brightness back to full
+  FastLED.setBrightness(100);
 }
 
 void shootAndCollect(){
@@ -548,6 +580,7 @@ void idle(){
       leds[i] = distanceColor;
     }
   }
+  Serial.println("blah");
   FastLED.show();
   for(int timesPlayed = 0; timesPlayed < 20; timesPlayed++){
     //make the leds go down the strip
@@ -589,26 +622,42 @@ void idle(){
     Serial.println("hi");
   }
 }
-//void rainbow(){
-//  //makes a rainbow matrix
-//  FastLED.clear();
-//  
-//  //start with rainbow
-//  for(int i = 0; i<79; i++){
-//    leds[i] = rainbow[i];
-//  }
-//  
-//  for(int timesPlayed = 0; timesPlayed < 20; timesPlayed++){
-//    //make the leds go down the strip
-//    for(int i = 0; i < 19; i++){ 
-//      leds[i].r = leds[i+1].r;
-//      leds[i].g = leds[i+1].g;
-//      leds[i].b = leds[i+1].b;
-//    }
-//    leds[19].r = leds[0].r;
-//    leds[19].g = leds[0].g;
-//    leds[19].b = leds[0].b;
-//
+void rainbow(){
+  FastLED.setBrightness(20);
+  //makes a rainbow matrix
+  FastLED.clear();
+  
+  //set up the rainbow
+  for(int i = 0; i<13;i++){ //red
+    leds[i] = CRGB::Red;
+  }
+  for(int i = 13; i<27;i++){ //orange
+    leds[i] = CRGB::Orange;
+  }
+  for(int i = 27; i<40;i++){ //yellow
+    leds[i] = CRGB::Yellow;
+  }
+  for(int i = 40; i<54;i++){ //green
+    leds[i] = CRGB::Green;
+  }
+  for(int i = 54; i<67;i++){ //blue
+    leds[i] = CRGB::Blue;
+  }
+  for(int i = 67; i<80;i++){ //violet
+    leds[i] = CRGB::Purple;
+  }
+  
+  for(int timesPlayed = 0; timesPlayed < 80; timesPlayed++){
+    //make the leds go down the strip
+    for(int i = 0; i < 79; i++){ 
+      leds[i].r = leds[i+1].r;
+      leds[i].g = leds[i+1].g;
+      leds[i].b = leds[i+1].b;
+    }
+    leds[79].r = leds[0].r;
+    leds[79].g = leds[0].g;
+    leds[79].b = leds[0].b;
+
 //    for(int i = 39; i >= 21; i--){
 //      leds[i].r = leds[i-1].r;
 //      leds[i].g = leds[i-1].g;
@@ -633,10 +682,12 @@ void idle(){
 //    leds[60].r = leds[79].r;
 //    leds[60].g = leds[79].g;
 //    leds[60].b = leds[79].b;
-//    FastLED.show();
-//    delay(50);
-//  }
-//}
+    FastLED.show();
+    delay(30);
+  }
+}
+
+
 
 
 
